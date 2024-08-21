@@ -1,35 +1,83 @@
-html{
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    align-items: center;
-    text-align: center;
-    max-width: 50rem;
-    padding: 1rem;
-    align-content: center;
+html {
+    font-family: sans-serif;
+    /*font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;*/
 }
 
-form {
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
-    max-width: 50%;
-    padding: 1rem;
+body {
     display: flex;
-    flex-direction: column; 
-    align-self: center;
+    align-items: center;
+    justify-content: center;
+}
+
+main {
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
+    max-width: 20rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem;
     border-radius: 0.5rem;
 }
 
+form {
+    width: 20rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    width: 100%;
+    font-weight: 700;
+    text-align: left;
+    margin-bottom: 0.25rem;
+}
+
 input {
+    all: unset;
+    padding: 0.25rem 0.5rem;
+    line-height: 1.5em;
     margin-bottom: 2rem;
-    max-width: 50%;
+    box-sizing: border-box;
+    width: 100%;
     align-self: center;
-    border-color: lightblue;
-    border-radius: 0.2rem;
+    border-radius: 0.3rem;
+    box-shadow:
+        rgb(255, 255, 255) 0px 0px 0px 0px inset,
+        rgb(209, 213, 219) 0px 0px 0px 1px inset,
+        rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+}
+
+input:focus {
+    box-shadow:
+        rgb(255, 255, 255) 0px 0px 0px 0px inset,
+        blue 0px 0px 0px 2px inset,
+        rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
 }
 
 button {
     align-self: center;
-    background-color:lightblue;
+    background-color: blue;
+    color: white;
+    font-weight: 700;
+    width: 100%;
     border: none;
     border-radius: 0.5rem;
-    padding: 5px;
-    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+    padding: 0.75rem 1rem;
+}
+
+
+@media (width < 30em) {
+    main {
+        width: 100dvw;
+        margin: unset;
+        margin: 0rem;
+        padding-left: 0rem !important;
+        padding-right: 0rem !important;
+        box-shadow: none;
+    }
+
+    body {
+        padding: 0px !important;
+    }
 }
