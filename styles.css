@@ -3,6 +3,10 @@ html {
     /*font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;*/
 }
 
+h1, h2 {
+    margin-top: 0px;
+}
+
 body {
     display: flex;
     color: #3E5266;
@@ -16,7 +20,7 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 3rem;
+    padding: 2.5rem;
     border-radius: 0.5rem;
 }
 
