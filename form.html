@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Formulario</title>
     <link href="styles.css" rel="stylesheet" />
+    <script defer src="checks.js"></script>
 </head>
 
 <body>
@@ -14,33 +15,32 @@
         <form>
             <label in>Nombre</label>
             <input id="name" type="text" />
-            <div id="messageName" style="color: red; display: none;"></div>
+            <p id="messageName" class="error-msg"></p>
             <label>Apellido</label>
             <input id="surname" type="text" />
-            <div id="messageSurname" style="color: red; display: none;"></div>
+            <p id="messageSurname" class="error-msg"></p>
             <label>Cédula</label>
             <input id="id" type="text" />
-            <div id="messageId" style="color: red; display: none;"></div>
+            <p id="messageId" class="error-msg"></p>
             <label>Correo electronico</label>
             <input id="email" type="email" />
-            <div id="messageEmail" style="color: red; display: none;"></div>
+            <p id="messageEmail" class="error-msg"></p>
             <label>Contraseña</label>
             <input id="psw1" type="password" />
-            <div id="messageP1" style="color: red; display: none;"></div>
+            <p id="messageP1" class="error-msg"></p>
             <label>Repetir contraseña</label>
             <input id="psw2" type="password" />
-            <div id="messageP2" style="color: red; display: none;"></div>
+            <p id="messageP2" class="error-msg"></p>
             <label>RUT</label>
             <input id="rut" type="text" />
-            <div id="messageRut" style="color: red; display: none;"></div>
+            <p id="messageRut" class="error-msg"></p>
             <div class="flex-right diagonal circular-right margin-top">
-                <button>
+                <button id="submitButton">
                     <span>Enviar</span>
                 </button>
             </div>
         </form>
     </main>
-    <script src="checks.js"></script>
 </body>
 
 </html>

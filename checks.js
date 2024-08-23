@@ -10,7 +10,6 @@
  * @returns {Validator}
  */
 function checkSamePasswords(pwd1, pwd2) {
-
     if (pwd1 !== pwd2) {
         return {
             valid: false,
@@ -185,19 +184,19 @@ function checkDigit(id) {
 }
 
 /**
- * @param {string} id
+ * @param {string} rut
  * @returns {Validator}
  */
 function checkRut(rut) {
     rut = rut.toString().trim()
-    if(rut.length < 12){
+    if (rut.length < 12) {
         return {
             valid: false,
-            message: 'El número de RUT debe tener como mínimo 12 carácteres.'
+            message: 'El número de RUT debe tener como mínimo 12 caracteres.'
         }
     }
 
-    if(checkDigitRUT(rut) === false){
+    if (checkDigitRUT(rut) === false) {
         return {
             valid: false,
             message: 'El número no verifica.'
@@ -223,7 +222,7 @@ function checkDigitRUT(rut) {
     const numero = rut.slice(0, 11);
     console.log('luego del slice', numero)
 
-    const coeficientes = [4,3,2,9,8,7,6,5,4,3,2];
+    const coeficientes = [4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
     let sum = 0;
 
     for (let i = 0; i < numero.length; i++) {
@@ -232,104 +231,82 @@ function checkDigitRUT(rut) {
 
     const result = (11 - (sum % 11)) % 11;
 
-    if(result < 10 && result === digit){
+    if (result < 10 && result === digit) {
         console.log('ANDO BIEN')
         return true
     };
 
-    if(result === 11 && digit === 0){
+    if (result === 11 && digit === 0) {
         return true
     };
-    
+
     return false
 
 }
 
+const checks = /** type {const} */ [{
+    inputId: 'name',
+    checker: checkName,
+    messageId: 'messageName',
+}, {
+    inputId: 'surname',
+    checker: checkSurname,
+    messageId: 'messageSurname',
+}, {
+    inputId: 'id',
+    checker: checkID,
+    messageId: 'messageId',
+}, {
+    inputId: 'email',
+    checker: checkEmail,
+    messageId: 'messageEmail',
+}, {
+    inputId: 'psw1',
+    checker: checkPassword,
+    messageId: 'messageP1',
 
-document.getElementById('name').addEventListener('blur', function(){
-    let input = document.getElementById('name').value;
-    if (checkName((input)).valid === false) {
-        let message = document.getElementById('messageName');
-        message.innerHTML = message.innerHTML = checkName((input)).message;
-        message.style.display = 'block';
-    } else {
-        let message = document.getElementById('messageName');
-        message.style.display = 'none'; 
+}, { // We have to make the same check in both password inputs.
+    inputId: 'psw1',
+    checker: () => checkSamePasswords(
+        document.getElementById('psw1'),
+        document.getElementById('psw2')
+    ),
+    messageId: 'messageP2',
+}, {
+    inputId: 'psw2',
+    checker: () => checkSamePasswords(
+        document.getElementById('psw1'),
+        document.getElementById('psw2')
+    ),
+    messageId: 'messageP2',
+}, {
+    inputId: 'rut',
+    checker: checkRut,
+    messageId: 'messageRut',
+}]
+
+for (const check of checks) {
+    const input = document.getElementById(check.inputId);
+    input.addEventListener('blur', function() {
+        let result = check.checker(input.value);
+        const message = document.getElementById(check.messageId);
+        if (!result.valid) {
+            message.innerText = result.message;
+            message.style.display = 'block'
+        } else {
+            message.innerText = '';
+            message.style.display = 'none';
+        }
+    });
+}
+
+document.getElementById('submitButton').addEventListener('click', () => {
+    const dataIsOk = checks.every((check) =>
+        check.checker(document.getElementById(check.inputId))
+    );
+
+    // TODO: JUANA, hace la clase persona y metele los datos.
+    if (dataIsOk) {
+        console.log(new Persona(/* ... */));
     }
-})
-
-document.getElementById('surname').addEventListener('blur', function(){
-    let input = document.getElementById('surname').value;
-    if (checkSurame((input)).valid === false) {
-        let message = document.getElementById('messageSurname');
-        message.innerHTML = message.innerHTML = checkSurname((input)).message;
-        message.style.display = 'block';
-    } else {
-        let message = document.getElementById('messageSurame');
-        message.style.display = 'none'; 
-    }
-})
-
-document.getElementById('id').addEventListener('blur', function(){
-    let input = document.getElementById('id').value;
-    if (checkID((input)).valid === false) {
-        let message = document.getElementById('messageId');
-        message.innerHTML = message.innerHTML = checkID((input)).message;
-        message.style.display = 'block';
-    } else {
-        let message = document.getElementById('messageId');
-        message.style.display = 'none';  
-    }
-})
-
-document.getElementById('email').addEventListener('blur', function(){
-    let input = document.getElementById('email').value;
-    if (checkEmail((input)).valid === false) {
-        let message = document.getElementById('messageEmail');
-        message.innerHTML = message.innerHTML = checkEmail((input)).message;
-        message.style.display = 'block';
-    } else {
-        let message = document.getElementById('messageEmail');
-        message.style.display = 'none';  
-    }
-})
-
-document.getElementById('psw1').addEventListener('blur', function(){
-    let input = document.getElementById('psw1').value;
-    if (checkPassword((input)).valid === false) {
-        let message = document.getElementById('messageP1');
-        message.innerHTML = message.innerHTML = checkPassword((input)).message;
-        message.style.display = 'block';
-    } else {
-        let message = document.getElementById('messageP1');
-        message.style.display = 'none';  
-    }
-})
-
-document.getElementById('psw2').addEventListener('blur', function(){
-    let input = document.getElementById('psw1').value.toString();
-    let input2 = document.getElementById('psw2').value.toString();
-
-    if (checkSamePasswords((input,input2).valid === false)) {
-        let message = document.getElementById('messageP2');
-        message.innerHTML = message.innerHTML = checkSamePasswords((input,input2)).message;
-        message.style.display = 'block';
-    } else {
-        let message = document.getElementById('messageP2');
-        message.style.display = 'none';  
-    }
-})
-
-document.getElementById('rut').addEventListener('blur', function(){
-    let input = document.getElementById('rut').value.toString();
-
-    if (checkRut(input).valid === false) {
-        console.log('ENTRE ACA!!!!')
-        let message = document.getElementById('messageRut');
-        message.innerHTML = message.innerHTML = checkRut(input).message;
-        message.style.display = 'block';
-    } else {
-        let message = document.getElementById('messageRut');
-        message.style.display = 'none';  
-    }
-})
+});
