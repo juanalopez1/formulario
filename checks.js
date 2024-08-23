@@ -42,21 +42,26 @@ function checkPassword(pwd) {
     }
 
     /**
-    * @type {[string, RegExp][]}
-    */
-    const checks = [[
-        /[a-z]/,
-        "La contraseña debe contener minúsculas.",
-    ], [
-        /[A-Z]/,
-        "La contraseña debe contener mayúsculas.",
-    ], [
-        /\d/,
-        "La contraseña debe contener dígitos.",
-    ], [
-        /[^a-zA-Z0-9]/,
-        "La contraseña debe contener caracteres especiales.",
-    ]];
+     * @type {[string, RegExp][]}
+     */
+    const checks = [
+        [
+            /[a-z]/,
+            "La contraseña debe contener minúsculas.",
+        ],
+        [
+            /[A-Z]/,
+            "La contraseña debe contener mayúsculas.",
+        ],
+        [
+            /\d/,
+            "La contraseña debe contener dígitos.",
+        ],
+        [
+            /[^a-zA-Z0-9]/,
+            "La contraseña debe contener caracteres especiales.",
+        ]
+    ];
 
     for (const [regex, message] of checks) {
         if (!regex.test(pwd)) {
