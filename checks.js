@@ -215,12 +215,9 @@ function checkRut(rut) {
  * @returns {boolean}
  */
 function checkDigitRUT(rut) {
-    console.log(rut)
     rut = rut.toString().split('')
     const digit = Number(rut[rut.length - 1]);
-    console.log('digito', digit)
     const numero = rut.slice(0, 11);
-    console.log('luego del slice', numero)
 
     const coeficientes = [4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
     let sum = 0;
@@ -232,7 +229,6 @@ function checkDigitRUT(rut) {
     const result = (11 - (sum % 11)) % 11;
 
     if (result < 10 && result === digit) {
-        console.log('ANDO BIEN')
         return true
     };
 
@@ -268,15 +264,15 @@ const checks = /** type {const} */ [{
 }, { // We have to make the same check in both password inputs.
     inputId: 'psw1',
     checker: () => checkSamePasswords(
-        document.getElementById('psw1'),
-        document.getElementById('psw2')
+        document.getElementById('psw1').value,
+        document.getElementById('psw2').value
     ),
     messageId: 'messageP2',
 }, {
     inputId: 'psw2',
     checker: () => checkSamePasswords(
-        document.getElementById('psw1'),
-        document.getElementById('psw2')
+        document.getElementById('psw1').value,
+        document.getElementById('psw2').value
     ),
     messageId: 'messageP2',
 }, {
@@ -300,6 +296,17 @@ for (const check of checks) {
     });
 }
 
+class Persona{
+    constructor(name, surname, id, email, password, rut){
+        this.name = name;
+        this.surname = surname;
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.rut = rut;
+    }
+}
+
 document.getElementById('submitButton').addEventListener('click', () => {
     const dataIsOk = checks.every((check) =>
         check.checker(document.getElementById(check.inputId))
@@ -307,6 +314,15 @@ document.getElementById('submitButton').addEventListener('click', () => {
 
     // TODO: JUANA, hace la clase persona y metele los datos.
     if (dataIsOk) {
-        console.log(new Persona(/* ... */));
+        const name = document.getElementById('name').value;
+        const surname = document.getElementById('surname').value;
+        const id = document.getElementById('id').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('psw1').value;
+        const rut = document.getElementById('rut').value;
+
+        const persona = new Persona(name, surname, id, email, password, rut);
+        console.log(persona)
     }
 });
+
