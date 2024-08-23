@@ -41,25 +41,33 @@ function checkPassword(pwd) {
         }
     }
 
-    const checks = [{
-        regex: /[a-z]/,
-        message: "La contraseña debe contener minúsculas.",
-    }, {
-        regex: /[A-Z]/,
-        message: "La contraseña debe contener mayúsculas.",
-    }, {
-        regex: /\d/,
-        message: "La contraseña debe contener dígitos.",
-    }, {
-        regex: /[^a-zA-Z0-9]/,
-        message: "La contraseña debe contener caracteres especiales.",
-    }];
+    /**
+     * @type {[string, RegExp][]}
+     */
+    const checks = [
+        [
+            /[a-z]/,
+            "La contraseña debe contener minúsculas.",
+        ],
+        [
+            /[A-Z]/,
+            "La contraseña debe contener mayúsculas.",
+        ],
+        [
+            /\d/,
+            "La contraseña debe contener dígitos.",
+        ],
+        [
+            /[^a-zA-Z0-9]/,
+            "La contraseña debe contener caracteres especiales.",
+        ]
+    ];
 
-    for (const check of checks) {
-        if (!check.regex.test(pwd)) {
+    for (const [regex, message] of checks) {
+        if (!regex.test(pwd)) {
             return {
                 valid: false,
-                message: check.message,
+                message,
             };
         }
     }
@@ -117,10 +125,10 @@ function checkEmail(email) {
             message: check.message
         };
     }
+
     return {
         valid: true,
     }
-
 }
 
 /**
@@ -133,18 +141,20 @@ function checkID(id) {
         message: 'Debe ingresar la cédula con puntos y guiones.'
     }]
 
-    if(!format[0].regex.test(id)){
+    if (!format[0].regex.test(id)) {
         return {
             valid: false,
             message: format[0].message,
         }
     }
-    if (checkDigit(id) === false){
+
+    if (checkDigit(id) === false) {
         return {
             valid: false,
             message: 'Los dígitos de la cédula no verifican.'
         }
     }
+
     return {
         valid: true,
     }
@@ -156,20 +166,19 @@ function checkID(id) {
  */
 function checkDigit(id) {
     id = id.replace(/\D/g, '');
-    
-    const digit = Number(id.charAt(id.length - 1));
-    let numero = id.slice(0, -1);
-    numero = numero.toString()
-    numeroArr = numero.split('').map((ch) => Number(ch));
+
+    const digit = Number(id[id.length - 1]);
+    const numero = id.slice(0, -1);
+    const numeroArr = numero.split('').map((ch) => Number(ch));
 
     const pesos = [2, 9, 8, 7, 6, 3, 4];
-    
+
     let sum = 0;
-    
+
     for (let i = 0; i < 7; i++) {
-        sum += numeroArr[i] * pesos[i];}
-    
+        sum += numeroArr[i] * pesos[i];
+    }
+
     const result = (10 - (sum % 10)) % 10;
     return digit === result;
-
 }
