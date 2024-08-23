@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Formulario</title>
     <link href="styles.css" rel="stylesheet" />
+    <script defer src="checks.js"></script>
 </head>
 
 <body>
@@ -13,21 +14,28 @@
         <h2>Formulario de registro</h2>
         <form>
             <label in>Nombre</label>
-            <input type="text" />
+            <input id="name" type="text" />
+            <p id="messageName" class="error-msg"></p>
             <label>Apellido</label>
-            <input type="text" />
+            <input id="surname" type="text" />
+            <p id="messageSurname" class="error-msg"></p>
             <label>Cédula</label>
-            <input type="text" />
+            <input id="id" type="text" />
+            <p id="messageId" class="error-msg"></p>
             <label>Correo electronico</label>
-            <input type="email" />
+            <input id="email" type="email" />
+            <p id="messageEmail" class="error-msg"></p>
             <label>Contraseña</label>
-            <input type="password" />
+            <input id="psw1" type="password" />
+            <p id="messageP1" class="error-msg"></p>
             <label>Repetir contraseña</label>
-            <input type="password" />
+            <input id="psw2" type="password" />
+            <p id="messageP2" class="error-msg"></p>
             <label>RUT</label>
-            <input type="text" />
+            <input id="rut" type="text" />
+            <p id="messageRut" class="error-msg"></p>
             <div class="flex-right diagonal circular-right margin-top">
-                <button>
+                <button id="submitButton">
                     <span>Enviar</span>
                 </button>
             </div>

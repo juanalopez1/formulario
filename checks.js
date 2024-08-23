@@ -85,7 +85,7 @@ function checkName(name) {
     if (name.length < 3) {
         return {
             valid: false,
-            message: "Mínimo de 8 caracteres."
+            message: "Mínimo de 3 caracteres."
         }
     }
 
@@ -171,14 +171,158 @@ function checkDigit(id) {
     const numero = id.slice(0, -1);
     const numeroArr = numero.split('').map((ch) => Number(ch));
 
-    const pesos = [2, 9, 8, 7, 6, 3, 4];
+    const coeficientes = [2, 9, 8, 7, 6, 3, 4];
 
     let sum = 0;
 
     for (let i = 0; i < 7; i++) {
-        sum += numeroArr[i] * pesos[i];
+        sum += numeroArr[i] * coeficientes[i];
     }
 
     const result = (10 - (sum % 10)) % 10;
     return digit === result;
 }
+
+/**
+ * @param {string} rut
+ * @returns {Validator}
+ */
+function checkRut(rut) {
+    rut = rut.toString().trim()
+    if (rut.length < 12) {
+        return {
+            valid: false,
+            message: 'El número de RUT debe tener como mínimo 12 caracteres.'
+        }
+    }
+
+    if (checkDigitRUT(rut) === false) {
+        return {
+            valid: false,
+            message: 'El número no verifica.'
+        }
+    }
+
+    return {
+        valid: true,
+    }
+
+
+}
+
+/**
+ * @param {string} rut
+ * @returns {boolean}
+ */
+function checkDigitRUT(rut) {
+    rut = rut.toString().split('')
+    const digit = Number(rut[rut.length - 1]);
+    const numero = rut.slice(0, 11);
+
+    const coeficientes = [4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    let sum = 0;
+
+    for (let i = 0; i < numero.length; i++) {
+        sum += numero[i] * coeficientes[i];
+    }
+
+    const result = (11 - (sum % 11)) % 11;
+
+    if (result < 10 && result === digit) {
+        return true
+    };
+
+    if (result === 11 && digit === 0) {
+        return true
+    };
+
+    return false
+
+}
+
+const checks = /** type {const} */ [{
+    inputId: 'name',
+    checker: checkName,
+    messageId: 'messageName',
+}, {
+    inputId: 'surname',
+    checker: checkSurname,
+    messageId: 'messageSurname',
+}, {
+    inputId: 'id',
+    checker: checkID,
+    messageId: 'messageId',
+}, {
+    inputId: 'email',
+    checker: checkEmail,
+    messageId: 'messageEmail',
+}, {
+    inputId: 'psw1',
+    checker: checkPassword,
+    messageId: 'messageP1',
+
+}, { // We have to make the same check in both password inputs.
+    inputId: 'psw1',
+    checker: () => checkSamePasswords(
+        document.getElementById('psw1').value,
+        document.getElementById('psw2').value
+    ),
+    messageId: 'messageP2',
+}, {
+    inputId: 'psw2',
+    checker: () => checkSamePasswords(
+        document.getElementById('psw1').value,
+        document.getElementById('psw2').value
+    ),
+    messageId: 'messageP2',
+}, {
+    inputId: 'rut',
+    checker: checkRut,
+    messageId: 'messageRut',
+}]
+
+for (const check of checks) {
+    const input = document.getElementById(check.inputId);
+    input.addEventListener('blur', function() {
+        let result = check.checker(input.value);
+        const message = document.getElementById(check.messageId);
+        if (!result.valid) {
+            message.innerText = result.message;
+            message.style.display = 'block'
+        } else {
+            message.innerText = '';
+            message.style.display = 'none';
+        }
+    });
+}
+
+class Persona{
+    constructor(name, surname, id, email, password, rut){
+        this.name = name;
+        this.surname = surname;
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.rut = rut;
+    }
+}
+
+document.getElementById('submitButton').addEventListener('click', () => {
+    const dataIsOk = checks.every((check) =>
+        check.checker(document.getElementById(check.inputId))
+    );
+
+    // TODO: JUANA, hace la clase persona y metele los datos.
+    if (dataIsOk) {
+        const name = document.getElementById('name').value;
+        const surname = document.getElementById('surname').value;
+        const id = document.getElementById('id').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('psw1').value;
+        const rut = document.getElementById('rut').value;
+
+        const persona = new Persona(name, surname, id, email, password, rut);
+        console.log(persona)
+    }
+});
+
