@@ -13,19 +13,26 @@
         <h2>Formulario de registro</h2>
         <form>
             <label in>Nombre</label>
-            <input type="text" />
+            <input id="name" type="text" />
+            <div id="messageName" style="color: red; display: none;"></div>
             <label>Apellido</label>
-            <input type="text" />
+            <input id="surname" type="text" />
+            <div id="messageSurname" style="color: red; display: none;"></div>
             <label>Cédula</label>
-            <input type="text" />
+            <input id="id" type="text" />
+            <div id="messageId" style="color: red; display: none;"></div>
             <label>Correo electronico</label>
-            <input type="email" />
+            <input id="email" type="email" />
+            <div id="messageEmail" style="color: red; display: none;"></div>
             <label>Contraseña</label>
-            <input type="password" />
+            <input id="psw1" type="password" />
+            <div id="messageP1" style="color: red; display: none;"></div>
             <label>Repetir contraseña</label>
-            <input type="password" />
+            <input id="psw2" type="password" />
+            <div id="messageP2" style="color: red; display: none;"></div>
             <label>RUT</label>
-            <input type="text" />
+            <input id="rut" type="text" />
+            <div id="messageRut" style="color: red; display: none;"></div>
             <div class="flex-right diagonal circular-right margin-top">
                 <button>
                     <span>Enviar</span>
@@ -33,6 +40,7 @@
             </div>
         </form>
     </main>
+    <script src="checks.js"></script>
 </body>
 
 </html>
