@@ -145,7 +145,7 @@ main {
         margin: 0rem;
         padding-left: 0rem;
         padding-right: 0rem;
-        box-shadow: none;
+        filter: none;
     }
 
     html {
