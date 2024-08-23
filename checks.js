@@ -30,14 +30,14 @@ function checkPassword(pwd) {
     if (pwd.length < 8) {
         return {
             valid: false,
-            message: "La contraseña debe tener por lo menos 8 caracteres."
+            message: "Mínimo de 8 caracteres.",
         }
     }
 
     if (pwd.length > 20) {
         return {
             valid: false,
-            message: "La contraseña debe tener como máximo 20 caracteres."
+            message: "Máximo de 8 caracteres.",
         }
     }
 
@@ -77,14 +77,14 @@ function checkName(name) {
     if (name.length < 3) {
         return {
             valid: false,
-            message: "El nombre debe tener por lo menos 3 caracteres."
+            message: "Mínimo de 8 caracteres."
         }
     }
 
     if (name.length > 20) {
         return {
             valid: false,
-            message: "El nombre debe tener como máximo 20 caracteres"
+            message: "Máximo de 20 caracteres."
         }
     }
 
