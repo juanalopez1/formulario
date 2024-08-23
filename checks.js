@@ -296,8 +296,8 @@ for (const check of checks) {
     });
 }
 
-class Persona{
-    constructor(name, surname, id, email, password, rut){
+class Persona {
+    constructor(name, surname, id, email, password, rut) {
         this.name = name;
         this.surname = surname;
         this.id = id;
@@ -309,10 +309,9 @@ class Persona{
 
 document.getElementById('submitButton').addEventListener('click', () => {
     const dataIsOk = checks.every((check) =>
-        check.checker(document.getElementById(check.inputId))
+        check.checker(document.getElementById(check.inputId).value).valid
     );
 
-    // TODO: JUANA, hace la clase persona y metele los datos.
     if (dataIsOk) {
         const name = document.getElementById('name').value;
         const surname = document.getElementById('surname').value;
@@ -325,4 +324,3 @@ document.getElementById('submitButton').addEventListener('click', () => {
         console.log(persona)
     }
 });
-
