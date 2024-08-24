@@ -296,18 +296,7 @@ for (const check of checks) {
     });
 }
 
-class Persona {
-    constructor(name, surname, id, email, password, rut) {
-        this.name = name;
-        this.surname = surname;
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.rut = rut;
-    }
-}
-
-document.getElementById('submitButton').addEventListener('click', () => {
+document.getElementById('submitButton').addEventListener('click', async () => {
     const dataIsOk = checks.every((check) =>
         check.checker(document.getElementById(check.inputId).value).valid
     );
@@ -320,7 +309,23 @@ document.getElementById('submitButton').addEventListener('click', () => {
         const password = document.getElementById('psw1').value;
         const rut = document.getElementById('rut').value;
 
-        const persona = new Persona(name, surname, id, email, password, rut);
-        console.log(persona)
+        const persona = {
+            nombre: name,
+            apellido: surname,
+            id: id,
+            email: email,
+            contraseña: password,
+            repetirContraseña: password,
+            rut: rut,
+        };
+        console.log(`la persona: ` + JSON.stringify(persona));
+
+        await fetch("http://localhost:3000/personas", {
+            method: 'POST',
+            body: JSON.stringify(persona),
+        });
+
+        // Redirect
+        window.location.href = "personas/personas.html";
     }
 });
