@@ -4,6 +4,7 @@ const fn = async () => {
      */
     const response = await (await fetch("http://localhost:3000/personas")).json();
 
+    console.log(response);
     const personas = response.map(val => personFromSpanish(val));
 
     const card = document.getElementById("person-list-card-container");

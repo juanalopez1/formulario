@@ -312,7 +312,7 @@ document.getElementById('submitButton').addEventListener('click', async () => {
         const persona = {
             nombre: name,
             apellido: surname,
-            id: id,
+            cedula: id,
             email: email,
             contraseña: password,
             repetirContraseña: password,
