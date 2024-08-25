@@ -1,6 +1,14 @@
 html {
-    background-color: #deeaef;
+    background-color:  #15262e;
+    background-size: 0.7rem;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+
 }
+
+/* CARDS */
 
 .person-list-card {
     font-family:
@@ -16,11 +24,11 @@ html {
         "Helvetica Neue",
         sans-serif;
 
-    width: fit-content;
+    max-width: 50%;;
     padding: 0rem;
     padding-right: 1rem;
     box-sizing: border-box;
-
+    margin: 1rem;
     display: flex;
     flex-direction: row;
     align-items: stretch;
@@ -36,7 +44,7 @@ html {
 }
 
 .person-list-card-decoration {
-    width: 2rem;
+    min-width: 2rem;
     background-size: 1rem;
     margin: -0.3rem;
     margin-right: 0rem;
@@ -51,6 +59,8 @@ html {
     font-size: 1.5rem;
     font-weight: 700;
 }
+
+/* DESCRIPCION */
 
 .description-list {
     all: unset;
@@ -92,40 +102,75 @@ html {
     display: inline-block;
 }
 
+/* CONTAINER DE LAS CARDS */
+
 #person-list-card-container {
+    max-width: 100%;
+    align-self: center;
+    align-content: center;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
     flex-direction: row;
+    flex-wrap: wrap;
+    background-color: #deeaef;
+    border: solid white;
+    padding: 2rem;
+    border-radius: 0.7rem;
+    margin: 0 auto;
+    overflow: scroll;
+    position: relative;
 }
 
-#person-list-card-container > .person-list-card {
-    margin: 1rem;
+/* CONTAINER */
+
+.container {
+    background-color: rgba(92, 97, 99, 0.5);
+    align-self: center;
+    align-content: center;
+    max-width: 50%;
+    display: flex;
+    flex-direction: column;
+    border: solid white;
+    padding: 0rem;
+    border-radius: 1rem;
+    margin: 0 auto;
 }
 
-.id, .email, .rut {
-  display: flex;
-  align-items: center;
+.container h1 {
+    color: #dfdbe5;
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Oxygen,
+        Ubuntu,
+        Cantarell,
+        "Open Sans",
+        "Helvetica Neue",
+        sans-serif;
+    text-align: center;
+    margin: 4rem;
+    font-size: 4rem;
+    text-decoration: wavy;
 }
 
-button {
+/* BUTTON */
+
+.add {
     align-self: center;
     border: none;
-    cursor:pointer;
-    overflow: hidden;
-    margin: -0.3rem;
-    font-weight: 700;
-    border-radius: 0.5rem;
-    padding: 0.75rem 2rem;
-    position: relative;
-    background: #EBF2F5;
+    border-radius: 50%;
+    cursor: pointer;
+    position: absolute;
+    background: #447E9B;
     transition: color 0.5s ease-in-out;
-    color: #4F6F7F;
-}
-
-.circular-right {
-    border-top-right-radius: 9999px;
-    border-bottom-right-radius: 9999px;
+    color: #EBF2F5;
+    font-size: larger;
+    font-weight: bolder;
+    width: 3rem;
+    height: 3rem;
+    z-index: 1000;
 }
 
 .flex-right {
@@ -145,7 +190,7 @@ button > * {
 }
 
 button:hover {
-    color: #DEF8F9;
+    color: #447E9B;
 }
 
 button::before {
@@ -154,8 +199,8 @@ button::before {
     left: 50%;
     bottom: 50%;
     height: 100%;
-    border-radius: 9999px;
-    background: #447E9B;
+    border-radius: 2rem;
+    background: #DEF8F9;
     width: 0%;
     height: auto;
     transform: translate(-50%, 50%);
@@ -165,14 +210,5 @@ button::before {
 }
 
 button:hover::before {
-    width: calc(100% + 1rem);
-}
-
-.diagonal {
-    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
-}
-
-.circular-right {
-    border-top-right-radius: 9999px;
-    border-bottom-right-radius: 9999px;
+    width:100%;
 }
