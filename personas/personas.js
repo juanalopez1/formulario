@@ -4,7 +4,6 @@ const fn = async () => {
      */
     const response = await (await fetch("http://localhost:3000/personas")).json();
 
-    console.log(response);
     const personas = response.map(val => personFromSpanish(val));
 
     const card = document.getElementById("person-list-card-container");
@@ -13,17 +12,21 @@ const fn = async () => {
             <div class="person-list-card">
                 <div class="person-list-card-decoration"></div>
                 <article class="card-content">
-                    <h3>${persona.name} ${persona.surname}</h3>
+                    
+                    <abbr title="${persona.name} ${persona.surname}">
+                        <h3 class="text-ellipsis">${persona.name} ${persona.surname}</h3>
+                    </abbr>
                     <ul class="description-list">
-                        <li class="id">${persona.id}</li>
+                        <li class="id text-ellipsis">${persona.id}</li>
+                    <abbr title="${persona.email}">
                         <li class="email">${persona.email}</li>
+                    </abbr>
                         <li class="rut">${persona.rut}</li>
                     </ul>
                 </article>
             </div>
         `;
     }
-    console.log(personas);
 }
 
 class Persona {

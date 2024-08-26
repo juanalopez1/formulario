@@ -323,6 +323,9 @@ document.getElementById('submitButton').addEventListener('click', async () => {
         await fetch("http://localhost:3000/personas", {
             method: 'POST',
             body: JSON.stringify(persona),
+            headers: {
+                "Content-Type": 'application/json'
+            },
         });
 
         // Redirect

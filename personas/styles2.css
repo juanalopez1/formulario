@@ -1,6 +1,21 @@
 html {
-    background-color: #deeaef;
+    background-color: #dfdbe5;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    background-color: #dfdbe5;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
+
+body {
+    height: 100dvh;
+    padding-top: 1rem;
+    /* TODO: remove overflow hidden */
+    overflow: hidden;
+    margin: 0px;
+}
+
+/* CARDS */
 
 .person-list-card {
     font-family:
@@ -16,18 +31,19 @@ html {
         "Helvetica Neue",
         sans-serif;
 
-    width: fit-content;
     padding: 0rem;
     padding-right: 1rem;
+    height: fit-content;
     box-sizing: border-box;
-
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    overflow:auto;
+    overflow: hidden;
     background-color: white;
     box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-    border-radius: 0.5;
+    border-radius: 0.25rem;
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
     transition: all 200ms ease-in-out;
 }
 
@@ -36,7 +52,7 @@ html {
 }
 
 .person-list-card-decoration {
-    width: 2rem;
+    min-width: 2rem;
     background-size: 1rem;
     margin: -0.3rem;
     margin-right: 0rem;
@@ -46,11 +62,27 @@ html {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 28' width='56' height='28'%3E%3Cpath fill='%7D7E80' fill-opacity='0.3' d='M56 26v2h-7.75c2.3-1.27 4.94-2 7.75-2zm-26 2a2 2 0 1 0-4 0h-4.09A25.98 25.98 0 0 0 0 16v-2c.67 0 1.34.02 2 .07V14a2 2 0 0 0-2-2v-2a4 4 0 0 1 3.98 3.6 28.09 28.09 0 0 1 2.8-3.86A8 8 0 0 0 0 6V4a9.99 9.99 0 0 1 8.17 4.23c.94-.95 1.96-1.83 3.03-2.63A13.98 13.98 0 0 0 0 0h7.75c2 1.1 3.73 2.63 5.1 4.45 1.12-.72 2.3-1.37 3.53-1.93A20.1 20.1 0 0 0 14.28 0h2.7c.45.56.88 1.14 1.29 1.74 1.3-.48 2.63-.87 4-1.15-.11-.2-.23-.4-.36-.59H26v.07a28.4 28.4 0 0 1 4 0V0h4.09l-.37.59c1.38.28 2.72.67 4.01 1.15.4-.6.84-1.18 1.3-1.74h2.69a20.1 20.1 0 0 0-2.1 2.52c1.23.56 2.41 1.2 3.54 1.93A16.08 16.08 0 0 1 48.25 0H56c-4.58 0-8.65 2.2-11.2 5.6 1.07.8 2.09 1.68 3.03 2.63A9.99 9.99 0 0 1 56 4v2a8 8 0 0 0-6.77 3.74c1.03 1.2 1.97 2.5 2.79 3.86A4 4 0 0 1 56 10v2a2 2 0 0 0-2 2.07 28.4 28.4 0 0 1 2-.07v2c-9.2 0-17.3 4.78-21.91 12H30zM7.75 28H0v-2c2.81 0 5.46.73 7.75 2zM56 20v2c-5.6 0-10.65 2.3-14.28 6h-2.7c4.04-4.89 10.15-8 16.98-8zm-39.03 8h-2.69C10.65 24.3 5.6 22 0 22v-2c6.83 0 12.94 3.11 16.97 8zm15.01-.4a28.09 28.09 0 0 1 2.8-3.86 8 8 0 0 0-13.55 0c1.03 1.2 1.97 2.5 2.79 3.86a4 4 0 0 1 7.96 0zm14.29-11.86c1.3-.48 2.63-.87 4-1.15a25.99 25.99 0 0 0-44.55 0c1.38.28 2.72.67 4.01 1.15a21.98 21.98 0 0 1 36.54 0zm-5.43 2.71c1.13-.72 2.3-1.37 3.54-1.93a19.98 19.98 0 0 0-32.76 0c1.23.56 2.41 1.2 3.54 1.93a15.98 15.98 0 0 1 25.68 0zm-4.67 3.78c.94-.95 1.96-1.83 3.03-2.63a13.98 13.98 0 0 0-22.4 0c1.07.8 2.09 1.68 3.03 2.63a9.99 9.99 0 0 1 16.34 0z'%3E%3C/path%3E%3C/svg%3E");
 }
 
-.card-content  h3 {
-    all: unset;
+.card-content h3 {
+    overflow-y: unset;
+    overflow-x: unset;
+    font-weight: unset;
+    font-size: unset;
+    max-width: unset;
+    line-height: 1em;
+    margin: 0px;
     font-size: 1.5rem;
     font-weight: 700;
+    max-width: 20ch;
+    overflow: hidden;
 }
+
+.text-ellipsis {
+    display: inline-block;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* DESCRIPCION */
 
 .description-list {
     all: unset;
@@ -86,46 +118,107 @@ html {
 .id::before {
     content: "";
     height: 1.5em;
-    width:  1.5em;
+    width: 1.5em;
     margin-right: 0.2rem;
     color: white;
     display: inline-block;
 }
 
+/* CONTAINER DE LAS CARDS */
+
 #person-list-card-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(min-content, 1fr);
+    grid-auto-rows: minmax(fit-content, auto);
+    gap: 1rem;
+    align-content: start;
+    max-width: 100%;
+    background-color: #faf5ff;
+    height: 100%;
+    padding: 2rem;
+    box-sizing: border-box;
+    border-radius: 1rem;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    margin: 0;
+    overflow: scroll;
+}
+
+@media (width > 750px) {
+    #person-list-card-container {
+        grid-template-columns: repeat(2, minmax(min-content, 1fr));
+    }
+}
+
+@media (width > 1000px) {
+    #person-list-card-container {
+        grid-template-columns: repeat(3, minmax(min-content, 1fr));
+    }
+}
+
+/* CONTAINER */
+
+.container {
+    background-color: #4a044e;
+    align-self: center;
+    align-content: center;
+    height: 100%;
+    width: fit-content;
+    max-width: 100%;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    flex-direction: row;
+    flex-direction: column;
+    border: 2px solid white;
+    padding: 0rem;
+    margin: 0 auto;
+    border-top-right-radius: 1rem;
+    border-top-left-radius: 1rem;
 }
 
-#person-list-card-container > .person-list-card {
-    margin: 1rem;
+.container h1 {
+    color: #dfdbe5;
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Oxygen,
+        Ubuntu,
+        Cantarell,
+        "Open Sans",
+        "Helvetica Neue",
+        sans-serif;
+    max-width: 100%;
+    text-align: center;
+    margin: 4rem;
+    font-size: 4rem;
+    text-decoration: wavy;
 }
 
-.id, .email, .rut {
-  display: flex;
-  align-items: center;
-}
+/* BUTTON */
 
-button {
+.add {
     align-self: center;
     border: none;
-    cursor:pointer;
-    overflow: hidden;
-    margin: -0.3rem;
-    font-weight: 700;
-    border-radius: 0.5rem;
-    padding: 0.75rem 2rem;
-    position: relative;
-    background: #EBF2F5;
+    border-radius: 9999px;
+    cursor: pointer;
+    position: absolute;
+    background: #4a044e;
+    border: solid #faf5ff;
     transition: color 0.5s ease-in-out;
-    color: #4F6F7F;
-}
+    color: #ebf2f5;
+    font-size: larger;
+    font-weight: bolder;
+    width: 3rem;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    z-index: 1;
+    overflow: hidden;
 
-.circular-right {
-    border-top-right-radius: 9999px;
-    border-bottom-right-radius: 9999px;
+    color: white;
+    display: grid;
+    place-items: center;
 }
 
 .flex-right {
@@ -139,13 +232,13 @@ a {
     text-decoration: none;
 }
 
-button > * {
+button>* {
     z-index: 2;
     position: relative;
 }
 
 button:hover {
-    color: #DEF8F9;
+    color: #447e9b;
 }
 
 button::before {
@@ -154,8 +247,8 @@ button::before {
     left: 50%;
     bottom: 50%;
     height: 100%;
-    border-radius: 9999px;
-    background: #447E9B;
+    border-radius: 2rem;
+    background: #701a75;
     width: 0%;
     height: auto;
     transform: translate(-50%, 50%);
@@ -165,14 +258,24 @@ button::before {
 }
 
 button:hover::before {
-    width: calc(100% + 1rem);
+    width: 110%;
 }
 
-.diagonal {
-    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+.add-person {
+    background-image: url("../assets/add_person.svg");
 }
 
-.circular-right {
-    border-top-right-radius: 9999px;
-    border-bottom-right-radius: 9999px;
+.email {
+    max-width: 30ch;
+}
+
+abbr {
+    all: unset;
+}
+
+.rut,
+.id,
+.email {
+    display: flex;
+    align-items: center;
 }

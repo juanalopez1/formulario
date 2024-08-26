@@ -4,14 +4,21 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Listado de personas</title>
-        <link href="styles.css" rel="stylesheet">
+        <link href="styles2.css" rel="stylesheet">
         <script defer src="personas.js"></script>
     </head>
     <body>
-        <div id="person-list-card-container">
+        <div class="container">
+            <h1>Personas</h1>
+            <a href="../form.html">
+                <div class="flex-right diagonal circular-right margin-top">
+                    <button class="add" id="submitButton">
+                        <div class="add-person" style="width: 60%; height: auto; aspect-ratio: 1 / 1;"></div>
+                    </button>
+                </div>
+            </a>
+            <div id="person-list-card-container">
+            </div>
         </div>
-        <a href="../form.html">
-            <button>Agregar</button>
-        </a>
     </body>
 </html>
