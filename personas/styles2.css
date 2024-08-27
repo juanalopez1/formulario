@@ -7,17 +7,7 @@ html {
     background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
-body {
-    height: 100dvh;
-    padding-top: 1rem;
-    /* TODO: remove overflow hidden */
-    overflow: hidden;
-    margin: 0px;
-}
-
-/* CARDS */
-
-.person-list-card {
+* {
     font-family:
         system-ui,
         -apple-system,
@@ -30,7 +20,19 @@ body {
         "Open Sans",
         "Helvetica Neue",
         sans-serif;
+}
 
+body {
+    height: 100dvh;
+    padding-top: 1rem;
+    /* TODO: remove overflow hidden */
+    overflow: hidden;
+    margin: 0px;
+}
+
+/* CARDS */
+
+.person-list-card {
     padding: 0rem;
     padding-right: 1rem;
     height: fit-content;
@@ -40,11 +42,9 @@ body {
     align-items: stretch;
     overflow: hidden;
     background-color: white;
-    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
     border-radius: 0.25rem;
     border-top-right-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
-    transition: all 200ms ease-in-out;
 }
 
 .card-content {
@@ -109,10 +109,6 @@ body {
     background-image: url("../assets/briefcase.svg");
 }
 
-.person-list-card:hover {
-    transform: scale(1.05);
-}
-
 .rut::before,
 .email::before,
 .id::before {
@@ -134,15 +130,8 @@ body {
     gap: 1rem;
     align-content: start;
     max-width: 100%;
-    background-color: #faf5ff;
-    height: 100%;
     padding: 2rem;
     box-sizing: border-box;
-    border-radius: 1rem;
-    border-bottom-right-radius: 0px;
-    border-bottom-left-radius: 0px;
-    margin: 0;
-    overflow: scroll;
 }
 
 @media (width > 750px) {
@@ -177,18 +166,6 @@ body {
 
 .container h1 {
     color: #dfdbe5;
-    font-family:
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Oxygen,
-        Ubuntu,
-        Cantarell,
-        "Open Sans",
-        "Helvetica Neue",
-        sans-serif;
     max-width: 100%;
     text-align: center;
     margin: 4rem;
@@ -199,24 +176,14 @@ body {
 /* BUTTON */
 
 .add {
-    align-self: center;
-    border: none;
-    border-radius: 9999px;
+    border-radius: 0.5rem;
     cursor: pointer;
-    position: absolute;
-    background: #4a044e;
-    border: solid #faf5ff;
     transition: color 0.5s ease-in-out;
-    color: #ebf2f5;
     font-size: larger;
-    font-weight: bolder;
-    width: 3rem;
-    height: auto;
-    aspect-ratio: 1 / 1;
-    z-index: 1;
+    font-weight: 700;
     overflow: hidden;
 
-    color: white;
+    color: #4f6f7f;
     display: grid;
     place-items: center;
 }
@@ -237,18 +204,18 @@ button>* {
     position: relative;
 }
 
-button:hover {
-    color: #447e9b;
+.add:hover {
+    color: #ebf2f5;
 }
 
-button::before {
+.add::before {
     content: "";
     position: absolute;
     left: 50%;
     bottom: 50%;
     height: 100%;
-    border-radius: 2rem;
-    background: #701a75;
+    border-radius: 9999px;
+    background: #0e7490;
     width: 0%;
     height: auto;
     transform: translate(-50%, 50%);
@@ -257,12 +224,8 @@ button::before {
     z-index: 1;
 }
 
-button:hover::before {
+.add:hover::before {
     width: 110%;
-}
-
-.add-person {
-    background-image: url("../assets/add_person.svg");
 }
 
 .email {
@@ -278,4 +241,41 @@ abbr {
 .email {
     display: flex;
     align-items: center;
+}
+
+.add-person {
+    border-radius: 0.5rem;
+    display: grid;
+    place-items: center;
+background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.add-person-icon {
+    background-image: url("../assets/add_person.svg");
+}
+
+.person-list-card,
+.add-person {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    transition: all 200ms ease-in-out;
+}
+
+.person-list-card:hover,
+.add-person:hover {
+    transform: scale(1.05);
+}
+
+.person-list-card:hover,
+.add-person:hover {
+    transform: scale(1.05);
+}
+
+#person-list-card-scroller {
+    overflow-y: auto;
+    flex-grow: 1;
+    border-radius: 1rem;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    margin: 0;
+    background-color: #faf5ff;
 }
