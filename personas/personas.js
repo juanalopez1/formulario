@@ -1,4 +1,4 @@
-const fn = async () => {
+const loadPeople = async () => {
     /**
      * @type {any[]}
      */
@@ -9,27 +9,26 @@ const fn = async () => {
     const card = document.getElementById("person-list-card-container");
     for (const persona of personas) {
         card.innerHTML += `
-            <div class="person-list-card">
+            <li class="person-list-card">
                 <div class="person-list-card-decoration"></div>
                 <article class="card-content">
-                    
-                    <abbr title="${persona.name} ${persona.surname}">
-                        <h3 class="text-ellipsis">${persona.name} ${persona.surname}</h3>
-                    </abbr>
+                    <h3 title="${persona.name} ${persona.surname}" class="text-ellipsis">
+                        ${persona.name} ${persona.surname}
+                    </h3>
                     <ul class="description-list">
                         <li class="id text-ellipsis">${persona.id}</li>
-                    <abbr title="${persona.email}">
-                        <li class="email">${persona.email}</li>
-                    </abbr>
+                        <li title="${persona.email}" class="email text-ellipsis">
+                            ${persona.email}
+                        </li>
                         <li class="rut">${persona.rut}</li>
                     </ul>
                 </article>
-            </div>
+            </li>
         `;
     }
 }
 
-class Persona {
+class Person {
     /**
      * @param {string} email
      * @param {string} name
@@ -49,10 +48,10 @@ class Persona {
 }
 
 /**
- * @return {Persona}
+ * @return {Person}
  */
 function personFromSpanish(obj) {
-    return new Persona(obj.nombre, obj.apellido, obj.cedula, obj.email, undefined, obj.rut);
+    return new Person(obj.nombre, obj.apellido, obj.cedula, obj.email, undefined, obj.rut);
 }
 
-fn();
+loadPeople();
