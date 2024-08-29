@@ -329,6 +329,6 @@ document.getElementById('submitButton').addEventListener('click', async () => {
         });
 
         // Redirect
-        window.location.href = "personas/personas.html";
+        window.location.href = "../personas/index.html";
     }
 });
