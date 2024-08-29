@@ -1,0 +1,2365 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Softest OPEN API",
+    "description": "Documentación Open api del backend softest.",
+    "version": "0.0.1"
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "def-0": {
+        "description": "Ok. No elements found",
+        "type": "null",
+        "title": "genericNoContentResponseSchema"
+      },
+      "def-1": {
+        "description": "Bad request",
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number"
+          },
+          "code": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "title": "generic400ResponseSchema"
+      },
+      "def-2": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number"
+          },
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "title": "generic404ResponseSchema"
+      },
+      "def-3": {
+        "description": "Id de la ruta",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "idParamSchema"
+      },
+      "def-4": {
+        "description": "Reporte para un grupo y test determinado",
+        "type": "object",
+        "properties": {
+          "testId": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "initials": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "referencias": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "finishDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "coments": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "initials",
+          "description",
+          "referencias",
+          "startDate",
+          "finishDate",
+          "comments"
+        ],
+        "title": "gradeTestReportSchema"
+      },
+      "def-5": {
+        "description": "Reporte de un grupo para una evaluación.",
+        "type": "object",
+        "properties": {
+          "userName": {
+            "type": "string"
+          },
+          "evaluationId": {
+            "type": "number"
+          },
+          "evaluationDescription": {
+            "type": "string"
+          },
+          "evaluationInsitution": {
+            "type": "string"
+          },
+          "evaluationDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "evaluationMotivo": {
+            "type": "string"
+          },
+          "gradeId": {
+            "type": "number"
+          },
+          "gradeName": {
+            "type": "string"
+          },
+          "gradeComents": {
+            "type": "string"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "tests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/def-4"
+            }
+          }
+        },
+        "required": [
+          "userName",
+          "evaluationId",
+          "evaluationDescription",
+          "evaluationInsitution",
+          "evaluationDate",
+          "evaluationMotivo",
+          "gradeId",
+          "gradeName",
+          "gradeComents",
+          "statusName",
+          "tests"
+        ],
+        "title": "gradeReportSchema"
+      },
+      "def-6": {
+        "description": "Reporte para un StudentEvaluation y test determinado",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "initials": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "referencias": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "finishDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "testComments": {
+            "type": "string"
+          }
+        },
+        "title": "studentTestReportSchema"
+      },
+      "def-7": {
+        "description": "Reporte de una StudentEvaluation.",
+        "type": "object",
+        "properties": {
+          "evaluationId": {
+            "type": "number"
+          },
+          "evaluationDescription": {
+            "type": "string"
+          },
+          "evaluationInsitution": {
+            "type": "string"
+          },
+          "evaluationDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "evaluationMotivo": {
+            "type": "string"
+          },
+          "gradeId": {
+            "type": "number"
+          },
+          "gradeName": {
+            "type": "string"
+          },
+          "studentComents": {
+            "type": "string"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "tests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/def-6"
+            }
+          }
+        },
+        "title": "studentReportSchema"
+      },
+      "def-8": {
+        "description": "Lista de reportes por grupo.",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/def-8"
+        },
+        "title": "gradesReportSchema"
+      },
+      "def-9": {
+        "description": "Lista de reportes de estudiantes por grupo.",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/def-7"
+        },
+        "title": "studentsReportSchema"
+      },
+      "def-10": {
+        "description": "Id de la ruta",
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "minLength": 3
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 20
+          }
+        },
+        "title": "userPOSTSchema"
+      },
+      "def-11": {
+        "description": "Email and password",
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "minLength": 3
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 20
+          }
+        },
+        "title": "loginPostSchema"
+      },
+      "def-12": {
+        "description": "Id de la ruta",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "username": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "minLength": 3
+          },
+          "isAdmin": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "email",
+          "isAdmin"
+        ],
+        "title": "userResponseSchema"
+      },
+      "def-13": {
+        "description": "Id de la ruta",
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/def-12"
+          }
+        },
+        "required": [
+          "token",
+          "user"
+        ],
+        "title": "loginResponseSchema"
+      },
+      "def-14": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/def-12"
+        },
+        "title": "usersResponseSchema"
+      },
+      "def-15": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "gradePostSchema"
+      },
+      "def-16": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "gradeResponseSchema"
+      },
+      "def-17": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/def-16"
+        },
+        "title": "gradesResponseSchema"
+      },
+      "def-18": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "exampleDescription": {
+            "type": "string"
+          },
+          "timeLimit": {
+            "type": "integer"
+          },
+          "testId": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "exampleDescription",
+          "timeLimit",
+          "testId"
+        ],
+        "title": "partsPostSchema"
+      },
+      "def-19": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "exampleDescription": {
+            "type": "string"
+          },
+          "timeLimit": {
+            "type": "integer"
+          },
+          "testId": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "exampleDescription",
+          "timeLimit",
+          "testId"
+        ],
+        "title": "partResponseSchema"
+      },
+      "def-20": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/def-19"
+        },
+        "title": "partsResponseSchema"
+      },
+      "def-21": {
+        "type": "object",
+        "properties": {
+          "partId": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "partId"
+        ],
+        "title": "partIdSchema"
+      },
+      "def-22": {
+        "type": "object",
+        "properties": {
+          "isExample": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string"
+          },
+          "number": {
+            "type": "integer"
+          },
+          "partId": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "isExample",
+          "description",
+          "number",
+          "partId"
+        ],
+        "title": "questionsPostSchema"
+      },
+      "def-23": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "number": {
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          },
+          "isExample": {
+            "type": "boolean"
+          },
+          "partId": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "number",
+          "description",
+          "isExample",
+          "partId"
+        ],
+        "title": "questionResponseSchema"
+      },
+      "def-24": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/def-23"
+        },
+        "title": "questionsResponseSchema"
+      },
+      "def-25": {
+        "type": "object",
+        "properties": {
+          "questionId": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "questionId"
+        ],
+        "title": "questionIdSchema"
+      },
+      "def-26": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "initials": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "initials",
+          "description"
+        ],
+        "title": "testPostSchema"
+      },
+      "def-27": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "initials": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "referencias": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "partCount": {
+            "type": "number",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "initials",
+          "description",
+          "isActive",
+          "partCount"
+        ],
+        "title": "testResponseSchema"
+      },
+      "def-28": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/def-27"
+        },
+        "title": "testsResponseSchema"
+      },
+      "def-29": {
+        "type": "object",
+        "properties": {
+          "testId": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "testId"
+        ],
+        "title": "testIdSchema"
+      },
+      "def-30": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "timeLimit": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "timeLimit"
+        ],
+        "title": "partForTestSchema"
+      },
+      "def-31": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "initials": {
+            "type": "string"
+          },
+          "parts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/def-30"
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "id",
+          "parts"
+        ],
+        "title": "testForEvaluationSchema"
+      },
+      "def-32": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "institution": {
+            "type": "string",
+            "minLength": 3
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "statusId": {
+            "type": "number",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "number",
+            "format": "int32"
+          },
+          "tests": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "initials": {
+                  "type": "string"
+                },
+                "parts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "timeLimit": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "timeLimit"
+                    ]
+                  },
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "id",
+                "parts"
+              ]
+            },
+            "minItems": 1
+          },
+          "gradeIds": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "description",
+          "institution",
+          "date",
+          "statusId",
+          "userId",
+          "tests",
+          "gradeIds",
+          "reason"
+        ],
+        "title": "evaluationPutSchema"
+      },
+      "def-33": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "institution": {
+            "type": "string",
+            "minLength": 3
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userId": {
+            "type": "number",
+            "format": "int32"
+          },
+          "tests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/def-31"
+            },
+            "minItems": 1
+          },
+          "gradeIds": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "description",
+          "institution",
+          "date",
+          "userId",
+          "tests",
+          "gradeIds",
+          "reason"
+        ],
+        "title": "evaluationPostSchema"
+      },
+      "def-34": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "institution": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "secretToken": {
+            "type": "string"
+          },
+          "statusId": {
+            "type": "number",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "number",
+            "format": "int32"
+          },
+          "tests": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "initials": {
+                  "type": "string"
+                },
+                "parts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "timeLimit": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "timeLimit"
+                    ]
+                  },
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "id",
+                "parts"
+              ]
+            },
+            "minItems": 1
+          },
+          "gradeIds": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "gradeNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "description",
+          "institution",
+          "date",
+          "secretToken",
+          "statusId",
+          "userId",
+          "tests",
+          "gradeIds",
+          "gradeNames",
+          "reason"
+        ],
+        "title": "evaluationResponseSchema"
+      },
+      "def-35": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/def-34"
+        },
+        "title": "evaluationsResponseSchema"
+      },
+      "def-36": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/def-31"
+        },
+        "title": "testsForEvaluationResponseSchema"
+      },
+      "def-37": {
+        "type": "object",
+        "properties": {
+          "evaluation": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "description": {
+                "type": "string"
+              },
+              "institution": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "secretToken": {
+                "type": "string"
+              },
+              "statusId": {
+                "type": "number"
+              },
+              "userId": {
+                "type": "number"
+              }
+            }
+          },
+          "token": {
+            "type": "string"
+          }
+        },
+        "title": "evaluationAndTokenResponseSchema"
+      },
+      "def-38": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "initials": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "isFinished": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "number"
+          },
+          "nextPart": {
+            "type": "number"
+          }
+        },
+        "title": "testSchema"
+      },
+      "def-39": {
+        "type": "object",
+        "properties": {
+          "isChecked": {
+            "type": "boolean"
+          },
+          "optionId": {
+            "type": "number"
+          }
+        },
+        "title": "answerChangeSchema"
+      },
+      "def-40": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "title": "optionWithoutAnswerSchema"
+      },
+      "def-41": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "exampleDescription": {
+            "type": "string"
+          },
+          "timeLimit": {
+            "type": "number"
+          },
+          "exampleQuestion": {
+            "$ref": "#/components/schemas/def-42"
+          }
+        },
+        "title": "partSchema"
+      },
+      "def-42": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "number": {
+            "type": "number"
+          },
+          "id": {
+            "type": "number"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/def-40"
+            }
+          }
+        },
+        "title": "questionWithoutAnswerSchema"
+      },
+      "def-43": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/def-42"
+        },
+        "title": "questionsWithoutAnswerArraySchema"
+      },
+      "def-44": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "number"
+          }
+        },
+        "title": "gradeSchema"
+      },
+      "def-45": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "secretToken": {
+            "type": "string"
+          },
+          "student": {
+            "type": "object",
+            "properties": {
+              "birthDate": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "gradeId": {
+                "type": "number"
+              },
+              "name": {
+                "type": "string"
+              },
+              "lastName": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "title": "studentEvaluationInputSchema"
+      },
+      "def-46": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/def-44"
+        },
+        "title": "gradeArraySchema"
+      }
+    }
+  },
+  "paths": {
+    "/evaluators/tests/": {
+      "get": {
+        "summary": "Get the list of tests",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok. Return a tests list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-36"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/grades/": {
+      "get": {
+        "summary": "Get the list of grades",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok. Return a grades list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-17"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new grade",
+        "tags": [
+          "admin"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/def-15"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ok. Successful grade creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-16"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/grades/{id}": {
+      "get": {
+        "summary": "Get a grade by id",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-16"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Create a new grade",
+        "tags": [
+          "admin"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/def-15"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok. Successful grade update.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-16"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a course by id",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Ok. Successful course deletion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Ok. Successful course deletion",
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/tests/": {
+      "post": {
+        "summary": "Create a new test",
+        "tags": [
+          "admin"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/def-26"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ok. Successful test creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-27"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/students/evaluations/": {
+      "post": {
+        "summary": "Fetches an evaluation and its associated token by id and secretToken.",
+        "tags": [
+          "students"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/def-45"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK, returns an evaluation and its associated token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "OK, returns an evaluation and its associated token.",
+                  "$ref": "#/components/schemas/def-37"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/evaluators/evaluations/{evaluationId}/": {
+      "get": {
+        "summary": "Get an evaluation by id",
+        "tags": [
+          "evaluators"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "evaluationId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-34"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-2"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an evaluation",
+        "tags": [
+          "evaluators"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/def-32"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "evaluationId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok. Successful evaluation edit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-34"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-2"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an evaluation",
+        "tags": [
+          "evaluators"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "evaluationId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Ok. Successful evaluation delete.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-0"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-2"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/tests/{testId}": {
+      "get": {
+        "summary": "Get a test by id",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "path",
+            "name": "testId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-27"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-2"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a test by id",
+        "tags": [
+          "admin"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "initials": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "referencias": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "isActive": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "initials",
+                  "description",
+                  "isActive"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "path",
+            "name": "testId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok. Successful test update.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-27"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-2"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a test by id",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "path",
+            "name": "testId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Ok. Successful test deletion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Ok. Successful test deletion",
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-2"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/students/evaluations/{evaluationId}/finished": {
+      "get": {
+        "summary": "Checks whether a student has finished his evaluation.",
+        "tags": [
+          "students"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "evaluationId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok, returns the validity boolean within an object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Ok, returns the validity boolean within an object.",
+                  "type": "object",
+                  "properties": {
+                    "valid": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/tests/{testId}/parts/": {
+      "get": {
+        "summary": "Get the list of parts",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "testId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok. Return a parts list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-20"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new part",
+        "tags": [
+          "admin"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/def-18"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "testId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Ok. Successfully created a new parts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-19"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/students/evaluations/{evaluationId}/grades/": {
+      "get": {
+        "tags": [
+          "student"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "evaluationId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok. Return the parent test to the part that matches the id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-46"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/students/evaluations/{evaluationId}/tests/": {
+      "get": {
+        "tags": [
+          "student"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "evaluationId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok. Return the tests in the student's evaluation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "tests": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/def-38"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/tests/{testId}/parts/{partId}/": {
+      "get": {
+        "summary": "Get a part by id",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "testId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "partId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-19"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a question by id",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "testId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "partId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-0"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a part by id",
+        "tags": [
+          "admin"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/def-18"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "partId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-19"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/students/evaluations/{evaluationId}/tests/{testId}/": {
+      "get": {
+        "tags": [
+          "student"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "evaluationId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "testId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok. The test from its id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-38"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/tests/{testId}/parts/{partId}/questions/": {
+      "get": {
+        "summary": "Get the list of questions",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "partId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "testId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok. Return a questions list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-24"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new question",
+        "tags": [
+          "admin"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/def-22"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "partId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "testId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Ok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-23"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/tests/{testId}/parts/{partId}/questions/{questionId}/": {
+      "get": {
+        "summary": "Get a question by id",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "partId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "testId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "questionId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-23"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a question by id",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "partId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "testId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "questionId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-0"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a question by id",
+        "tags": [
+          "admin"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/def-22"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "partId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "testId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "path",
+            "name": "questionId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-23"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/students/evaluations/{evaluationId}/tests/{testId}/parts/{partId}/questions/": {
+      "get": {
+        "tags": [
+          "student"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "evaluationId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "testId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "partId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok. Return an array of questions which are not examples.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-43"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/students/evaluations/{evaluationId}/tests/{testId}/parts/{partId}/questions/examples": {
+      "get": {
+        "tags": [
+          "student"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "evaluationId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "testId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "partId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok. Return the parent test to the part that matches the id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-43"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/students/evaluations/{evaluationId}/tests/{testId}/parts/{partId}/responses/": {
+      "put": {
+        "tags": [
+          "student"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/def-39"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "evaluationId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "testId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "partId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok. Return an updated answer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Softest development"
+    },
+    {
+      "url": "https://desafio-salto.brazilsouth.cloudapp.azure.com/rest",
+      "description": "Softest testing en azure.development"
+    }
+  ],
+  "tags": [
+    {
+      "name": "admin",
+      "description": "Endpoints para los administradores del sistema."
+    },
+    {
+      "name": "evaluators",
+      "description": "Endpoints para los evaluadores del sistema."
+    },
+    {
+      "name": "students",
+      "description": "Endpoints para los estudiantes del sistema."
+    }
+  ]
+}
