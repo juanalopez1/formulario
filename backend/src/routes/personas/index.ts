@@ -12,12 +12,18 @@ const personas: PersonaType[] = [
     },
 ];
 
+
 const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify,
     _opts,
 ): Promise<void> => {
+
+
     fastify.get("/", {
         schema: {
+            $id: 'getPeople',
+            summary: 'get a list of all people',
+            tags: ['people'],
             response: {
                 200: Type.Array(Type.Ref(PersonaSchema)),
             },
@@ -35,6 +41,9 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         handler: async function(request, reply) {
             const personaPost = request.body;
             personas.push(personaPost);
+            if (personas.length === 1) {
+                return reply.badRequest("Invalid id.");
+            }
             return personaPost;
         },
     });
