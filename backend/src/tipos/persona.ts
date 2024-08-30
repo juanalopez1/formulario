@@ -13,16 +13,13 @@ const cedulaRegex = /^[1-9]{1}\.[0-9]{3}\.[0-9]{3}-[0-9]{1}$/;
 // Expresión regular para el formato del RUT
 const rutRegex = /^\d{12}$/;
 
-// Expresión regular para el formato del correo
-const mailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
 // TODO: Update all properties to match the checks in the frontend, or the
 // other way around.
 export const PersonaSchema = Type.Object(
   {
     nombre: Type.String({ minLength: 3, maxLength: 20 }),
     apellido: Type.String({ minLength: 3, maxLength: 20 }),
-    email: Type.String({ pattern: mailRegex.source }),
+    email: Type.String({ format: "email" }),
     cedula: Type.String({ pattern: cedulaRegex.source }),
     rut: Type.String({ pattern: rutRegex.source }),
   },

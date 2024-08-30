@@ -107,7 +107,11 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         schema: {
             body: Type.Ref(PersonaPostSchema),
             response: {
-                200: Type.Ref(PersonaPostSchema)
+                200: Type.Ref(PersonaPostSchema),
+                400: Type.Union([
+                    Type.Literal("Invalid ID"),
+                    Type.Literal("Invalid RUT"),
+                ]),
             }
         },
         handler: async function(request, reply) {

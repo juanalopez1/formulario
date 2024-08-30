@@ -240,7 +240,7 @@ function checkDigitRUT(rut) {
 
 }
 
-const checks = /** type {const} */ [{
+const checks = /** type {const} */[{
     inputId: 'name',
     checker: checkName,
     messageId: 'messageName',
@@ -310,15 +310,16 @@ document.getElementById('submitButton').addEventListener('click', async () => {
         const rut = document.getElementById('rut').value;
 
         const persona = {
-            nombre: name,
-            apellido: surname,
-            cedula: id,
-            email: email,
+            person: {
+                nombre: name,
+                apellido: surname,
+                cedula: id,
+                email: email,
+                rut: rut,
+            },
             contraseña: password,
             repetirContraseña: password,
-            rut: rut,
         };
-        console.log(`la persona: ` + JSON.stringify(persona));
 
         await fetch("http://localhost:3000/personas", {
             method: 'POST',
@@ -328,7 +329,6 @@ document.getElementById('submitButton').addEventListener('click', async () => {
             },
         });
 
-        // Redirect
         window.location.href = "../personas/index.html";
     }
 });
