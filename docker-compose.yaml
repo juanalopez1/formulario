@@ -1,0 +1,19 @@
+name: personas
+services:
+  frontend:
+    image: nginx:alpine
+    ports: 
+      - 80:80
+    volumes: 
+      - ./frontend:/usr/share/nginx/html
+
+  backend:
+    image: backend:production
+    # container_name: backend
+    # build:
+    # context: ./backend
+    command: sh -c "npm install;npm run dev"
+    ports:
+      - 3000:3000
+    volumes:
+      - ./backend:/backend
