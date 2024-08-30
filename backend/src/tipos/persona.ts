@@ -45,7 +45,7 @@ export const PersonaPostSchema = Type.Object(
   },
   {
     $id: "PersonWithPassword",
-    $title: "personWithPassword",
+    title: "personWithPassword",
   },
 );
 
