@@ -23,7 +23,7 @@ export const PersonaSchema = Type.Object(
     cedula: Type.String({ pattern: cedulaRegex.source }),
     rut: Type.String({ pattern: rutRegex.source }),
   },
-  {
+{
     $id: "Person",
     title: "person",
   },

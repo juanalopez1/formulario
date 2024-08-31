@@ -23,28 +23,14 @@ function checkSamePasswords(pwd1, pwd2) {
 }
 
 /**
- * @param {string} pwd
+ * @param {string} password
  * @returns {Validator}
  */
-function checkPassword(pwd) {
-    if (pwd.length < 8) {
-        return {
-            valid: false,
-            message: "Mínimo de 8 caracteres.",
-        }
-    }
-
-    if (pwd.length > 20) {
-        return {
-            valid: false,
-            message: "Máximo de 8 caracteres.",
-        }
-    }
-
+function checkPassword(password) {
     /**
      * @type {[string, RegExp][]}
      */
-    const checks = [
+    const regexChecks = [
         [
             /[a-z]/,
             "La contraseña debe contener minúsculas.",
@@ -58,13 +44,33 @@ function checkPassword(pwd) {
             "La contraseña debe contener dígitos.",
         ],
         [
-            /[^a-zA-Z0-9]/,
-            "La contraseña debe contener caracteres especiales.",
-        ]
+            /[@$!%*?&]/,
+            "La contraseña debe contener alguno de \"@$!%*?&\".",
+        ],
+        [
+            /^[A-Za-z\d@$!%*?&]*$/,
+            "La contraseña contiene caracteres ilegales.\n"
+            + "Solo puede contener letras, dígitos y @$!%*?&."
+        ],
+        [
+            /^.{8}.*$/,
+            "Mínimo de 8 caracteres."
+        ],
+        [
+            /^.{0,20}$/,
+            "Máximo de 20 caracteres."
+        ],
+        [
+            // Sanity check. This must be the same regex as the backend.
+            // TODO: (cr, or tell me if you want to do it) Change it to a
+            //        call the backend to check.
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/,
+            "Contraseña inválida por un motivo externo."
+        ],
     ];
 
-    for (const [regex, message] of checks) {
-        if (!regex.test(pwd)) {
+    for (const [regex, message] of regexChecks) {
+        if (!regex.test(password)) {
             return {
                 valid: false,
                 message,
