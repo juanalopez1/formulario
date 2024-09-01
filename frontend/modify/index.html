@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar</title>
+    <script defer src="modify.js"></script>
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <section class="container">
+        <h2>Editar datos</h2>
+        <form>
+            <label in>Nombre</label>
+            <input id="name" type="text" />
+            <p id="messageName" class="error-msg"></p>
+            <label>Apellido</label>
+            <input id="surname" type="text" />
+            <p id="messageSurname" class="error-msg"></p>
+            <label>Cédula</label>
+            <input id="id" type="text" />
+            <p id="messageId" class="error-msg"></p>
+            <label>Nuevo correo electronico</label>
+            <input id="email" type="email" />
+            <p id="messageEmail" class="error-msg"></p>
+            <label>Nueva contraseña</label>
+            <input id="psw1" type="password" />
+            <p id="messageP1" class="error-msg"></p>
+            <label>Repetir contraseña</label>
+            <input id="psw2" type="password" />
+            <p id="messageP2" class="error-msg"></p>
+            <label>RUT</label>
+            <input id="rut" type="text" />
+            <p id="messageRut" class="error-msg"></p>
+        </form>
+        <div class="buttons">
+            <button id="submitButton" class="for-buttons">
+                <img src="../assets/check.svg" alt="Guardar">
+            </button>
+            <button id="submitButton" class="for-buttons">
+                <img src="../assets/arrow.svg" alt="Volver">
+            </button>
+        </div>
+    </section>
+</body>
+</html>
