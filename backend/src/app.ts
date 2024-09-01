@@ -2,7 +2,7 @@ import * as path from "path";
 import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
 import { fileURLToPath } from "url";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { PersonaPostSchema, PersonaSchema } from "./tipos/persona.js";
+import { PersonWithPasswordSchema, PersonSchema } from "./tipos/persona.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,8 +19,8 @@ const app: FastifyPluginAsyncTypebox<AppOptions> = async (
   opts,
 ): Promise<void> => {
   // Place here your custom code!
-  fastify.addSchema(PersonaSchema);
-  fastify.addSchema(PersonaPostSchema);
+  fastify.addSchema(PersonSchema);
+  fastify.addSchema(PersonWithPasswordSchema);
 
   // Do not touch the following lines
 

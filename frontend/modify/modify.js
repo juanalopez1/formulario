@@ -1,10 +1,13 @@
-/**
- * @param
-*/
-function setDefault(){
-    const defaultNombre = "Juan Pérez";
-    const defaultEmail = "juan.perez@example.com";
+const dialog = document.querySelector("dialog");
+const showButton = document.querySelector("dialog + button");
+const closeButton = document.querySelector("dialog button");
 
-    document.getElementById('name').value = defaultNombre;
-    document.getElementById('surname').value = defaultEmail;
-}
+// "Show the dialog" button opens the dialog modally
+showButton.addEventListener("click", () => {
+  dialog.showModal();
+});
+
+// "Close" button closes the dialog
+closeButton.addEventListener("click", () => {
+  dialog.close();
+});

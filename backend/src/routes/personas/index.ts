@@ -1,19 +1,25 @@
 import {
-    PersonaPostSchema,
-    PersonaSchema,
-    PersonaType,
+    PersonWithPasswordSchema,
+    PersonSchema,
+    PersonWithPasswordType,
 } from "../../tipos/persona.js";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 
-const personas: PersonaType[] = [
+
+const personas: PersonWithPasswordType[] = [
     {
-        nombre: "Juan",
-        apellido: "Pérez",
-        email: "juan.perez@example.com",
-        cedula: "3.456.789-0",
-        rut: "123456789123",
-    },
+        person: {
+            name: "Juan",
+            surname: "Pérez",
+            email: "juan.perez@example.com",
+            id: "3.456.789-0",
+            rut: "123456789123",
+        },
+        password: 'Juana123!'
+    }
+
+    
 ];
 
 function checkID(id: string): boolean {
@@ -95,6 +101,8 @@ function checkDigitRUT(rut: string) {
     return false;
 }
 
+
+
 const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify,
     _opts,
@@ -102,7 +110,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify.get("/", {
         schema: {
             response: {
-                200: Type.Array(Type.Ref(PersonaSchema)),
+                200: Type.Array(Type.Ref(PersonWithPasswordSchema)),
             },
         },
         handler: async function(request, reply) {
@@ -113,9 +121,9 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify.post("/", {
         // TODO: Specify the response.
         schema: {
-            body: Type.Ref(PersonaPostSchema),
+            body: Type.Ref(PersonWithPasswordSchema),
             response: {
-                200: Type.Ref(PersonaPostSchema),
+                200: Type.Ref(PersonWithPasswordSchema),
                 400: Type.Union([
                     Type.Literal("Invalid ID"),
                     Type.Literal("Invalid RUT"),
@@ -126,7 +134,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         preHandler: async function(request, reply) {
             const personaPost = request.body;
 
-            if (!checkID(personaPost.person.cedula)) {
+            if (!checkID(personaPost.person.id)) {
                 return reply.badRequest("Invalid ID");
             }
 
@@ -135,7 +143,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             }
 
             const idAlreadyExists = personas.some(
-                (val) => val.cedula === personaPost.person.cedula,
+                (val) => val.person.id === personaPost.person.id,
             );
 
             if (idAlreadyExists) {
@@ -145,9 +153,45 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
 
         handler: async function(request, reply) {
             const personaPost = request.body;
-            personas.push(personaPost.person);
+            personas.push(personaPost);
             return personaPost;
         },
+    });
+
+    fastify.put('/:id', {
+        schema: {
+            params: Type.Object({
+                id: PersonSchema.properties.id,
+            }),
+            body: Type.Object({
+                newValue: Type.Ref(PersonWithPasswordSchema),
+                oldPassword: PersonWithPasswordSchema.properties.password,
+            }),
+            response: Type.Object({
+              404: Type.Literal("Couldn't find Id"),
+              400: Type.Literal('Incorrect password')
+            })
+        },
+
+        preHandler: async function(request, reply) { 
+            const person = personas.find(person => person.person.id === request.params.id);
+
+            if (person === undefined) {
+                return reply.notFound("Couldn't find person with such an Id")
+            }
+
+            const passwordIsCorrect = person.password === request.body.oldPassword;
+
+            if (!passwordIsCorrect){
+                return reply.badRequest('Incorrect password');
+            }
+        },
+
+        handler: async function (request, reply) {
+            const personIndex = personas.findIndex(person => person.person.id === request.params.id)!;
+            personas[personIndex] = request.body.newValue;
+            return request.body.newValue;
+        }
     });
 };
 
