@@ -1,4 +1,8 @@
-import { PersonaPostSchema, PersonaSchema, PersonaType } from "../../tipos/persona.js";
+import {
+    PersonaPostSchema,
+    PersonaSchema,
+    PersonaType,
+} from "../../tipos/persona.js";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 
@@ -12,11 +16,13 @@ const personas: PersonaType[] = [
     },
 ];
 
-function checkID(id : string) : boolean {
-    const format = [{
-        regex: /^\d\.\d{3}\.\d{3}-\d$/,
-        message: 'Debe ingresar la cédula con puntos y guiones.'
-    }]
+function checkID(id: string): boolean {
+    const format = [
+        {
+            regex: /^\d\.\d{3}\.\d{3}-\d$/,
+            message: "Debe ingresar la cédula con puntos y guiones.",
+        },
+    ];
 
     if (!format[0].regex.test(id)) {
         return false;
@@ -29,12 +35,12 @@ function checkID(id : string) : boolean {
     return true;
 }
 
-function checkDigit(id : string) : boolean {
-    id = id.replace(/\D/g, '');
+function checkDigit(id: string): boolean {
+    id = id.replace(/\D/g, "");
 
     const digit = Number(id[id.length - 1]);
     const numero = id.slice(0, -1);
-    const numeroArr = numero.split('').map((ch) => Number(ch));
+    const numeroArr = numero.split("").map((ch) => Number(ch));
 
     const coeficientes = [2, 9, 8, 7, 6, 3, 4];
 
@@ -48,8 +54,8 @@ function checkDigit(id : string) : boolean {
     return digit === result;
 }
 
-function checkRut(rut : string) : boolean {
-    rut = rut.toString().trim()
+function checkRut(rut: string): boolean {
+    rut = rut.toString().trim();
     if (rut.length < 12) {
         return false;
     }
@@ -61,10 +67,13 @@ function checkRut(rut : string) : boolean {
     return true;
 }
 
-function checkDigitRUT(rut : string) {
-    rut.toString().split('')
+function checkDigitRUT(rut: string) {
+    rut.toString().split("");
     const digit = Number(rut[rut.length - 1]);
-    const numero = rut.slice(0, 11).split('').map(c => parseInt(c));
+    const numero = rut
+        .slice(0, 11)
+        .split("")
+        .map((c) => parseInt(c));
 
     const coeficientes = [4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
     let sum = 0;
@@ -76,15 +85,14 @@ function checkDigitRUT(rut : string) {
     const result = (11 - (sum % 11)) % 11;
 
     if (result < 10 && result === digit) {
-        return true
-    };
+        return true;
+    }
 
     if (result === 11 && digit === 0) {
-        return true
-    };
+        return true;
+    }
 
-    return false
-
+    return false;
 }
 
 const personaRoute: FastifyPluginAsyncTypebox = async (
@@ -111,21 +119,34 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 400: Type.Union([
                     Type.Literal("Invalid ID"),
                     Type.Literal("Invalid RUT"),
+                    Type.Literal("Id already exists"),
                 ]),
-            }
+            },
         },
-        handler: async function(request, reply) {
+        preHandler: async function(request, reply) {
             const personaPost = request.body;
-            if(!checkID(personaPost.person.cedula)){
-                return reply.badRequest('Invalid ID')
-            }
-            if(!checkRut(personaPost.person.rut)){
-                return reply.badRequest('Invalid RUT')
+
+            if (!checkID(personaPost.person.cedula)) {
+                return reply.badRequest("Invalid ID");
             }
 
+            if (!checkRut(personaPost.person.rut)) {
+                return reply.badRequest("Invalid RUT");
+            }
+
+            const idAlreadyExists = personas.some(
+                (val) => val.cedula === personaPost.person.cedula,
+            );
+
+            if (idAlreadyExists) {
+                return reply.badRequest("Id already exists");
+            }
+        },
+
+        handler: async function(request, reply) {
+            const personaPost = request.body;
             personas.push(personaPost.person);
             return personaPost;
-            
         },
     });
 };
