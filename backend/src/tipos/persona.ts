@@ -15,12 +15,12 @@ const rutRegex = /^\d{12}$/;
 
 // TODO: Update all properties to match the checks in the frontend, or the
 // other way around.
-export const PersonaSchema = Type.Object(
+export const PersonSchema = Type.Object(
   {
-    nombre: Type.String({ minLength: 3, maxLength: 20 }),
-    apellido: Type.String({ minLength: 3, maxLength: 20 }),
+    name: Type.String({ minLength: 3, maxLength: 20 }),
+    surname: Type.String({ minLength: 3, maxLength: 20 }),
     email: Type.String({ format: "email" }),
-    cedula: Type.String({ pattern: cedulaRegex.source }),
+    id: Type.String({ pattern: cedulaRegex.source }),
     rut: Type.String({ pattern: rutRegex.source }),
   },
   {
@@ -29,16 +29,11 @@ export const PersonaSchema = Type.Object(
   },
 );
 
-export const PersonaPostSchema = Type.Object(
+export const PersonWithPasswordSchema = Type.Object(
   {
     // TODO: Think if we should save this info as a ref instead of copying.
-    person: Type.Ref(PersonaSchema),
-    contraseña: Type.String({
-      minLength: 8,
-      maxLength: 20,
-      pattern: passwordRegex.source,
-    }),
-    repetirContraseña: Type.String({
+    person: Type.Ref(PersonSchema),
+    password: Type.String({
       minLength: 8,
       maxLength: 20,
       pattern: passwordRegex.source,
@@ -50,5 +45,5 @@ export const PersonaPostSchema = Type.Object(
   },
 );
 
-export type PersonaType = Static<typeof PersonaSchema>;
-export type PersonaPostType = Static<typeof PersonaPostSchema>;
+export type PersonType = Static<typeof PersonSchema>;
+export type PersonWithPasswordType = Static<typeof PersonWithPasswordSchema>;

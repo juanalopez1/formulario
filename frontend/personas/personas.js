@@ -22,6 +22,9 @@ const loadPeople = async () => {
                         </li>
                         <li class="rut">${persona.rut}</li>
                     </ul>
+                    <button id="showButton">
+                        modificar
+                    </button>
                 </article>
             </li>
         `;
