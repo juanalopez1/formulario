@@ -53,3 +53,18 @@ html {
     align-items: center;
     justify-content: center;
 }
+
+.inputs-container {
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    padding: 0.3rem;
+    max-width: 100%;
+}
+
+.inputs-container input {
+    border: none;
+    margin-left: 1rem;
+    width: 50%;
+    align-content: end;
+}

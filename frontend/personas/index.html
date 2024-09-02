@@ -35,6 +35,56 @@
             </ul>
         </section>
     </main>
+    <dialog>
+        <section class="container">
+            <h2>Editar datos</h2>
+            <form>
+                <div class="inputs-container">
+                    <label in>Nombre</label>
+                    <input id="name" type="text" />  
+                </div>
+                <p id="messageName" class="error-msg"></p>
+                <div class="inputs-container">
+                    <label>Apellido</label>
+                    <input id="surname" type="text" />
+                </div>
+                <p id="messageSurname" class="error-msg"></p>
+                <div class="inputs-container">
+                    <label>Cédula</label>
+                    <input id="id" type="text" />
+                </div>
+                <p id="messageId" class="error-msg"></p>
+                <div class="inputs-container">
+                    <label>Nuevo correo electronico</label>
+                    <input id="email" type="email" />
+                </div>
+                <p id="messageEmail" class="error-msg"></p>
+                <div class="inputs-container">
+                    <label>Nueva contraseña</label>
+                    <input id="psw1" type="password" />
+                </div>
+                <p id="messageP1" class="error-msg"></p>
+                <div class="inputs-container">
+                    <label>Repetir contraseña</label>
+                    <input id="psw2" type="password" />
+                </div>
+                <p id="messageP2" class="error-msg"></p>
+                <div class="inputs-container">
+                    <label>RUT</label>
+                    <input id="rut" type="text" />
+                </div>
+                <p id="messageRut" class="error-msg"></p>
+            </form>
+            <div class="buttons">
+                <button id="submitButton" class="for-buttons" >
+                    <img src="../assets/check.svg" alt="Guardar">
+                </button>
+                <button id="submitButton" class="for-buttons">
+                    <img src="../assets/arrow.svg" alt="Volver">
+                </button>
+            </div>
+        </section>
+    </dialog>
 </body>
 
 </html>
