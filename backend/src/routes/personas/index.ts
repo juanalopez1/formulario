@@ -6,7 +6,6 @@ import {
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 
-
 const personas: PersonWithPasswordType[] = [
     {
         person: {
@@ -16,10 +15,8 @@ const personas: PersonWithPasswordType[] = [
             id: "3.456.789-0",
             rut: "123456789123",
         },
-        password: 'Juana123!'
-    }
-
-    
+        password: "Juana123!",
+    },
 ];
 
 function checkID(id: string): boolean {
@@ -101,8 +98,6 @@ function checkDigitRUT(rut: string) {
     return false;
 }
 
-
-
 const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify,
     _opts,
@@ -119,7 +114,6 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     });
 
     fastify.post("/", {
-        // TODO: Specify the response.
         schema: {
             body: Type.Ref(PersonWithPasswordSchema),
             response: {
@@ -135,11 +129,11 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             const personaPost = request.body;
 
             if (!checkID(personaPost.person.id)) {
-                return reply.badRequest("Invalid ID");
+                return reply.status(400).send("Invalid ID");
             }
 
             if (!checkRut(personaPost.person.rut)) {
-                return reply.badRequest("Invalid RUT");
+                return reply.status(400).send("Invalid RUT");
             }
 
             const idAlreadyExists = personas.some(
@@ -147,7 +141,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             );
 
             if (idAlreadyExists) {
-                return reply.badRequest("Id already exists");
+                return reply.status(400).send("Id already exists");
             }
         },
 
@@ -158,7 +152,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         },
     });
 
-    fastify.put('/:id', {
+    fastify.put("/:id", {
         schema: {
             params: Type.Object({
                 id: PersonSchema.properties.id,
@@ -167,31 +161,50 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 newValue: Type.Ref(PersonWithPasswordSchema),
                 oldPassword: PersonWithPasswordSchema.properties.password,
             }),
-            response: Type.Object({
-              404: Type.Literal("Couldn't find Id"),
-              400: Type.Literal('Incorrect password')
-            })
+            response: {
+                200: Type.Ref(PersonWithPasswordSchema),
+                404: Type.Literal("Couldn't find Id"),
+                // TODO: This allows for other error messages to show. We should
+                // find a more ergonomic way to do this. The hard bit will be
+                // keeping type safety, I assume that will take some generic
+                // wizardry. - cr
+                400: Type.Union([
+                    // TODO: Also, the other literals arent in json. we should
+                    // fix that.
+                    Type.Object({ message: Type.Literal("Incorrect password") }),
+                    Type.Object({
+                        statusCode: Type.Number(),
+                        code: Type.String(),
+                        error: Type.String(),
+                        message: Type.String(),
+                    })]),
+            },
         },
 
-        preHandler: async function(request, reply) { 
-            const person = personas.find(person => person.person.id === request.params.id);
+        preHandler: async function(request, reply) {
+            const person = personas.find(
+                (person) => person.person.id === request.params.id,
+            );
 
             if (person === undefined) {
-                return reply.notFound("Couldn't find person with such an Id")
+                return reply.status(404).send("Couldn't find Id");
             }
 
             const passwordIsCorrect = person.password === request.body.oldPassword;
+            console.log(person.password, request.body.oldPassword);
 
-            if (!passwordIsCorrect){
-                return reply.badRequest('Incorrect password');
+            if (!passwordIsCorrect) {
+                return reply.code(400).send({ message: "Incorrect password" });
             }
         },
 
-        handler: async function (request, reply) {
-            const personIndex = personas.findIndex(person => person.person.id === request.params.id)!;
+        handler: async function(request, reply) {
+            const personIndex = personas.findIndex(
+                (person) => person.person.id === request.params.id,
+            )!;
             personas[personIndex] = request.body.newValue;
             return request.body.newValue;
-        }
+        },
     });
 };
 
