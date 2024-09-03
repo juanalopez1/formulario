@@ -117,7 +117,7 @@ const loadPeople = async () => {
                 passwordDialog.close();
                 updateDialog.showModal();
                 document.getElementById('voidName').value = persona.name;
-                document.getElementById('voidSurame').value = persona.surname;
+                document.getElementById('voidSurname').value = persona.surname;
                 document.getElementById('voidId').value = persona.id;
                 document.getElementById('voidEmail').value = persona.email;
                 document.getElementById('voidpsw1').value = persona.name;
@@ -137,7 +137,7 @@ const loadPeople = async () => {
                     console.log('no me rompi')
                     const put = await fetch(`http://localhost:3000/personas/${persona.id}`, {
                         method: 'PUT',
-                        body: {
+                        body: JSON.stringify({
                             "newValue": {
                                 "person": {
                                     "name": document.getElementById('voidName').value,
@@ -149,17 +149,14 @@ const loadPeople = async () => {
                                 "password": document.getElementById('voidpsw1').value
                             },
                             "oldPassword": "Juana123!"
-                        },
+                        }),
                         headers: {
                             "Content-Type": 'application/json'
                         },
-                    })
+                    });
                     console.log(put, 'pase el puttt')
             
-                    if (put.ok) {
-                        dialog.close();
-                        window.location.href = "../personas/index.html";
-                    }
+                    window.location.href = "../personas/index.html";
             })}
             return;
         });
