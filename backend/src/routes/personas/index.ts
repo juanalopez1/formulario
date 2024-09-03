@@ -241,6 +241,50 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             return { correct: person?.password === request.body.password };
         },
     });
+
+    fastify.delete('/:id', {
+        schema: {
+            params: Type.Object({
+                id: PersonSchema.properties.id,
+            }),
+            body: Type.Object({
+                password: PersonWithPasswordSchema.properties.password,
+            }),
+            response: {
+              200: Type.Object({
+                    message: Type.Literal("Person deleted successfully")
+                }),
+              404: Type.Literal("Couldn't find Id"),
+              400: Type.Literal('Incorrect password')
+            }
+        },
+
+        preHandler: async function(request, reply) { 
+            const person = personas.find(person => person.person.id === request.params.id);
+
+            console.log(person);
+
+            if (person === undefined) {
+                return reply.code(404).send("Couldn't find Id");
+            }
+
+            const passwordIsCorrect = person.password === request.body.password;
+
+            if (!passwordIsCorrect){
+                return reply.badRequest('Incorrect password');
+            }
+        },
+
+        handler: async function (request, reply) {
+            const personIndex = personas.findIndex(person => person.person.id === request.params.id);
+            if (personIndex !== -1) {
+                personas.splice(personIndex, 1);
+                return reply.send({ message: 'Person deleted successfully' });
+            } else {
+                return reply.notFound("Couldn't find person with such an Id");
+            }
+        }
+    });
 };
 
 export default personaRoute;

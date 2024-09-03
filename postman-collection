@@ -1,0 +1,146 @@
+{
+	"info": {
+		"_postman_id": "f7b1345c-ab96-48aa-aadc-b1505c19f3c9",
+		"name": "docker-ej-personas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31646094"
+	},
+	"item": [
+		{
+			"name": "get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/personas/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"personas",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post de constraseña",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n    \"password\": \"Juana123!\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/personas/3.456.789-0/check",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"personas",
+						"3.456.789-0",
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"newValue\": {\r\n        \"person\": {\r\n            \"name\": \"Juana\",\r\n            \"surname\": \"Lopez\",\r\n            \"email\": \"juana.lopez@example.com\",\r\n            \"id\": \"3.456.789-0\",\r\n            \"rut\": \"123456789123\"\r\n        },\r\n        \"password\": \"Juana123!\"\r\n    },\r\n    \"oldPassword\": \"Juana123!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/personas/3.456.789-0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"personas",
+						"3.456.789-0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"person\": {\r\n        \"name\": \"Juana\",\r\n        \"surname\": \"Lopez\",\r\n        \"email\": \"juan.perez@example.com\",\r\n        \"id\": \"5.501.862-4\",\r\n        \"rut\": \"216298610018\"\r\n    },\r\n    \"password\": \"Juana123!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/personas",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"personas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"password\": \"Juana123!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/personas/3.456.789-0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"personas",
+						"3.456.789-0"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
