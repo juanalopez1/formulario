@@ -129,6 +129,7 @@ const loadPeople = async () => {
                 dialog1.close();
                 dialog2.showModal();
                 document.getElementById('voidName').value = persona.name;
+                document.getElementById('voidSurname').value = persona.surname;
                 document.getElementById('voidId').value = persona.id;
                 document.getElementById('voidEmail').value = persona.email;
                 document.getElementById('voidpsw1').value = persona.name;
@@ -162,6 +163,7 @@ const loadPeople = async () => {
                 dialog1.close();
                 dialog2.showModal();
                 document.getElementById('voidName').value = persona.name;
+                document.getElementById('voidSurname').value = persona.surname;
                 document.getElementById('voidId').value = persona.id;
                 document.getElementById('voidEmail').value = persona.email;
                 document.getElementById('voidpsw1').value = persona.name;
