@@ -1,0 +1,171 @@
+dialog {
+    font-family: sans-serif;
+    color: #4a044e;
+    width: 100% ;
+    height: 100% ;
+    justify-content: center;
+    align-content: center;
+    background-color: transparent;
+    border: 2px transparent;
+    backdrop-filter: blur(1.5rem);
+    
+}
+
+.container-modify h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 700;
+}
+.container-modify {
+    background-color: #dfdbe5;
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.3)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.3));
+    border-radius: 0.5rem;
+    padding: 2rem;
+    max-width: fit-content;
+    justify-content: center; 
+    align-items: center; 
+    margin: auto;
+    font-weight: 700;
+}
+
+.for-buttons {
+    background: none;
+    border: none;
+    cursor: pointer;
+    align-items: center;
+    padding: 0rem;
+    width: 2rem;
+    height: 2rem;
+    color: #4a044e;
+    transition: color 0.3s ease; 
+}
+
+.for-buttons:hover {
+    color: #dfdbe5;
+}
+
+.pencil {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0rem;
+    width: 1.6rem;
+    height: 1.6rem;
+}
+
+.buttons{
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: row-reverse;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.inputs-container {
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    padding: 0.3rem;
+    max-width: 100%;
+    margin: 1rem;
+}
+
+.inputs-container input {
+    border: none;
+    margin-left: 1rem;
+    width: 200%;
+    height: 200%;
+    align-content: end;
+    width: 300px;
+}
+
+.input-psw {
+    background-color: white;    
+    display: flex;
+    flex-direction: row;
+    padding: 0.3rem;
+    max-width: 100%;
+    height: 2rem;
+    margin: 1rem;
+}
+
+.inputs-psw input {
+    border: none;
+    margin-left: 1rem;
+    width: 300px;
+    align-content: end;
+}
+
+.psw-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    padding: 1rem;
+}
+
+.button-psw {
+    background: none;
+    border: none;
+    cursor: pointer;
+    align-items: center;
+    padding: 0rem;
+    width: 2rem;
+    height: 2rem;
+}
+
+.confirm-button {
+    align-self: end;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    margin: -0.3rem;
+    font-weight: 700;
+    border-radius: 0.5rem;
+    padding: 0.75rem 2rem;
+    position: relative;
+    background: #EBF2F5;
+    transition: color 0.5s ease-in-out;
+    color: #4F6F7F;
+    align-items: end;
+}
+
+.confirm-button > * {
+    z-index: 2;
+    position: relative;
+}
+
+.confirm-button:hover {
+    color: #DEF8F9;
+}
+
+.confirm-button::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    height: 100%;
+    border-radius: 9999px;
+    background: #447E9B;
+    width: 0%;
+    height: auto;
+    transform: translate(-50%, 50%);
+    aspect-ratio: 1 / 1;
+    transition: all 0.5s ease-in-out;
+    z-index: 1;
+}
+
+.confirm-button:hover::before {
+    width: calc(100% + 1rem);
+}
+
+
+.error-msg {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-size: 0.8rem;
+    color: red;
+    text-align: left;
+    width: 100%;
+    display: block;
+}

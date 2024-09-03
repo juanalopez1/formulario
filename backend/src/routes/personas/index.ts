@@ -105,11 +105,12 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify.get("/", {
         schema: {
             response: {
-                200: Type.Array(Type.Ref(PersonWithPasswordSchema)),
+                200: Type.Array(Type.Ref(PersonSchema)),
             },
         },
         handler: async function(request, reply) {
-            return personas;
+            console.log(personas)
+            return personas.map((val) => val.person);
         },
     });
 
@@ -206,6 +207,34 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             return request.body.newValue;
         },
     });
+
+    fastify.post('/:id/check', {
+        schema: {
+            params: Type.Object({ id: PersonSchema.properties.id }),
+            body: Type.Object({ password: PersonWithPasswordSchema.properties.password }),
+            response: {
+                200: Type.Object({
+                    correct: Type.Boolean(),
+                }),
+                404: Type.Object({
+                    message: Type.Literal("Not found"),
+                })
+            }
+        },
+    
+        preHandler: async function (request, reply) {
+            const person = personas.find((persona) => persona.person.id === request.params.id);
+            if (person === undefined) {
+                return reply.code(404).send({ message: 'Not found' });
+            }
+        },
+    
+        handler: async function (request, reply) {
+            const person = personas.find((persona) => persona.person.id === request.params.id);
+            return { correct: person?.password === request.body.password };
+        }
+    });
+    
 };
 
 export default personaRoute;
