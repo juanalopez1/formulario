@@ -9,7 +9,7 @@
  * @param {string} pwd2
  * @returns {Validator}
  */
-function checkSamePasswords(pwd1, pwd2) {
+export function checkSamePasswords(pwd1, pwd2) {
     if (pwd1 !== pwd2) {
         return {
             valid: false,
@@ -296,7 +296,7 @@ for (const check of checks) {
     });
 }
 
-document.getElementById('submitButton').addEventListener('click', async () => {
+document.getElementById('enviarButton').addEventListener('click', async () => {
     const dataIsOk = checks.every((check) =>
         check.checker(document.getElementById(check.inputId).value).valid
     );
@@ -311,14 +311,13 @@ document.getElementById('submitButton').addEventListener('click', async () => {
 
         const persona = {
             person: {
-                nombre: name,
-                apellido: surname,
-                cedula: id,
+                name: name,
+                surname: surname,
+                id: id,
                 email: email,
                 rut: rut,
             },
-            contraseña: password,
-            repetirContraseña: password,
+            password: password,
         };
 
         await fetch("http://localhost:3000/personas", {
