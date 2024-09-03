@@ -28,7 +28,7 @@ dialog {
     font-weight: 700;
 }
 
-.for-buttons {
+.for-buttons, .button-psw {
     background: none;
     border: none;
     cursor: pointer;
@@ -55,54 +55,76 @@ dialog {
 
 .inputs-container {
     background-color: white;
-    display: flex;
+    /*display: flex;
     flex-direction: row;
-    padding: 0.3rem;
+    padding: 0.5rem;
     max-width: 100%;
     margin: 1rem;
+    justify-content: space-between;
+    justify-content: right;*/
+    display: grid;
+    grid-template-columns: 30% 70%;
+    grid-template-rows: 16% 16% 16% 16% 16% 16%;
+    column-gap: 0rem;
+    row-gap: 0.1rem;
+    border: 5px solid #dfdbe5;
+    margin: 1rem;
+    margin-bottom: 0%;
+    padding: 0.3rem;
+    margin: auto;
+    place-items: right;
+    align-items: center;
+    text-align: center;    
 }
 
 .inputs-container input {
     border: none;
     margin-left: 1rem;
-    width: 200%;
-    height: 200%;
-    align-content: end;
-    width: 300px;
+    min-width: 70%;
+    min-height: 70%;
+    height: 2rem;
+}
+
+.inputs-container label {
+    display: flex;
+    align-items: center;
+    border: none;
+    margin-left: 0.5rem;
+    min-width: 70%;
+    min-height: 70%;
+    text-align: left;
 }
 
 .input-psw {
-    background-color: white;    
-    display: flex;
-    flex-direction: row;
+    display: block;
+    background-color: white;   
+    border: 3px solid white;
+    border-radius: 0.4rem;
     padding: 0.3rem;
-    max-width: 100%;
+    width: 80%;
     height: 2rem;
-    margin: 1rem;
-}
-
-.inputs-psw input {
-    border: none;
-    margin-left: 1rem;
-    width: 300px;
-    align-content: end;
+    margin-bottom: 0.3rem;
+    align-content: center;
+    margin: auto 0;
 }
 
 .psw-buttons {
+    margin-top: 0.6rem;
     display: flex;
     flex-direction: row;
-    align-items: end;
     padding: 1rem;
+    gap: 64%;
+    justify-content: center;
 }
 
-.button-psw {
+.arrow-psw {
     background: none;
     border: none;
     cursor: pointer;
     align-items: center;
     padding: 0rem;
-    width: 2rem;
-    height: 2rem;
+    width: 2.5rem;
+    height: 2.5rem;
 }
 
 .confirm-button {
@@ -150,8 +172,11 @@ dialog {
     width: calc(100% + 1rem);
 }
 
+.error {
+    border: 3px solid red;
+}
 
-.error-msg {
+/*.error-msg {
     margin-top: 0px;
     margin-bottom: 0px;
     font-size: 0.8rem;

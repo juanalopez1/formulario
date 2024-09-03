@@ -41,7 +41,7 @@
     <dialog id="dialog1">
         <section class="container-modify">
             <h2>Ingrese contraseña correspondiente</h2>
-            <div class="input-psw error">
+            <div class="input-psw">
                 <input id="password" type="password" id="error-msg" />
             </div>
             <div class="psw-buttons">
@@ -59,32 +59,32 @@
         <section class="container-modify">
             <h2>Editar datos</h2>
             <form>
-                <div class="inputs-container error">
+                <div class="inputs-container">
                     <label in>Nombre</label>
                     <input id="voidName" type="text" />
                     <p id="messageName" class="error-msg"></p>
                 </div>
-                <div class="inputs-container error">
+                <div class="inputs-container">
                     <label>Cédula</label>
                     <input id="voidId" type="text" />
                     <p id="messageP2" class="error-msg"></p>
                 </div>
-                <div class="inputs-container error">
+                <div class="inputs-container">
                     <label>Nuevo correo electronico</label>
                     <input id="voidEmail" type="email" />
                     <p id="messageP2" class="error-msg"></p>
                 </div>
-                <div class="inputs-container error">
+                <div class="inputs-container">
                     <label>Nueva contraseña</label>
                     <input id="voidpsw1" type="password" />
                     <p id="messageP2" class="error-msg"></p>
                 </div>
-                <div class="inputs-container error">
+                <div class="inputs-container">
                     <label>Repetir contraseña</label>
                     <input id="voidpsw2" type="password" />
                     <p id="messageP2" class="error-msg"></p>
                 </div>
-                <div class="inputs-container error">
+                <div class="inputs-container">
                     <label>RUT</label>
                     <input id="voidRut" type="text" />
                     <p id="messageP2" class="error-msg"></p>
@@ -116,12 +116,16 @@
     <dialog id="dialog3">
         <section class="container-modify">
             <h2>Ingrese contraseña correspondiente <span style="color: red; font-weight: 700;">para eliminar</span></h2>
-            <div class="input-psw error">
+            <div class="input-psw">
                 <input id="password" type="password" id="error-msg" />
             </div>
             <div class="psw-buttons">
                 <button id="closeButton" class="button-psw" onclick="dialog3.close()">
-                    <img src="../assets/arrow.svg" alt="Volver" />
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                        <path fill-rule="evenodd"
+                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-4.28 9.22a.75.75 0 0 0 0 1.06l3 3a.75.75 0 1 0 1.06-1.06l-1.72-1.72h5.69a.75.75 0 0 0 0-1.5h-5.69l1.72-1.72a.75.75 0 0 0-1.06-1.06l-3 3Z"
+                            clip-rule="evenodd" />
+                    </svg>
                 </button>
                 <button id="confirm-delete" class="confirm-button">
                     <span> Confirmar </span>

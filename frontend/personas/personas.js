@@ -135,7 +135,11 @@ const loadPeople = async () => {
                 document.getElementById('voidpsw2').value = persona.name;
                 document.getElementById('voidRut').value = persona.rut;
 
+            }else{
+                let input = document.getElementById("input-psw");
+                input.classList.add('error');
             }
+
 
             return;
         });
