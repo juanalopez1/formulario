@@ -6,9 +6,11 @@
   "scripts": {
     "generate-types": "ts-node ./src/create.ts",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate-api": "openapi-generator-cli generate -i path/to/your/openapi.yaml -g typescript-axios -o src/generated-api"
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.13.5",
     "@types/node": "^20.0.0",
     "openapi-typescript": "^7.3.0",
     "ts-node": "^10.0.0",
