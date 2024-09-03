@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Listado de personas</title>
     <link href="styles2.css" rel="stylesheet" />
-    <link href="styles-dialogs.css" rel="stylesheet"/>
+    <link href="styles-dialogs.css" rel="stylesheet" />
     <script defer src="personas.js" type="module"></script>
     <script defer src="update.js" type="module"></script>
 </head>
@@ -18,11 +18,11 @@
             <ul id="person-list-card-container">
                 <a href="../alta" class="add add-person" style="position: relative; padding: 1rem">
                     <li style="
-                        z-index: 10;
-                        display: flex;
-                        flex-direction: row;
-                        align-items: center;
-                    ">
+                z-index: 10;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+              ">
                         <div style="width: auto; height: 2em; aspect-ratio: 1 / 1">
                             <!-- Add user icon -->
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -42,16 +42,14 @@
         <section class="container-modify">
             <h2>Ingrese contraseña correspondiente</h2>
             <div class="input-psw error">
-                <input id="password" type="password" id="error-msg" />  
+                <input id="password" type="password" id="error-msg" />
             </div>
             <div class="psw-buttons">
                 <button id="closeButton" class="button-psw" onclick="dialog1.close()">
-                    <img src="../assets/arrow.svg" alt="Volver">
+                    <img src="../assets/arrow.svg" alt="Volver" />
                 </button>
                 <button id="confirm" class="confirm-button">
-                    <span>
-                        Confirmar
-                    </span>
+                    <span> Confirmar </span>
                 </button>
             </div>
         </section>
@@ -63,7 +61,7 @@
             <form>
                 <div class="inputs-container error">
                     <label in>Nombre</label>
-                    <input id="voidName" type="text"  />  
+                    <input id="voidName" type="text" />
                     <p id="messageName" class="error-msg"></p>
                 </div>
                 <div class="inputs-container error">
@@ -83,29 +81,32 @@
                 </div>
                 <div class="inputs-container error">
                     <label>Repetir contraseña</label>
-                    <input id="voidpsw2" type="password"/>
+                    <input id="voidpsw2" type="password" />
                     <p id="messageP2" class="error-msg"></p>
                 </div>
                 <div class="inputs-container error">
                     <label>RUT</label>
-                    <input id="voidRut" type="text"/>
+                    <input id="voidRut" type="text" />
                     <p id="messageP2" class="error-msg"></p>
                 </div>
             </form>
             <div class="buttons">
                 <button id="submitButton" class="for-buttons">
-                    <span style="color:  #4a044e;">
+                    <span style="color: #4a044e">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
-                          </svg>
-                                                 
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+                                clip-rule="evenodd" />
+                        </svg>
                     </span>
                 </button>
                 <button id="closeButton" class="for-buttons" onclick="dialog2.close()">
-                    <span style="color: #4a044e;">
+                    <span style="color: #4a044e">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-4.28 9.22a.75.75 0 0 0 0 1.06l3 3a.75.75 0 1 0 1.06-1.06l-1.72-1.72h5.69a.75.75 0 0 0 0-1.5h-5.69l1.72-1.72a.75.75 0 0 0-1.06-1.06l-3 3Z" clip-rule="evenodd" />
-                        </svg>                          
+                            <path fill-rule="evenodd"
+                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-4.28 9.22a.75.75 0 0 0 0 1.06l3 3a.75.75 0 1 0 1.06-1.06l-1.72-1.72h5.69a.75.75 0 0 0 0-1.5h-5.69l1.72-1.72a.75.75 0 0 0-1.06-1.06l-3 3Z"
+                                clip-rule="evenodd" />
+                        </svg>
                     </span>
                 </button>
             </div>
