@@ -44,15 +44,6 @@ dialog {
     color: #dfdbe5;
 }
 
-.pencil {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0rem;
-    width: 1.6rem;
-    height: 1.6rem;
-}
-
 .buttons{
     margin-top: 2.5rem;
     display: flex;

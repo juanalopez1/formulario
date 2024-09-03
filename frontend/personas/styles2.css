@@ -34,7 +34,6 @@ body {
 
 .person-list-card {
     padding: 0rem;
-    padding-right: 1rem;
     height: fit-content;
     box-sizing: border-box;
     display: flex;
@@ -45,11 +44,12 @@ body {
     border-radius: 0.25rem;
     border-top-right-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
-    padding-right: 2rem;
+    padding-right: 0.25rem;
 }
 
 .card-content {
     margin: 0.5rem;
+    flex-grow: 1;
 }
 
 .person-list-card-decoration {
@@ -276,4 +276,30 @@ background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0
     border-bottom-left-radius: 0px;
     margin: 0;
     background-color: #faf5ff;
+}
+
+.person-list-card-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    height: 1.8em;
+}
+
+.mini-icon {
+    all: unset;
+    cursor: pointer;
+    padding: 0rem;
+    width: auto;
+    height: 1em;
+    aspect-ratio: 1 / 1;
+}
+
+.icon-hover {
+    color: #a3a3a3;
+}
+
+.icon-hover:hover {
+    color: inherit;
+    border-bottom: 1px solid;
 }
