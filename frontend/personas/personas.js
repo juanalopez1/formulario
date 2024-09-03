@@ -132,29 +132,26 @@ const loadPeople = async () => {
         save.addEventListener('click', () => {
             const put = fetch(`http://localhost:3000/personas/${persona.id}`, {
                 method: 'PUT',
-                body: {
+                body: JSON.stringify({
                     "newValue": {
                         "person": {
-                            "name": document.addEventListener('voidName').value,
-                            "surname": document.getElementById('voidId').value,
+                            "name": document.getElementById('voidName').value,
+                            // FIXME: Set to surname.
+                            "surname": document.getElementById('voidName').value,
                             "email": document.getElementById('voidEmail').value,
-                            "id": document.getElementById('voidpsw1').value,
+                            "id": document.getElementById('voidId').value,
                             "rut": document.getElementById('voidRut').value
                         },
                         "password": "Juana123!"
                     },
                     "oldPassword": "Juana123!"
-                },
+                }),
                 headers: {
                     "Content-Type": 'application/json'
                 },
             })
-            console.log(put, 'acaaaaaaaaaaaaaa')
 
-            if (put.ok) {
-                dialog.close();
-                window.location.href = "../personas/index.html";
-            }
+            window.location.reload();
         })
     }
 }
