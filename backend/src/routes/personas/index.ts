@@ -248,23 +248,27 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 id: PersonSchema.properties.id,
             }),
             body: Type.Object({
-                newValue: Type.Ref(PersonWithPasswordSchema),
-                oldPassword: PersonWithPasswordSchema.properties.password,
+                password: PersonWithPasswordSchema.properties.password,
             }),
-            response: Type.Object({
+            response: {
+              200: Type.Object({
+                    message: Type.Literal("Person deleted successfully")
+                }),
               404: Type.Literal("Couldn't find Id"),
               400: Type.Literal('Incorrect password')
-            })
+            }
         },
 
         preHandler: async function(request, reply) { 
             const person = personas.find(person => person.person.id === request.params.id);
 
+            console.log(person);
+
             if (person === undefined) {
-                return reply.notFound("Couldn't find person with such an Id")
+                return reply.code(404).send("Couldn't find Id");
             }
 
-            const passwordIsCorrect = person.password === request.body.oldPassword;
+            const passwordIsCorrect = person.password === request.body.password;
 
             if (!passwordIsCorrect){
                 return reply.badRequest('Incorrect password');
