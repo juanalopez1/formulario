@@ -95,8 +95,14 @@ dialog {
     text-align: left;
 }
 
+.div-psw {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height: 2rem;
+}
+
 .input-psw {
-    display: block;
     background-color: white;   
     border: 3px solid white;
     border-radius: 0.4rem;
@@ -104,8 +110,6 @@ dialog {
     width: 80%;
     height: 2rem;
     margin-bottom: 0.3rem;
-    align-content: center;
-    margin: auto 0;
 }
 
 .psw-buttons {

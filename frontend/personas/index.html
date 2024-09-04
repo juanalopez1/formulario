@@ -41,8 +41,8 @@
     <dialog id="passwordDialog">
         <section class="container-modify">
             <h2>Ingrese contraseña correspondiente</h2>
-            <div class="input-psw">
-                <input id="password" type="password" id="error-msg" />
+            <div class="div-psw">
+                <input class="input-psw" id="password" type="password" id="error-msg" />
             </div>
             <div class="psw-buttons">
                 <button id="closeButton" class="arrow-psw" onclick="passwordDialog.close()">
@@ -70,7 +70,6 @@
                 <div class="inputs-container">
                     <label>Apellido</label>
                     <input id="voidSurname" type="text" />
-                    <p id="messageName" class="error-msg"></p>
                 </div>
                 <div class="inputs-container">
                     <label>Cédula</label>
@@ -78,7 +77,6 @@
                 </div>
                 <div class="inputs-container">
                     <label>Nuevo email</label>
-                    <label>Nuevo correo electronico</label>
                     <input id="voidEmail" type="email" />
                 </div>
                 <div class="inputs-container">
@@ -120,8 +118,8 @@
     <dialog id="dialog3">
         <section class="container-modify">
             <h2>Ingrese contraseña correspondiente <span style="color: red; font-weight: 700;">para eliminar</span></h2>
-            <div class="input-psw">
-                <input id="input-password" type="password" id="error-msg" />
+            <div class="div-psw">
+                <input class="input-psw" id="password" type="password" id="error-msg" />
             </div>
             <div class="psw-buttons">
                 <button id="closeButton" class="button-psw" onclick="dialog3.close()">
