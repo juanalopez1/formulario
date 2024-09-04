@@ -26,7 +26,7 @@ export function checkSamePasswords(pwd1, pwd2) {
  * @param {string} pwd
  * @returns {Validator}
  */
-function checkPassword(pwd) {
+export function checkPassword(pwd) {
     if (pwd.length < 8) {
         return {
             valid: false,
@@ -81,7 +81,7 @@ function checkPassword(pwd) {
  * @param {string} name
  * @returns {Validator}
  */
-function checkName(name) {
+export function checkName(name) {
     if (name.length < 3) {
         return {
             valid: false,
@@ -105,7 +105,7 @@ function checkName(name) {
  * @param {string} surname
  * @returns {Validator}
  */
-function checkSurname(surname) {
+export function checkSurname(surname) {
     return checkName(surname);
 }
 
@@ -113,7 +113,7 @@ function checkSurname(surname) {
  * @param {string} email
  * @returns {Validator}
  */
-function checkEmail(email) {
+export function checkEmail(email) {
     const check = {
         regex: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         message: "El correo ingresado no es válido.",
@@ -135,7 +135,7 @@ function checkEmail(email) {
  * @param {string} id
  * @returns {Validator}
  */
-function checkID(id) {
+export function checkID(id) {
     const format = [{
         regex: /^\d\.\d{3}\.\d{3}-\d$/,
         message: 'Debe ingresar la cédula con puntos y guiones.'
@@ -164,7 +164,7 @@ function checkID(id) {
  * @param {string} id
  * @returns {boolean}
  */
-function checkDigit(id) {
+export function checkDigit(id) {
     id = id.replace(/\D/g, '');
 
     const digit = Number(id[id.length - 1]);
@@ -187,7 +187,7 @@ function checkDigit(id) {
  * @param {string} rut
  * @returns {Validator}
  */
-function checkRut(rut) {
+export function checkRut(rut) {
     rut = rut.toString().trim()
     if (rut.length < 12) {
         return {
@@ -214,7 +214,7 @@ function checkRut(rut) {
  * @param {string} rut
  * @returns {boolean}
  */
-function checkDigitRUT(rut) {
+export function checkDigitRUT(rut) {
     rut = rut.toString().split('')
     const digit = Number(rut[rut.length - 1]);
     const numero = rut.slice(0, 11);
@@ -327,6 +327,7 @@ document.getElementById('enviarButton').addEventListener('click', async () => {
                 "Content-Type": 'application/json'
             },
         });
+        console.log('abajo del fetch')
 
         window.location.href = "../personas/index.html";
     }

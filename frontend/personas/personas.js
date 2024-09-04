@@ -22,7 +22,7 @@ export class Person {
  */
 export function showModify(person) {
     console.log(person, 'en modify');
-    dialog1.showModal();
+    passwordDialog.showModal();
     return;
 }
 
@@ -160,8 +160,9 @@ const loadPeople = async () => {
 
             console.log(response)
             if (response.status === 200) {
-                dialog1.close();
-                dialog2.showModal();
+                console.log('entre',persona.surname)
+                passwordDialog.close();
+                updateDialog.showModal();
                 document.getElementById('voidName').value = persona.name;
                 document.getElementById('voidSurname').value = persona.surname;
                 document.getElementById('voidId').value = persona.id;
@@ -171,36 +172,41 @@ const loadPeople = async () => {
                 document.getElementById('voidRut').value = persona.rut;
 
             }
+            else{
+                let input = document.getElementById('password');
+                input.classList.add('error');
+            }
 
+            if (true){
+                console.log('entre a isvalid')
+                const save = document.getElementById('sendButton');
+                save.addEventListener('click', async() => {
+                    console.log('no me rompi')
+                    const put = await fetch(`http://localhost:3000/personas/${persona.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            "newValue": {
+                                "person": {
+                                    "name": document.getElementById('voidName').value,
+                                    "surname": document.getElementById('voidSurname').value,
+                                    "id": document.getElementById('voidId').value,
+                                    "email": document.getElementById('voidEmail').value,
+                                    "rut": document.getElementById('voidRut').value
+                                },
+                                "password": document.getElementById('voidpsw1').value
+                            },
+                            "oldPassword": "Juana123!"
+                        }),
+                        headers: {
+                            "Content-Type": 'application/json'
+                        },
+                    });
+                    console.log(put, 'pase el puttt')
+            
+                    window.location.reload();
+            })}
             return;
         });
-
-
-        const save = document.getElementById('submitButton');
-        save.addEventListener('click', () => {
-            const put = fetch(`http://localhost:3000/personas/${persona.id}`, {
-                method: 'PUT',
-                body: JSON.stringify({
-                    "newValue": {
-                        "person": {
-                            "name": document.getElementById('voidName').value,
-                            // FIXME: Set to surname.
-                            "surname": document.getElementById('voidName').value,
-                            "email": document.getElementById('voidEmail').value,
-                            "id": document.getElementById('voidId').value,
-                            "rut": document.getElementById('voidRut').value
-                        },
-                        "password": "Juana123!"
-                    },
-                    "oldPassword": "Juana123!"
-                }),
-                headers: {
-                    "Content-Type": 'application/json'
-                },
-            })
-
-            window.location.reload();
-        })
     }
 }
 
