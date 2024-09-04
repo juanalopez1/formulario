@@ -17,7 +17,9 @@ export const PersonSchema = Type.Object(
     {
         name: Type.String({ minLength: 3, maxLength: 20 }),
         surname: Type.String({ minLength: 3, maxLength: 20 }),
-        email: Type.String({ format: "email" }),
+        email: Type.String({
+            pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.source,
+        }),
         id: Type.String({ pattern: idRegex.source }),
         rut: Type.Number({ minimum: 100000000000, maximum: 999999999999 }),
     },
@@ -58,15 +60,22 @@ export const SpecificPersonWithPasswordCheckSchema = Type.Object({
     password: Type.Optional(Type.String()),
 });
 
-export const PersonWithOptionalFieldsSchema = Type.Object({
-    person: Type.Optional(Type.Partial(Type.Object({
-        ...simplifiedPerson.properties
-    }))),
-    password: Type.Optional(Type.String()),
-}, {
-        "$id": "optionalPerson",
-        "title": "Persona con campos opcionales."
-    });
+export const PersonWithOptionalFieldsSchema = Type.Object(
+    {
+        person: Type.Optional(
+            Type.Partial(
+                Type.Object({
+                    ...simplifiedPerson.properties,
+                }),
+            ),
+        ),
+        password: Type.Optional(Type.String()),
+    },
+    {
+        $id: "optionalPerson",
+        title: "Persona con campos opcionales.",
+    },
+);
 
 export const ErrorMessageSchema = Type.Object(
     {
@@ -79,11 +88,13 @@ export const ErrorMessageSchema = Type.Object(
 );
 
 export const PersonWithPasswordCheckReturnSchema = Type.Object({
-    person: Type.Optional(Type.Partial(
-        Type.Mapped(
-            Type.KeyOf(SpecificPersonWithPasswordCheckSchema.properties.person),
-            (_) => Type.Ref(ErrorMessageSchema),
-        )),
+    person: Type.Optional(
+        Type.Partial(
+            Type.Mapped(
+                Type.KeyOf(SpecificPersonWithPasswordCheckSchema.properties.person),
+                (_) => Type.Ref(ErrorMessageSchema),
+            ),
+        ),
     ),
     password: Type.Optional(Type.Ref(ErrorMessageSchema)),
 });

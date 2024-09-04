@@ -113,7 +113,7 @@ const loadPeople = async () => {
 
         document.getElementById('confirm-delete').addEventListener('click', async function() {
             const psw = {
-                'password': document.getElementById('password').value
+                'password': document.getElementById('input-password').value
             };
 
             const response = await fetch(`http://localhost:3000/personas/${persona.id}`, {
@@ -126,18 +126,9 @@ const loadPeople = async () => {
 
             console.log(response)
             if (response.status === 200) {
-                dialog1.close();
-                dialog2.showModal();
-                document.getElementById('voidName').value = persona.name;
-                document.getElementById('voidSurname').value = persona.surname;
-                document.getElementById('voidId').value = persona.id;
-                document.getElementById('voidEmail').value = persona.email;
-                document.getElementById('voidpsw1').value = persona.name;
-                document.getElementById('voidpsw2').value = persona.name;
-                document.getElementById('voidRut').value = persona.rut;
-
-            }else{
-                let input = document.getElementById("input-psw");
+                window.location.reload();
+            } else {
+                let input = document.getElementById("input-password");
                 input.classList.add('error');
             }
 
@@ -158,9 +149,8 @@ const loadPeople = async () => {
                 },
             });
 
-            console.log(response)
             if (response.status === 200) {
-                console.log('entre',persona.surname)
+                console.log('entre', persona.surname)
                 passwordDialog.close();
                 updateDialog.showModal();
                 document.getElementById('voidName').value = persona.name;
@@ -171,40 +161,35 @@ const loadPeople = async () => {
                 document.getElementById('voidpsw2').value = persona.name;
                 document.getElementById('voidRut').value = persona.rut;
 
-            }
-            else{
+            } else {
                 let input = document.getElementById('password');
                 input.classList.add('error');
             }
 
-            if (true){
-                console.log('entre a isvalid')
-                const save = document.getElementById('sendButton');
-                save.addEventListener('click', async() => {
-                    console.log('no me rompi')
-                    const put = await fetch(`http://localhost:3000/personas/${persona.id}`, {
-                        method: 'PUT',
-                        body: JSON.stringify({
-                            "newValue": {
-                                "person": {
-                                    "name": document.getElementById('voidName').value,
-                                    "surname": document.getElementById('voidSurname').value,
-                                    "id": document.getElementById('voidId').value,
-                                    "email": document.getElementById('voidEmail').value,
-                                    "rut": document.getElementById('voidRut').value
-                                },
-                                "password": document.getElementById('voidpsw1').value
+            const save = document.getElementById('sendButton');
+            save.addEventListener('click', async () => {
+                const put = await fetch(`http://localhost:3000/personas/${persona.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        "newValue": {
+                            "person": {
+                                "name": document.getElementById('voidName').value,
+                                "surname": document.getElementById('voidSurname').value,
+                                "id": document.getElementById('voidId').value,
+                                "email": document.getElementById('voidEmail').value,
+                                "rut": document.getElementById('voidRut').value
                             },
-                            "oldPassword": "Juana123!"
-                        }),
-                        headers: {
-                            "Content-Type": 'application/json'
+                            "password": document.getElementById('voidpsw1').value
                         },
-                    });
-                    console.log(put, 'pase el puttt')
-            
-                    window.location.reload();
-            })}
+                        "oldPassword": "Juana123!"
+                    }),
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                });
+
+                window.location.reload();
+            })
             return;
         });
     }

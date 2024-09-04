@@ -45,7 +45,6 @@ export async function hookPersonChecks(hooks) {
             }
         }
 
-        console.log("send", JSON.stringify(values))
         const result = await (await fetch("http://localhost:3000/personas/check", {
             body: JSON.stringify(values),
             method: "POST",
@@ -53,10 +52,8 @@ export async function hookPersonChecks(hooks) {
                 "Content-Type": 'application/json'
             }
         })).json();
-        console.log("receive", result);
 
 
-        console.log(hooks.rut);
         for (const key in hooks) {
             if (hooks.hasOwnProperty(key)) {
                 /** @type {ErrorMessageHook} */
@@ -89,9 +86,11 @@ export async function hookPersonChecks(hooks) {
 }
 
 /**
- * @param {string} selector
+ * @description Creates a new function that sets an error to selector.
+ * If err is undefined, the text will be set to "".
+ * @param {string} selector id of elements whose text will be set to err.
  */
-function setErrorMessage(selector) {
+export function setErrorMessage(selector) {
     /**
      * @param {ErrorMessage | undefined} err
      */
@@ -104,75 +103,3 @@ function setErrorMessage(selector) {
         }
     };
 }
-
-/** @type {PersonHooks} */
-const personHooks = {
-    "email": {
-        "inputSelectorQuery": "#email",
-        "dataTransformer": (v) => v,
-        "handler": setErrorMessage("#messageEmail"),
-    },
-    "name": {
-        "inputSelectorQuery": "#name",
-        "dataTransformer": (v) => v,
-        "handler": setErrorMessage("#messageName"),
-    },
-    "surname": {
-        "inputSelectorQuery": "#surname",
-        "dataTransformer": (v) => v,
-        "handler": setErrorMessage("#messageSurname"),
-    },
-    "id": {
-        "inputSelectorQuery": "#id",
-        "dataTransformer": (v) => v,
-        "handler": setErrorMessage("#messageId"),
-    },
-    "password": {
-        "inputSelectorQuery": "#psw1",
-        "dataTransformer": (v) => v,
-        "handler": setErrorMessage("#messageP1"),
-    },
-    "rut": {
-        "inputSelectorQuery": "#rut",
-        "dataTransformer": (v) => parseInt(v, 10),
-        "handler": setErrorMessage("#messageRut")
-    },
-};
-
-hookPersonChecks(personHooks);
-
-document.getElementById('enviarButton').addEventListener('click', async () => {
-    const dataIsOk = checks.every((check) =>
-        check.checker(document.getElementById(check.inputId).value).valid
-    );
-
-    if (dataIsOk) {
-        const name = document.getElementById('name').value;
-        const surname = document.getElementById('surname').value;
-        const id = document.getElementById('id').value;
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('psw1').value;
-        const rut = document.getElementById('rut').value;
-
-        const persona = {
-            person: {
-                name: name,
-                surname: surname,
-                id: id,
-                email: email,
-                rut: rut,
-            },
-            password: password,
-        };
-
-        await fetch("http://localhost:3000/personas", {
-            method: 'POST',
-            body: JSON.stringify(persona),
-            headers: {
-                "Content-Type": 'application/json'
-            },
-        });
-
-        window.location.href = "../personas/index.html";
-    }
-});

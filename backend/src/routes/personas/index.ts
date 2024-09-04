@@ -21,6 +21,16 @@ const personas: PersonWithPasswordType[] = [
         },
         password: "Juana123!",
     },
+    {
+        person: {
+            name: "Cris",
+            surname: "RPia",
+            email: "ezponjares@gmail.com",
+            id: "3.456.789-0",
+            rut: 214873040084
+        },
+        password: "Cris123!"
+    }
 ];
 
 const personaRoute: FastifyPluginAsyncTypebox = async (
