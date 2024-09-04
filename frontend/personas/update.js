@@ -1,6 +1,6 @@
-import { checkSamePasswords } from '../alta/checks.js'
+import { checkSamePasswords } from '../checks.js'
 import { Person } from '../personas.js'
-import * as checks from '../alta/checks.js'
+import * as checks from '../checks.js'
 import { getPersonas } from './personas.js';
 
 const updateDialog = document.getElementById('updateDialog');
