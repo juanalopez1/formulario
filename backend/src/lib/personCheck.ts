@@ -88,7 +88,7 @@ export function checkPersonStructure(
                                 return true;
                             }
 
-                            if (surnameMax && surnameLength < surnameMax) {
+                            if (surnameMax && surnameLength > surnameMax) {
                                 output.person ??= {};
                                 output.person.surname = {
                                     errorMessage: `Máximo de ${surnameMax}`,
@@ -101,6 +101,10 @@ export function checkPersonStructure(
                                 PersonSchema.properties.email,
                                 personWithPassword.person!.email,
                             )) {
+                                output.person ??= {};
+                                output.person.email = {
+                                    errorMessage: "Email inválido."
+                                };
                                 return true;
                             }
                         },
@@ -131,10 +135,10 @@ export function checkPersonStructure(
                     }
 
                     const val = personWithPassword.person![key]!;
-                    if (val !== undefined!
-                        && Value.Check(
+                    if (val !== undefined
+                        && !Value.Check(
                             PersonSchema.properties[key],
-                            personWithPassword.person![key],
+                            val,
                         )) {
                         output.person ??= {};
                         output.person[key] = {
@@ -168,6 +172,8 @@ export function checkPersonStructure(
                 }
             },
         });
+
+
     }
 
     return output;
@@ -208,6 +214,7 @@ function checkDigit(id: string): boolean {
 
 function checkRut(rut: number): ErrorMessage | undefined {
     const stringifiedRut = rut.toString(10);
+    console.log(rut);
 
     if (stringifiedRut.length !== 12) {
         return {
@@ -220,7 +227,6 @@ function checkRut(rut: number): ErrorMessage | undefined {
 }
 
 function checkDigitRUT(rut: string): boolean {
-    rut.toString().split("");
     const digit = Number(rut[rut.length - 1]);
     const numero = rut.slice(0, 11).split("").map((c) => parseInt(c));
 
