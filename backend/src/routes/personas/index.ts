@@ -5,6 +5,7 @@ import {
 } from "../../tipos/persona.js";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
+import { query } from "../../services/database.js";
 
 const personas: PersonWithPasswordType[] = [
     {
@@ -110,7 +111,13 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         },
         handler: async function(request, reply) {
             console.log(personas);
-            return personas.map((val) => val.person);
+            const res = await query(`
+                select
+                 * from 
+                people
+            `);
+            return res.rows;
+            // return personas.map((val) => val.person);
         },
     });
 
