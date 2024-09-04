@@ -1,300 +1,145 @@
-/**
- * @typedef {object} Validator
- * @property {boolean} valid - Indicates whether the data is acceptable.
- * @property {string} [message] - An optional error message. If the operation is successful, it should be undefined.
+/** @typedef {{errorMessage: string}} ErrorMessage */
+
+/** @typedef {object} ErrorMessageHook
+ * @property {(err: ErrorMessage) => unknown} handler
+ * @property {(data: string) => string | number} dataTransformer
+ * @property {string} inputSelectorQuery
  */
 
-/**
- * @param {string} pwd1
- * @param {string} pwd2
- * @returns {Validator}
+/** @typedef {object} PersonHooks
+ * @property {ErrorMessageHook} [email]
+ * @property {ErrorMessageHook} [name]
+ * @property {ErrorMessageHook} [surname]
+ * @property {ErrorMessageHook} [id]
+ * @property {ErrorMessageHook} [password]
+ * @property {ErrorMessageHook} [rut]
  */
-export function checkSamePasswords(pwd1, pwd2) {
-    if (pwd1 !== pwd2) {
-        return {
-            valid: false,
-            message: "Las contraseñas no coinciden."
-        }
-    }
 
-    return {
-        valid: true,
-    }
-}
-
-/**
- * @param {string} pwd
- * @returns {Validator}
- */
-export function checkPassword(pwd) {
-    if (pwd.length < 8) {
-        return {
-            valid: false,
-            message: "Mínimo de 8 caracteres.",
-        }
-    }
-
-    if (pwd.length > 20) {
-        return {
-            valid: false,
-            message: "Máximo de 8 caracteres.",
-        }
-    }
-
-    /**
-     * @type {[string, RegExp][]}
-     */
-    const checks = [
-        [
-            /[a-z]/,
-            "La contraseña debe contener minúsculas.",
-        ],
-        [
-            /[A-Z]/,
-            "La contraseña debe contener mayúsculas.",
-        ],
-        [
-            /\d/,
-            "La contraseña debe contener dígitos.",
-        ],
-        [
-            /[^a-zA-Z0-9]/,
-            "La contraseña debe contener caracteres especiales.",
-        ]
-    ];
-
-    for (const [regex, message] of checks) {
-        if (!regex.test(pwd)) {
-            return {
-                valid: false,
-                message,
-            };
-        }
-    }
-
-    return {
-        valid: true,
-    }
-}
-
-/**
- * @param {string} name
- * @returns {Validator}
- */
-export function checkName(name) {
-    if (name.length < 3) {
-        return {
-            valid: false,
-            message: "Mínimo de 3 caracteres."
-        }
-    }
-
-    if (name.length > 20) {
-        return {
-            valid: false,
-            message: "Máximo de 20 caracteres."
-        }
-    }
-
-    return {
-        valid: true
-    }
-}
-
-/**
- * @param {string} surname
- * @returns {Validator}
- */
-export function checkSurname(surname) {
-    return checkName(surname);
-}
-
-/**
- * @param {string} email
- * @returns {Validator}
- */
-export function checkEmail(email) {
-    const check = {
-        regex: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        message: "El correo ingresado no es válido.",
-    };
-
-    if (!check.regex.test(email)) {
-        return {
-            valid: false,
-            message: check.message
+/** @param {PersonHooks} hooks */
+export async function hookPersonChecks(hooks) {
+    // For every element passed, in in their blur notify everyone whether their
+    // values are still correct.
+    /** @type {(element: HTMLInputElement) => void} */
+    const listener = async (element) => {
+        const values = {
+            person: {}
         };
-    }
 
-    return {
-        valid: true,
-    }
-}
+        for (const key in hooks) {
+            if (hooks.hasOwnProperty(key)) {
+                /** @type {ErrorMessageHook} */
+                const hook = hooks[key];
 
-/**
- * @param {string} id
- * @returns {Validator}
- */
-export function checkID(id) {
-    const format = [{
-        regex: /^\d\.\d{3}\.\d{3}-\d$/,
-        message: 'Debe ingresar la cédula con puntos y guiones.'
-    }]
+                /** @type {HTMLInputElement} */
+                const element = document.querySelector(hook.inputSelectorQuery)
 
-    if (!format[0].regex.test(id)) {
-        return {
-            valid: false,
-            message: format[0].message,
+                if (element && !element.value) {
+                    continue;
+                }
+
+                if (key === "password") {
+                    values.password = hook.dataTransformer(element.value);
+                } else {
+                    values.person[key] = hook.dataTransformer(element.value);
+                }
+            }
         }
-    }
 
-    if (checkDigit(id) === false) {
-        return {
-            valid: false,
-            message: 'Los dígitos de la cédula no verifican.'
+        console.log("send", JSON.stringify(values))
+        const result = await (await fetch("http://localhost:3000/personas/check", {
+            body: JSON.stringify(values),
+            method: "POST",
+            headers: {
+                "Content-Type": 'application/json'
+            }
+        })).json();
+        console.log("receive", result);
+
+
+        console.log(hooks.rut);
+        for (const key in hooks) {
+            if (hooks.hasOwnProperty(key)) {
+                /** @type {ErrorMessageHook} */
+                const hook = hooks[key];
+
+                const errToHandle = key === "password" ? result[key] : result.person?.[key];
+
+                hook.handler(errToHandle ?? "");
+            }
         }
-    }
-
-    return {
-        valid: true,
-    }
-}
-
-/**
- * @param {string} id
- * @returns {boolean}
- */
-export function checkDigit(id) {
-    id = id.replace(/\D/g, '');
-
-    const digit = Number(id[id.length - 1]);
-    const numero = id.slice(0, -1);
-    const numeroArr = numero.split('').map((ch) => Number(ch));
-
-    const coeficientes = [2, 9, 8, 7, 6, 3, 4];
-
-    let sum = 0;
-
-    for (let i = 0; i < 7; i++) {
-        sum += numeroArr[i] * coeficientes[i];
-    }
-
-    const result = (10 - (sum % 10)) % 10;
-    return digit === result;
-}
-
-/**
- * @param {string} rut
- * @returns {Validator}
- */
-export function checkRut(rut) {
-    rut = rut.toString().trim()
-    if (rut.length < 12) {
-        return {
-            valid: false,
-            message: 'El número de RUT debe tener como mínimo 12 caracteres.'
-        }
-    }
-
-    if (checkDigitRUT(rut) === false) {
-        return {
-            valid: false,
-            message: 'El número no verifica.'
-        }
-    }
-
-    return {
-        valid: true,
-    }
-
-
-}
-
-/**
- * @param {string} rut
- * @returns {boolean}
- */
-export function checkDigitRUT(rut) {
-    rut = rut.toString().split('')
-    const digit = Number(rut[rut.length - 1]);
-    const numero = rut.slice(0, 11);
-
-    const coeficientes = [4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
-    let sum = 0;
-
-    for (let i = 0; i < numero.length; i++) {
-        sum += numero[i] * coeficientes[i];
-    }
-
-    const result = (11 - (sum % 11)) % 11;
-
-    if (result < 10 && result === digit) {
-        return true
     };
 
-    if (result === 11 && digit === 0) {
-        return true
-    };
+    // Add listener
+    for (const key in hooks) {
+        if (hooks.hasOwnProperty(key)) {
+            /** @type {ErrorMessageHook} */
+            const hook = hooks[key];
 
-    return false
+            /** @type {HTMLInputElement | null} */
+            const element = document.querySelector(hook.inputSelectorQuery);
 
-}
+            if (element === null) {
+                console.error("Invalid id: " + hook.inputSelectorQuery);
+                return;
+            }
 
-const checks = /** type {const} */[{
-    inputId: 'name',
-    checker: checkName,
-    messageId: 'messageName',
-}, {
-    inputId: 'surname',
-    checker: checkSurname,
-    messageId: 'messageSurname',
-}, {
-    inputId: 'id',
-    checker: checkID,
-    messageId: 'messageId',
-}, {
-    inputId: 'email',
-    checker: checkEmail,
-    messageId: 'messageEmail',
-}, {
-    inputId: 'psw1',
-    checker: checkPassword,
-    messageId: 'messageP1',
-
-}, { // We have to make the same check in both password inputs.
-    inputId: 'psw1',
-    checker: () => checkSamePasswords(
-        document.getElementById('psw1').value,
-        document.getElementById('psw2').value
-    ),
-    messageId: 'messageP2',
-}, {
-    inputId: 'psw2',
-    checker: () => checkSamePasswords(
-        document.getElementById('psw1').value,
-        document.getElementById('psw2').value
-    ),
-    messageId: 'messageP2',
-}, {
-    inputId: 'rut',
-    checker: checkRut,
-    messageId: 'messageRut',
-}]
-
-for (const check of checks) {
-    const input = document.getElementById(check.inputId);
-    input.addEventListener('blur', function() {
-        let result = check.checker(input.value);
-        const message = document.getElementById(check.messageId);
-        if (!result.valid) {
-            message.innerText = result.message;
-            message.style.display = 'block'
-        } else {
-            message.innerText = '';
-            message.style.display = 'none';
+            element.addEventListener("blur", listener)
         }
-    });
+    }
 }
+
+/**
+ * @param {string} selector
+ */
+function setErrorMessage(selector) {
+    /**
+     * @param {ErrorMessage | undefined} err
+     */
+    return function(err) {
+            console.log(selector, err);
+        if (err !== undefined) {
+            const element = document.querySelector(selector);
+            console.log(selector, element);
+            element.innerText = err?.errorMessage ?? "";
+        }
+    };
+}
+
+/** @type {PersonHooks} */
+const personHooks = {
+    "email": {
+        "inputSelectorQuery": "#email",
+        "dataTransformer": (v) => v,
+        "handler": setErrorMessage("#messageEmail"),
+    },
+    "name": {
+        "inputSelectorQuery": "#name",
+        "dataTransformer": (v) => v,
+        "handler": setErrorMessage("#messageName"),
+    },
+    "surname": {
+        "inputSelectorQuery": "#surname",
+        "dataTransformer": (v) => v,
+        "handler": setErrorMessage("#messageSurname"),
+    },
+    "id": {
+        "inputSelectorQuery": "#id",
+        "dataTransformer": (v) => v,
+        "handler": setErrorMessage("#messageId"),
+    },
+    "password": {
+        "inputSelectorQuery": "#psw1",
+        "dataTransformer": (v) => v,
+        "handler": setErrorMessage("#messageP1"),
+    },
+    "rut": {
+        "inputSelectorQuery": "#rut",
+        "dataTransformer": (v) => parseInt(v, 10),
+        "handler": setErrorMessage("#messageRut")
+    },
+};
+
+hookPersonChecks(personHooks);
 
 document.getElementById('enviarButton').addEventListener('click', async () => {
     const dataIsOk = checks.every((check) =>
@@ -327,7 +172,6 @@ document.getElementById('enviarButton').addEventListener('click', async () => {
                 "Content-Type": 'application/json'
             },
         });
-        console.log('abajo del fetch')
 
         window.location.href = "../personas/index.html";
     }
