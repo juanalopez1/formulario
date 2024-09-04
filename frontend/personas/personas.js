@@ -27,6 +27,14 @@ export function showModify(person) {
 }
 
 /**
+ * @param {Person} person 
+ */
+export function showDelete(person) {
+    document.getElementById("dialog3").showModal();
+    return;
+}
+
+/**
  * @param {string} password
  */
 function checkPassword(password) {
@@ -98,6 +106,45 @@ const loadPeople = async () => {
             showModify(persona);
         });
 
+        const removeButton = document.getElementById(`removeButton-${persona.id}`);
+        removeButton.addEventListener('click', function() {
+            showDelete(persona);
+        });
+
+        document.getElementById('confirm-delete').addEventListener('click', async function() {
+            const psw = {
+                'password': document.getElementById('password').value
+            };
+
+            const response = await fetch(`http://localhost:3000/personas/${persona.id}`, {
+                method: 'DELETE',
+                body: JSON.stringify(psw),
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+            });
+
+            console.log(response)
+            if (response.status === 200) {
+                dialog1.close();
+                dialog2.showModal();
+                document.getElementById('voidName').value = persona.name;
+                document.getElementById('voidSurname').value = persona.surname;
+                document.getElementById('voidId').value = persona.id;
+                document.getElementById('voidEmail').value = persona.email;
+                document.getElementById('voidpsw1').value = persona.name;
+                document.getElementById('voidpsw2').value = persona.name;
+                document.getElementById('voidRut').value = persona.rut;
+
+            }else{
+                let input = document.getElementById("input-psw");
+                input.classList.add('error');
+            }
+
+
+            return;
+        });
+
         document.getElementById('confirm').addEventListener('click', async function() {
             const psw = {
                 'password': document.getElementById('password').value
@@ -156,7 +203,7 @@ const loadPeople = async () => {
                     });
                     console.log(put, 'pase el puttt')
             
-                    window.location.href = "../personas/index.html";
+                    window.location.reload();
             })}
             return;
         });

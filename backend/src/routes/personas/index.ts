@@ -109,7 +109,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             },
         },
         handler: async function(request, reply) {
-            console.log(personas)
+            console.log(personas);
             return personas.map((val) => val.person);
         },
     });
@@ -178,7 +178,8 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                         code: Type.String(),
                         error: Type.String(),
                         message: Type.String(),
-                    })]),
+                    }),
+                ]),
             },
         },
 
@@ -208,33 +209,82 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         },
     });
 
-    fastify.post('/:id/check', {
+    fastify.post("/:id/check", {
         schema: {
             params: Type.Object({ id: PersonSchema.properties.id }),
-            body: Type.Object({ password: PersonWithPasswordSchema.properties.password }),
+            body: Type.Object({
+                password: PersonWithPasswordSchema.properties.password,
+            }),
             response: {
                 200: Type.Object({
                     correct: Type.Boolean(),
                 }),
                 404: Type.Object({
                     message: Type.Literal("Not found"),
-                })
-            }
+                }),
+            },
         },
-    
-        preHandler: async function (request, reply) {
-            const person = personas.find((persona) => persona.person.id === request.params.id);
+
+        preHandler: async function(request, reply) {
+            const person = personas.find(
+                (persona) => persona.person.id === request.params.id,
+            );
             if (person === undefined) {
-                return reply.code(404).send({ message: 'Not found' });
+                return reply.code(404).send({ message: "Not found" });
             }
         },
-    
-        handler: async function (request, reply) {
-            const person = personas.find((persona) => persona.person.id === request.params.id);
+
+        handler: async function(request, reply) {
+            const person = personas.find(
+                (persona) => persona.person.id === request.params.id,
+            );
             return { correct: person?.password === request.body.password };
+        },
+    });
+
+    fastify.delete('/:id', {
+        schema: {
+            params: Type.Object({
+                id: PersonSchema.properties.id,
+            }),
+            body: Type.Object({
+                password: PersonWithPasswordSchema.properties.password,
+            }),
+            response: {
+              200: Type.Object({
+                    message: Type.Literal("Person deleted successfully")
+                }),
+              404: Type.Literal("Couldn't find Id"),
+              400: Type.Literal('Incorrect password')
+            }
+        },
+
+        preHandler: async function(request, reply) { 
+            const person = personas.find(person => person.person.id === request.params.id);
+
+            console.log(person);
+
+            if (person === undefined) {
+                return reply.code(404).send("Couldn't find Id");
+            }
+
+            const passwordIsCorrect = person.password === request.body.password;
+
+            if (!passwordIsCorrect){
+                return reply.badRequest('Incorrect password');
+            }
+        },
+
+        handler: async function (request, reply) {
+            const personIndex = personas.findIndex(person => person.person.id === request.params.id);
+            if (personIndex !== -1) {
+                personas.splice(personIndex, 1);
+                return reply.send({ message: 'Person deleted successfully' });
+            } else {
+                return reply.notFound("Couldn't find person with such an Id");
+            }
         }
     });
-    
 };
 
 export default personaRoute;

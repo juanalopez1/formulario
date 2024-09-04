@@ -28,7 +28,7 @@ dialog {
     font-weight: 700;
 }
 
-.for-buttons {
+.for-buttons, .button-psw {
     background: none;
     border: none;
     cursor: pointer;
