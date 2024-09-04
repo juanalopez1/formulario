@@ -137,7 +137,7 @@ const loadPeople = async () => {
                 document.getElementById('voidRut').value = persona.rut;
 
             }else{
-                let input = document.getElementById("input-psw");
+                let input = document.getElementById("delete-password");
                 input.classList.add('error');
             }
 
