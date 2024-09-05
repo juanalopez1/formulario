@@ -3,7 +3,7 @@
 /** @typedef {object} ErrorMessageHook
  * @property {(err: ErrorMessage) => unknown} handler
  * @property {(data: string) => string | number} dataTransformer
- * @property {string} inputSelectorQuery
+ * @property {HTMLInputElement} input
  */
 
 /** @typedef {object} PersonHooks
@@ -30,21 +30,23 @@ export async function hookPersonChecks(hooks) {
                 /** @type {ErrorMessageHook} */
                 const hook = hooks[key];
 
+                console.log("hook", hook.input.value, key);
                 /** @type {HTMLInputElement} */
-                const element = document.querySelector(hook.inputSelectorQuery)
+                hook.input
 
-                if (element && !element.value) {
+                if (hook.input && !hook.input.value) {
                     continue;
                 }
 
                 if (key === "password") {
-                    values.password = hook.dataTransformer(element.value);
+                    values.password = hook.dataTransformer(hook.input.value);
                 } else {
-                    values.person[key] = hook.dataTransformer(element.value);
+                    values.person[key] = hook.dataTransformer(hook.input.value);
                 }
             }
         }
 
+        console.log("send", values);
         const result = await (await fetch("http://localhost:3000/personas/check", {
             body: JSON.stringify(values),
             method: "POST",
@@ -52,6 +54,8 @@ export async function hookPersonChecks(hooks) {
                 "Content-Type": 'application/json'
             }
         })).json();
+
+        console.log("receive", result);
 
 
         for (const key in hooks) {
@@ -72,15 +76,7 @@ export async function hookPersonChecks(hooks) {
             /** @type {ErrorMessageHook} */
             const hook = hooks[key];
 
-            /** @type {HTMLInputElement | null} */
-            const element = document.querySelector(hook.inputSelectorQuery);
-
-            if (element === null) {
-                console.error("Invalid id: " + hook.inputSelectorQuery);
-                return;
-            }
-
-            element.addEventListener("blur", listener)
+            hook.input.addEventListener("blur", listener)
         }
     }
 }
@@ -88,18 +84,13 @@ export async function hookPersonChecks(hooks) {
 /**
  * @description Creates a new function that sets an error to selector.
  * If err is undefined, the text will be set to "".
- * @param {string} selector id of elements whose text will be set to err.
+ * @param {HTMLElement} target id of elements whose text will be set to err.
  */
-export function setErrorMessage(selector) {
+export function setErrorMessage(target) {
     /**
      * @param {ErrorMessage | undefined} err
      */
     return function(err) {
-            console.log(selector, err);
-        if (err !== undefined) {
-            const element = document.querySelector(selector);
-            console.log(selector, element);
-            element.innerText = err?.errorMessage ?? "";
-        }
+        target.innerText = err?.errorMessage ?? "";
     };
 }

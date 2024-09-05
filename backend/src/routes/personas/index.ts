@@ -116,6 +116,8 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 (person) => person.person.id === request.params.id,
             );
 
+            console.log(personas);
+
             if (person === undefined) {
                 return reply.status(404).send("Couldn't find Id");
             }

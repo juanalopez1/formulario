@@ -3,34 +3,34 @@ import { hookPersonChecks, setErrorMessage } from '../checks.js';
 /** @type {import('../checks.js').PersonHooks} */
 const personHooks = {
     "email": {
-        "inputSelectorQuery": "#email",
+        "input": document.querySelector("#email"),
         "dataTransformer": (v) => v,
-        "handler": setErrorMessage("#messageEmail"),
+        "handler": setErrorMessage(document.querySelector("#messageEmail")),
     },
     "name": {
-        "inputSelectorQuery": "#name",
+        "input": document.querySelector("#name"),
         "dataTransformer": (v) => v,
-        "handler": setErrorMessage("#messageName"),
+        "handler": setErrorMessage(document.querySelector("#messageName")),
     },
     "surname": {
-        "inputSelectorQuery": "#surname",
+        "input": document.querySelector("#surname"),
         "dataTransformer": (v) => v,
-        "handler": setErrorMessage("#messageSurname"),
+        "handler": setErrorMessage(document.querySelector("#messageSurname")),
     },
     "id": {
-        "inputSelectorQuery": "#id",
+        "input": document.querySelector("#id"),
         "dataTransformer": (v) => v,
-        "handler": setErrorMessage("#messageId"),
+        "handler": setErrorMessage(document.querySelector("#messageId")),
     },
     "password": {
-        "inputSelectorQuery": "#psw1",
+        "input": document.querySelector("#psw1"),
         "dataTransformer": (v) => v,
-        "handler": setErrorMessage("#messageP1"),
+        "handler": setErrorMessage(document.querySelector("#messageP1")),
     },
     "rut": {
-        "inputSelectorQuery": "#rut",
+        "input": document.querySelector("#rut"),
         "dataTransformer": (v) => parseInt(v, 10),
-        "handler": setErrorMessage("#messageRut")
+        "handler": setErrorMessage(document.querySelector("#messageRut"))
     },
 };
 
