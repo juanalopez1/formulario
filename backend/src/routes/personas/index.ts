@@ -9,6 +9,7 @@ import {
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { checkPersonStructure, checkPersonStructureIntoArray } from "../../lib/personCheck.js";
+import { query } from "../../services/database.js";
 
 const personas: PersonWithPasswordType[] = [
     {
@@ -43,6 +44,14 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 200: Type.Array(Type.Ref(PersonSchema)),
             },
         },
+/* handler: async function(request, reply) {
+                  console.log(personas);
+                  const res = await query(`
+                      select
+                       * from 
+                      people
+                  `);
+                  return res.rows; esto estaba en la rama clase*/ 
         handler: async function(_request, _reply) {
             return personas.map((val) => val.person);
         },
