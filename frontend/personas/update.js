@@ -1,14 +1,13 @@
-import { checkSamePasswords } from '../alta/checks.js'
+import { checkSamePasswords } from '../checks.js'
 import { Person } from '../personas.js'
-import * as checks from '../alta/checks.js'
+import * as checks from '../checks.js'
 import { getPersonas } from './personas.js';
 
 const updateDialog = document.getElementById('updateDialog');
 
 /**
- * 
- * @param {Person} person 
- * @return {Person} person 
+ * @param {Person} person
+ * @return {Person} person
  */
 function open2(person){
     passwordDialog.close();
@@ -91,8 +90,6 @@ export function isValid(personUpdated){
 
 const personas = getPersonas();
 let myPerson = personas.find((person) => person.id === "3.456.789-0");
-console.log(myPerson, 'ACAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-console.log(isValid(myPerson));
 
 if (isValid(myPerson)){
     console.log('entre a isvalid')
