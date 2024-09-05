@@ -159,7 +159,7 @@ const loadPeople = async () => {
                                 </svg>
                             </span>
                         </button>
-                        <button id="closeButton-${person.id}" class="for-buttons" onclick="updateDialog.close()">
+                        <button id="closeButton-${person.id}" class="for-buttons" onclick="updateDialog-${person.id}.close()">
                             <span style="color: #4a044e">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
                                     <path fill-rule="evenodd"
@@ -178,7 +178,7 @@ const loadPeople = async () => {
                         <input class="input-psw" id="password-${person.id}" type="password" id="error-msg-${person.id}" />
                     </div>
                     <div class="psw-buttons">
-                        <button id="closeButton-${person.id}" class="button-psw" onclick="dialog3.close()">
+                        <button id="closeButton-delete-${person.id}" class="button-psw" onclick="dialog3-${person.id}.close()">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
                                 <path fill-rule="evenodd"
                                     d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-4.28 9.22a.75.75 0 0 0 0 1.06l3 3a.75.75 0 1 0 1.06-1.06l-1.72-1.72h5.69a.75.75 0 0 0 0-1.5h-5.69l1.72-1.72a.75.75 0 0 0-1.06-1.06l-3 3Z"
@@ -198,7 +198,7 @@ const loadPeople = async () => {
                         <input class="input-psw" id="password-modify-${person.id}" type="password" />
                     </div>
                     <div class="psw-buttons">
-                        <button id="closeButton-modify-${person.id}" class="arrow-psw" onclick="passwordDialog.close()">
+                        <button id="closeButton-modify-${person.id}" class="arrow-psw" onclick="modify-password-dialog-${person.id}.close()">
                             <span style="color: #447E9B;">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
                                     <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-4.28 9.22a.75.75 0 0 0 0 1.06l3 3a.75.75 0 1 0 1.06-1.06l-1.72-1.72h5.69a.75.75 0 0 0 0-1.5h-5.69l1.72-1.72a.75.75 0 0 0-1.06-1.06l-3 3Z" clip-rule="evenodd" />
@@ -214,6 +214,21 @@ const loadPeople = async () => {
         `;
 
         card.appendChild(li);
+
+        const close = document.getElementById(`modify-password-dialog-${person.id}`);
+        document
+            .getElementById(`closeButton-modify-${person.id}`)
+            .addEventListener('click', () => close.close() )
+
+        const closeDelete = document.getElementById(`dialog3-${person.id}`);
+        document
+            .getElementById(`closeButton-delete-${person.id}`)
+            .addEventListener('click', () => closeDelete.close() )
+
+        const closeEditor = document.getElementById(`updateDialog-${person.id}`);
+        document
+            .getElementById(`closeButton-${person.id}`)
+            .addEventListener('click', () => closeEditor.close() )
 
         document
             .getElementById(`openButton-${person.id}`)
@@ -241,7 +256,7 @@ const loadPeople = async () => {
             if (response.status === 200) {
                 window.location.reload();
             } else {
-                let input = document.getElementById(`input-password-${person.id}`);
+                let input = document.getElementById(`password-${person.id}`);
                 input.classList.add('error');
             }
 
@@ -254,6 +269,7 @@ const loadPeople = async () => {
             const psw = {
                 'password': document.getElementById(`password-modify-${person.id}`).value
             };
+            
 
             const response = await fetch(`http://localhost:3000/personas/${person.id}/check`, {
                 method: 'POST',
@@ -275,7 +291,7 @@ const loadPeople = async () => {
                 passwordDialog.close();
                 updateDialog.showModal();
             } else {
-                let input = document.getElementById(`password-${person.id}`);
+                let input = document.getElementById(`password-modify-${person.id}`);
                 input.classList.add('error');
             }
         });
