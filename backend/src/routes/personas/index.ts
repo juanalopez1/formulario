@@ -5,11 +5,22 @@ import {
     ErrorMessageSchema,
     PersonWithOptionalFieldsSchema,
     PersonWithPasswordCheckReturnSchema,
+    PersonType,
 } from "../../tipos/persona.js";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { checkPersonStructure, checkPersonStructureIntoArray } from "../../lib/personCheck.js";
+import {
+    checkPersonStructure,
+    checkPersonStructureIntoArray,
+} from "../../lib/personCheck.js";
 import { query } from "../../services/database.js";
+
+async function checkPersonExists(id: string) {
+    const results = await query("SELECT * FROM find_user($1)", [
+        id,
+    ]);
+    return results.rows.length === 1;
+}
 
 const personas: PersonWithPasswordType[] = [
     {
@@ -28,11 +39,13 @@ const personas: PersonWithPasswordType[] = [
             surname: "RPia",
             email: "ezponjares@gmail.com",
             id: "5.563.253-7",
-            rut: 214873040084
+            rut: 214873040084,
         },
-        password: "Cris123!"
-    }
+        password: "Cris123!",
+    },
 ];
+
+console.log();
 
 const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify,
@@ -44,16 +57,13 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 200: Type.Array(Type.Ref(PersonSchema)),
             },
         },
-/* handler: async function(request, reply) {
-                  console.log(personas);
-                  const res = await query(`
-                      select
-                       * from 
-                      people
-                  `);
-                  return res.rows; esto estaba en la rama clase*/ 
         handler: async function(_request, _reply) {
-            return personas.map((val) => val.person);
+            return (
+                await query(`
+                SELECT *
+                  FROM get_curated_users();
+                `)
+            ).rows as PersonType[];
         },
     });
 
@@ -74,19 +84,29 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 return reply.status(400).send(err);
             }
 
-            const idAlreadyExists = personas.some(
-                (val) => val.person.id === personaPost.person.id,
-            );
-
-            if (idAlreadyExists) {
+            if (await checkPersonExists(personaPost.person.id)) {
                 return reply.status(400).send([{ errorMessage: "Id already exists" }]);
             }
         },
 
         handler: async function(request, reply) {
-            const personaPost = request.body;
-            personas.push(personaPost);
-            return personaPost;
+            const body = request.body;
+            await query(
+                String.raw`
+                INSERT
+                  INTO people (name, surname, email, uruguayan_id, rut, password)
+                VALUES ($1, $2, $3, $4, $5, crypt($6, gen_salt('bf')))
+                `,
+                [
+                    body.person.name,
+                    body.person.surname,
+                    body.person.email,
+                    body.person.id,
+                    body.person.rut,
+                    body.password,
+                ],
+            );
+            return body;
         },
     });
 
@@ -154,11 +174,11 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             response: {
                 200: PersonWithPasswordCheckReturnSchema,
                 400: Type.Object({
-                        statusCode: Type.Number(),
-                        code: Type.String(),
-                        error: Type.String(),
-                        message: Type.String(),
-                    }),
+                    statusCode: Type.Number(),
+                    code: Type.String(),
+                    error: Type.String(),
+                    message: Type.String(),
+                }),
             },
         },
 
