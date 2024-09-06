@@ -16,11 +16,39 @@ import {
 import { query } from "../../services/database.js";
 
 async function checkPersonExists(id: PersonType["id"]) {
-    const results = await query("SELECT * FROM find_user($1)", [
-        id,
-    ]);
-    return results.rows.length === 1;
+    return (await getPersonFromId(id)) !== undefined;
 }
+
+async function getPersonFromId(id: PersonType["id"]) {
+    const result = await query("SELECT * FROM find_user($1)", [id]);
+
+    if (result.rows.length !== 1) {
+        return undefined;
+    }
+
+    return result.rows[0] as PersonType;
+}
+
+async function searchByIdAndPassword(
+    id: PersonType["id"],
+    password: PersonWithPasswordType["password"],
+) {
+    const result = await query(
+        "SELECT * FROM search_by_id_and_password($1, $2)",
+        [id, password],
+    );
+
+    if (result.rows.length !== 1) {
+        return undefined;
+    }
+
+    return result.rows[0] as PersonType;
+}
+
+async function checkPersonPassword(
+    id: PersonType["id"],
+    password: PersonWithPasswordType["password"],
+) { }
 
 const personas: PersonWithPasswordType[] = [
     {
@@ -106,7 +134,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                     body.password,
                 ],
             );
-            return body;
+            return reply.code(200).send(body);
         },
     });
 
@@ -121,7 +149,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             }),
             response: {
                 200: Type.Ref(PersonWithPasswordSchema),
-                404: Type.Literal("Couldn't find Id"),
+                404: Type.Literal("Person with such Id and password does not exist."),
                 // TODO: This allows for other error messages to show. We should
                 // find a more ergonomic way to do this. The hard bit will be
                 // keeping type safety, I assume that will take some generic
@@ -129,7 +157,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 400: Type.Union([
                     // TODO: Also, the other literals arent in json. we should
                     // fix that.
-                    Type.Object({ message: Type.Literal("Incorrect password") }),
+                    // Type.Object({ message: Type.Literal("some message") }),
                     Type.Object({
                         statusCode: Type.Number(),
                         code: Type.String(),
@@ -141,40 +169,44 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         },
 
         preHandler: async function(request, reply) {
-            const person = personas.find(
-                (person) => person.person.id === request.params.id,
+            const person = searchByIdAndPassword(
+                request.id,
+                request.body.oldPassword,
             );
-
-            console.log(personas);
-
             if (person === undefined) {
-                return reply.status(404).send("Couldn't find Id");
-            }
-
-            const passwordIsCorrect = person.password === request.body.oldPassword;
-            console.log(person.password, request.body.oldPassword);
-
-            if (!passwordIsCorrect) {
-                return reply.code(400).send({ message: "Incorrect password" });
+                return reply
+                    .status(404)
+                    .send("Person with such Id and password does not exist.");
             }
         },
 
         handler: async function(request, reply) {
-            const myPerson = await query(`SELECT * FROM people WHERE uruguayan_id = request.params.id`);
-            const body = request.body.newValue;
+            const password = request.body.newValue.password;
+            const person = request.body.newValue.person;
+
             await query(
                 String.raw`
-                UPDATE people 
-                    SET name = body.person.name,
-                        surname = body.person.surname,
-                        email = body.person.email,
-                        uruguayan_id = body.person.uruguayan_id,
-                        rut = body.person.rut,
-                        password = body.password
-                    WHERE body.person.uruguayan_id = myPerson.person.id;`
+                UPDATE people
+                    SET name = $1,
+                        surname = $2,
+                        email = $3
+                        uruguayan_id = $4
+                        rut = $5
+                        password = $6
+                    WHERE uruguayan_id = $7;
+                `,
+                [
+                    person.name,
+                    person.surname,
+                    person.email,
+                    person.id,
+                    person.rut,
+                    password,
+                    person.id,
+                ],
             );
 
-            return request.body.newValue;
+            return reply.code(200).send(request.body.newValue);
         },
     });
 
@@ -207,26 +239,14 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 200: Type.Object({
                     correct: Type.Boolean(),
                 }),
-                404: Type.Object({
-                    message: Type.Literal("Not found"),
-                }),
             },
         },
-
-        preHandler: async function(request, reply) {
-            const person = personas.find(
-                (persona) => persona.person.id === request.params.id,
-            );
-            if (person === undefined) {
-                return reply.code(404).send({ message: "Not found" });
-            }
-        },
-
         handler: async function(request, reply) {
-            const person = personas.find(
-                (persona) => persona.person.id === request.params.id,
+            const result = await searchByIdAndPassword(
+                request.params.id,
+                request.body.password,
             );
-            return { correct: person?.password === request.body.password };
+            return { correct: result !== undefined };
         },
     });
 
