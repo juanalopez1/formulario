@@ -15,7 +15,7 @@ import {
 } from "../../lib/personCheck.js";
 import { query } from "../../services/database.js";
 
-async function checkPersonExists(id: string) {
+async function checkPersonExists(id: PersonType["id"]) {
     const results = await query("SELECT * FROM find_user($1)", [
         id,
     ]);
@@ -160,10 +160,20 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         },
 
         handler: async function(request, reply) {
-            const personIndex = personas.findIndex(
-                (person) => person.person.id === request.params.id,
-            )!;
-            personas[personIndex] = request.body.newValue;
+            const myPerson = await query(`SELECT * FROM people WHERE uruguayan_id = request.params.id`);
+            const body = request.body.newValue;
+            await query(
+                String.raw`
+                UPDATE people 
+                    SET name = body.person.name,
+                        surname = body.person.surname,
+                        email = body.person.email,
+                        uruguayan_id = body.person.uruguayan_id,
+                        rut = body.person.rut,
+                        password = body.password
+                    WHERE uruguayan_id = myPerson.person.id;`
+            );
+
             return request.body.newValue;
         },
     });
