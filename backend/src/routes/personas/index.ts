@@ -45,10 +45,10 @@ async function searchByIdAndPassword(
     return result.rows[0] as PersonType;
 }
 
-async function checkPersonPassword(
+/*async function checkPersonPassword(
     id: PersonType["id"],
     password: PersonWithPasswordType["password"],
-) { }
+) { }*/
 
 const personas: PersonWithPasswordType[] = [
     {
@@ -199,10 +199,10 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                     person.name,
                     person.surname,
                     person.email,
-                    person.id,
+                    request.id,
                     person.rut,
                     password,
-                    person.id,
+                    request.params.id,
                 ],
             );
 
@@ -268,26 +268,28 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         },
 
         preHandler: async function(request, reply) {
-            const person = personas.find(
-                (person) => person.person.id === request.params.id,
+            const person = searchByIdAndPassword(
+                request.id,
+                request.body.password,
             );
-
-            console.log(person);
-
             if (person === undefined) {
-                return reply.code(404).send("Couldn't find Id");
+                return reply
+                    .status(404)
+                    .send("Couldn't find Id");
             }
-
-            const passwordIsCorrect = person.password === request.body.password;
-
-            if (!passwordIsCorrect) {
-                return reply.badRequest("Incorrect password");
-            }
+            
         },
 
         handler: async function(request, reply) {
             const personIndex = personas.findIndex(
                 (person) => person.person.id === request.params.id,
+            );
+            await query(
+                String.raw`
+                DELETE
+                  FROM people WHERE uruguayan_id = $1
+                `,
+                [ request.params.id ],
             );
             if (personIndex !== -1) {
                 personas.splice(personIndex, 1);
