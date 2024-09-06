@@ -171,7 +171,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                         uruguayan_id = body.person.uruguayan_id,
                         rut = body.person.rut,
                         password = body.password
-                    WHERE uruguayan_id = myPerson.person.id;`
+                    WHERE body.person.uruguayan_id = myPerson.person.id;`
             );
 
             return request.body.newValue;
