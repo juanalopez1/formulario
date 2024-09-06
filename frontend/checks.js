@@ -47,7 +47,7 @@ export async function hookPersonChecks(hooks) {
         }
 
         console.log("send", values);
-        const result = await (await fetch("http://localhost:3000/personas/check", {
+        const result = await (await fetch("http://localhost/backend/personas/check", {
             body: JSON.stringify(values),
             method: "POST",
             headers: {
