@@ -72,7 +72,7 @@ const loadPeople = async () => {
     /**
      * @type {Person[]}
      */
-    personas = await (await fetch("http://localhost:3000/personas")).json();
+    personas = await (await fetch("http://localhost/backend/personas")).json();
 
     const card = document.getElementById("person-list-card-container");
     for (const i in personas) {
@@ -245,7 +245,7 @@ const loadPeople = async () => {
                 'password': document.getElementById(`password-${person.id}`).value
             };
 
-            const response = await fetch(`http://localhost:3000/personas/${person.id}`, {
+            const response = await fetch(`http://localhost/backend/personas/${person.id}`, {
                 method: 'DELETE',
                 body: JSON.stringify(psw),
                 headers: {
@@ -271,7 +271,7 @@ const loadPeople = async () => {
             };
             
 
-            const response = await fetch(`http://localhost:3000/personas/${person.id}/check`, {
+            const response = await fetch(`http://localhost/backend/personas/${person.id}/check`, {
                 method: 'POST',
                 body: JSON.stringify(psw),
                 headers: {
@@ -315,7 +315,7 @@ const loadPeople = async () => {
                     "oldPassword": passwordsDict[person.id],
                 };
 
-            const put = await fetch(`http://localhost:3000/personas/${person.id}`, {
+            const put = await fetch(`http://localhost/backend/personas/${person.id}`, {
                 method: 'PUT',
                 body: JSON.stringify(body),
                 headers: {
