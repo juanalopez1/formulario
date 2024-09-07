@@ -82,6 +82,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 200: Type.Array(Type.Ref(PersonSchema)),
             },
         },
+        onRequest: fastify.authenticate,
         handler: async function(_request, _reply) {
             return (
                 await query(`
