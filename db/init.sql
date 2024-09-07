@@ -5,19 +5,19 @@ CREATE SCHEMA public;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE TABLE public.people (
-    id       TEXT PRIMARY KEY,
     name     TEXT   NOT NULL,
     surname  TEXT   NOT NULL,
     email    TEXT   NOT NULL UNIQUE,
+    id       TEXT UNIQUE PRIMARY KEY ,
     rut      BIGINT NOT NULL UNIQUE,
     password TEXT   NOT NULL
 );
 
 CREATE TYPE curated_user AS (
-    id      TEXT,
     name    TEXT,
     surname TEXT,
     email   TEXT,
+    id      TEXT,
     rut     BIGINT
 );
 
@@ -40,7 +40,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION get_curated_users() RETURNS SETOF curated_user AS $$
 BEGIN
-    RETURN QUERY SELECT people.name, people.surname, people.email, people.id AS id, people.rut FROM public.people;
+    RETURN QUERY SELECT people.name, people.surname, people.email, people.id, people.rut FROM public.people;
 END;
 $$ LANGUAGE plpgsql;
 
