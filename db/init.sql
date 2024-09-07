@@ -54,10 +54,10 @@ $$ LANGUAGE plpgsql;
 
 INSERT
   INTO people (name, surname, email, id, rut, password)
-VALUES ('Pepito', 'Rodriguez', 'juancito@icloud.com', '5.440.395-7', 214849650014, encrypt_password('Juana123!'))
-     , ('Pepote', 'Rodriguez', 'juancito2@icloud.com', '3.803.148-1', 450303670014, encrypt_password('Pep123!'))
-     , ('Cris', 'Rpia', 'ezponjares@gmail.com', '5.563.253-7', 4503036700196, encrypt_password('Pep123!'))
-     , ( 'Juana Inés', 'López Rocca', 'juanita@gmail.com', '5.501.862-4', 123456789123
+VALUES ('Pepito', 'Rodriguez', 'juancito@icloud.com', '5.440.395-7', 215777930016, encrypt_password('Juana123!'))
+     , ('Pepote', 'Rodriguez', 'juancito2@icloud.com', '3.803.148-1', 215777930024, encrypt_password('Pepe123!'))
+     , ('Cris', 'Rpia', 'ezponjares@gmail.com', '5.563.253-7', 215777930032, encrypt_password('Pep123!'))
+     , ( 'Juana Inés', 'López Rocca', 'juanita@gmail.com', '5.501.862-4', 215777930040
        , encrypt_password('Pep123!'));
 
 SELECT *

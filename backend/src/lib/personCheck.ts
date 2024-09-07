@@ -239,13 +239,5 @@ function checkDigitRUT(rut: string): boolean {
 
     const result = (11 - (sum % 11)) % 11;
 
-    if (result < 10 && result === digit) {
-        return true;
-    }
-
-    if (result === 11 && digit === 0) {
-        return true;
-    }
-
-    return false;
+    return (result === digit) || (result === 10 && digit === 0);
 }

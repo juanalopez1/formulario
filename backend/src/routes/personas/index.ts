@@ -9,8 +9,12 @@ import {
 } from "../../tipos/persona.js";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { checkPersonStructure, checkPersonStructureIntoArray } from "../../lib/personCheck.js";
+import {
+    checkPersonStructure,
+    checkPersonStructureIntoArray,
+} from "../../lib/personCheck.js";
 import { query } from "../../services/database.js";
+import { ensureKeyArray } from "../../lib/utils.js";
 
 async function checkPersonExists(id: PersonType["id"]) {
     return (await getPersonFromId(id)) !== undefined;
@@ -96,7 +100,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             await query(
                 String.raw`
                 INSERT
-                  INTO people (name, surname, email, uruguayan_id, rut, password)
+                  INTO people (name, surname, email, id, rut, password)
                 VALUES ($1, $2, $3, $4, $5, crypt($6, gen_salt('bf')))
                 `,
                 [
@@ -118,7 +122,10 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 id: PersonSchema.properties.id,
             }),
             body: Type.Object({
-                newValue: Type.Ref(PersonWithPasswordSchema),
+                newValue: Type.Object({
+                    ...PersonWithPasswordSchema.properties,
+                    person: Type.Omit(PersonSchema, ensureKeyArray<PersonType, ["id"]>(["id"])),
+                }),
                 oldPassword: PersonWithPasswordSchema.properties.password,
             }),
             response: {
@@ -160,27 +167,31 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
 
             await query(
                 String.raw`
-                UPDATE people
-                    SET name = $1,
-                        surname = $2,
-                        email = $3
-                        uruguayan_id = $4
-                        rut = $5
-                        password = $6
-                    WHERE uruguayan_id = $7;
+                    UPDATE people
+                       SET name = $1
+                         , surname = $2
+                         , email = $3
+                         , rut = $4
+                         , password = $5
+                     WHERE id = $6;
                 `,
                 [
                     person.name,
                     person.surname,
                     person.email,
-                    request.id,
                     person.rut,
                     password,
                     request.params.id,
                 ],
             );
 
-            return reply.code(200).send(request.body.newValue);
+            return reply.code(200).send({
+                ...request.body.newValue,
+                person: {
+                    ...request.body.newValue.person,
+                    id: request.params.id,
+                }
+            });
         },
     });
 
@@ -215,7 +226,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 }),
             },
         },
-        handler: async function(request, reply) {
+        handler: async function(request, _reply) {
             const result = await searchByIdAndPassword(
                 request.params.id,
                 request.body.password,
@@ -242,35 +253,31 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         },
 
         preHandler: async function(request, reply) {
-            const person = searchByIdAndPassword(
-                request.id,
-                request.body.password,
-            );
+            const person = searchByIdAndPassword(request.id, request.body.password);
             if (person === undefined) {
-                return reply
-                    .status(404)
-                    .send("Couldn't find Id");
+                return reply.status(404).send("Couldn't find Id");
             }
-            
         },
 
         handler: async function(request, reply) {
-            const result = (await query(
-                String.raw`
+            const result = (
+                await query(
+                    String.raw`
                       WITH deleted AS (DELETE FROM people WHERE id = $1 RETURNING 1)
                     SELECT COUNT(*) AS deleted_rows
                       FROM deleted;
                 `,
-                [ request.params.id ],
-            )).rows[0] as { deleted_rows: string };
-
-            console.log(result.deleted_rows, typeof result.deleted_rows);
+                    [request.params.id],
+                )
+            ).rows[0] as { deleted_rows: string };
 
             switch (result.deleted_rows) {
                 case "0":
                     return reply.code(404).send("Couldn't find Id");
                 case "1":
-                    return reply.code(200).send({ message: "Person deleted successfully"});
+                    return reply
+                        .code(200)
+                        .send({ message: "Person deleted successfully" });
                 default:
                     throw `Deleted ${result.deleted_rows} rows.`;
             }
