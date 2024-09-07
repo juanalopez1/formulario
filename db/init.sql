@@ -8,7 +8,7 @@ CREATE TABLE public.people (
     name     TEXT   NOT NULL,
     surname  TEXT   NOT NULL,
     email    TEXT   NOT NULL UNIQUE,
-    id       TEXT UNIQUE PRIMARY KEY ,
+    id       TEXT UNIQUE PRIMARY KEY,
     rut      BIGINT NOT NULL UNIQUE,
     password TEXT   NOT NULL
 );
@@ -97,3 +97,7 @@ $$ LANGUAGE plpgsql;
 
 SELECT *
   FROM search_by_id_and_password('5.501.862-4', 'Juana123!');
+
+  WITH deleted AS (DELETE FROM people WHERE id = '5.501.862-4' RETURNING 1)
+SELECT COUNT(*) AS deleted_rows
+  FROM deleted;

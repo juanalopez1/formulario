@@ -47,29 +47,6 @@ async function searchByIdAndPassword(
     password: PersonWithPasswordType["password"],
 ) { }*/
 
-const personas: PersonWithPasswordType[] = [
-    {
-        person: {
-            name: "Juan",
-            surname: "Pérez",
-            email: "juan.perez@example.com",
-            id: "3.456.789-0",
-            rut: 123456789123,
-        },
-        password: "Juana123!",
-    },
-    {
-        person: {
-            name: "Cris",
-            surname: "RPia",
-            email: "ezponjares@gmail.com",
-            id: "5.563.253-7",
-            rut: 214873040084,
-        },
-        password: "Cris123!",
-    },
-];
-
 console.log();
 
 const personaRoute: FastifyPluginAsyncTypebox = async (
@@ -278,21 +255,24 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         },
 
         handler: async function(request, reply) {
-            const personIndex = personas.findIndex(
-                (person) => person.person.id === request.params.id,
-            );
-            await query(
+            const result = (await query(
                 String.raw`
-                DELETE
-                  FROM people WHERE uruguayan_id = $1
+                      WITH deleted AS (DELETE FROM people WHERE id = $1 RETURNING 1)
+                    SELECT COUNT(*) AS deleted_rows
+                      FROM deleted;
                 `,
                 [ request.params.id ],
-            );
-            if (personIndex !== -1) {
-                personas.splice(personIndex, 1);
-                return reply.send({ message: "Person deleted successfully" });
-            } else {
-                return reply.notFound("Couldn't find person with such an Id");
+            )).rows[0] as { deleted_rows: string };
+
+            console.log(result.deleted_rows, typeof result.deleted_rows);
+
+            switch (result.deleted_rows) {
+                case "0":
+                    return reply.code(404).send("Couldn't find Id");
+                case "1":
+                    return reply.code(200).send({ message: "Person deleted successfully"});
+                default:
+                    throw `Deleted ${result.deleted_rows} rows.`;
             }
         },
     });
