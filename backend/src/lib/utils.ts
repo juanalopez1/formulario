@@ -56,7 +56,7 @@ export function ensureKey<T extends object>() {
  * @example
  * type t = { id: number; email: string };
  * ; // Use it like this
- * const a = ensureKeyArray<t>()(["id", "email"] as const); // a => [""]
+ * const a = ensureKeyArray<t>()(["id", "email"] as const); // a => ["id", "email"]
  * ; // Not like this
  * const b = ensureKeyArray<t>()(["id", "email"]); // a => ("id" | "email")[];
  * ; // Similar problem with just one element
