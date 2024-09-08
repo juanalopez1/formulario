@@ -14,7 +14,7 @@ CREATE TABLE public.people (
 );
 
 CREATE VIEW curated_user AS
-SELECT name AS "name!", surname AS "surname!", email AS "email!", id AS "id!", rut AS "rut!"
+SELECT name, surname, email, id, rut
   FROM people;
 
 CREATE OR REPLACE FUNCTION encrypt_password(
