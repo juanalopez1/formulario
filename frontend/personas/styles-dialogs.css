@@ -181,7 +181,7 @@ dialog {
     border: 3px solid red;
 }
 
-/*.error-msg {
+.error-msg {
     margin-top: 0px;
     margin-bottom: 0px;
     font-size: 0.8rem;
@@ -189,4 +189,6 @@ dialog {
     text-align: left;
     width: 100%;
     display: block;
+    margin-left: 0.4rem;
+    font-weight: normal;
 }
