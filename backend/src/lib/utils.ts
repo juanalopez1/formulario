@@ -1,4 +1,3 @@
-import { PersonType } from "../tipos/persona.js";
 
 export function exhaustiveMatchingGuard(_: never): never {
     throw new Error("Key should not have this value");

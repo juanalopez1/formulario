@@ -297,7 +297,6 @@ const loadPeople = async () => {
         save.addEventListener('click', async () => {
             const defaultIfEmpty = (content, key) => content === "" ? person[key] : content;
 
-            alert(person.id);
             const body ={
                     "newValue": {
                         "person": {
