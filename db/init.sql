@@ -13,13 +13,9 @@ CREATE TABLE public.people (
     password TEXT   NOT NULL
 );
 
-CREATE TYPE curated_user AS (
-    name    TEXT,
-    surname TEXT,
-    email   TEXT,
-    id      TEXT,
-    rut     BIGINT
-);
+CREATE VIEW curated_user AS
+SELECT name AS "name!", surname AS "surname!", email AS "email!", id AS "id!", rut AS "rut!"
+  FROM people;
 
 CREATE OR REPLACE FUNCTION encrypt_password(
     password TEXT
@@ -38,17 +34,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION get_curated_users() RETURNS SETOF curated_user AS $$
-BEGIN
-    RETURN QUERY SELECT people.name, people.surname, people.email, people.id, people.rut FROM public.people;
-END;
-$$ LANGUAGE plpgsql;
-
 CREATE OR REPLACE FUNCTION find_user(
     user_id TEXT
 ) RETURNS SETOF curated_user AS $$
 BEGIN
-    RETURN QUERY SELECT * FROM get_curated_users() u WHERE u.id = user_id;
+    RETURN QUERY SELECT * FROM curated_user u WHERE u.id = user_id;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -59,9 +49,6 @@ VALUES ('Pepito', 'Rodriguez', 'juancito@icloud.com', '5.440.395-7', 21577793001
      , ('Cris', 'Rpia', 'ezponjares@gmail.com', '5.563.253-7', 215777930032, encrypt_password('Pep123!'))
      , ( 'Juana Inés', 'López Rocca', 'juanita@gmail.com', '5.501.862-4', 215777930040
        , encrypt_password('Pep123!'));
-
-SELECT *
-  FROM get_curated_users();
 
 SELECT *
   FROM find_user('5.563.253-7');

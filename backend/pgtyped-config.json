@@ -1,0 +1,17 @@
+{
+    "transforms": [{
+        "mode": "sql",
+        "include": "**/*.sql",
+        "emitTemplate": "{{dir}}/{{name}}.queries.ts"
+    }],
+    "srcDir": "./src/queries/",
+    "failOnError": true,
+    "camelCaseColumnNames": false,
+    "db": {
+        "host": "localhost",
+        "user": "admin",
+        "dbName": "personas",
+        "password": "admin",
+        "port": 5434
+    }
+}

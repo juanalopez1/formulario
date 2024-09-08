@@ -13,37 +13,40 @@ import {
     checkPersonStructure,
     checkPersonStructureIntoArray,
 } from "../../lib/personCheck.js";
-import { query } from "../../services/database.js";
+import { runPreparedQuery } from "../../services/database.js";
 import { ensureKeyArray } from "../../lib/utils.js";
+import * as Queries from "../../queries/queries.queries.js";
 
 async function checkPersonExists(id: PersonType["id"]) {
     return (await getPersonFromId(id)) !== undefined;
 }
 
 async function getPersonFromId(id: PersonType["id"]) {
-    const result = await query("SELECT * FROM find_user($1)", [id]);
+    const result = await runPreparedQuery(Queries.getPersonFromId, {
+        id: id,
+    });
 
-    if (result.rows.length !== 1) {
+    if (result.length !== 1) {
         return undefined;
     }
 
-    return result.rows[0] as PersonType;
+    return result[0];
 }
 
 async function searchByIdAndPassword(
     id: PersonType["id"],
     password: PersonWithPasswordType["password"],
 ) {
-    const result = await query(
-        "SELECT * FROM search_by_id_and_password($1, $2)",
-        [id, password],
-    );
+    const result = await runPreparedQuery(Queries.getPersonByIdAndPassword, {
+        id: id,
+        password: password,
+    });
 
-    if (result.rows.length !== 1) {
+    if (result.length !== 1) {
         return undefined;
     }
 
-    return result.rows[0] as PersonType;
+    return result[0];
 }
 
 const personaRoute: FastifyPluginAsyncTypebox = async (
@@ -57,12 +60,11 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             },
         },
         handler: async function(_request, _reply) {
-            return (
-                await query(`
-                SELECT *
-                  FROM get_curated_users();
-                `)
-            ).rows as PersonType[];
+            const result = await runPreparedQuery(Queries.getCuratedPeople, {});
+            return result.map((r) => ({
+                ...r,
+                rut: parseInt(r.rut),
+            }));
         },
     });
 
@@ -90,21 +92,10 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
 
         handler: async function(request, reply) {
             const body = request.body;
-            await query(
-                String.raw`
-                INSERT
-                  INTO people (name, surname, email, id, rut, password)
-                VALUES ($1, $2, $3, $4, $5, crypt($6, gen_salt('bf')))
-                `,
-                [
-                    body.person.name,
-                    body.person.surname,
-                    body.person.email,
-                    body.person.id,
-                    body.person.rut,
-                    body.password,
-                ],
-            );
+            await runPreparedQuery(Queries.createNewPerson, {
+                ...body.person,
+                password: body.password,
+            });
             return reply.code(200).send(body);
         },
     });
@@ -158,28 +149,11 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         },
 
         handler: async function(request, reply) {
-            const password = request.body.newValue.password;
-            const person = request.body.newValue.person;
-
-            await query(
-                String.raw`
-                    UPDATE people
-                       SET name = $1
-                         , surname = $2
-                         , email = $3
-                         , rut = $4
-                         , password = $5
-                     WHERE id = $6;
-                `,
-                [
-                    person.name,
-                    person.surname,
-                    person.email,
-                    person.rut,
-                    password,
-                    request.params.id,
-                ],
-            );
+            await runPreparedQuery(Queries.updatePerson, {
+                ...request.body.newValue.person,
+                id: request.params.id,
+                password: request.body.newValue.password,
+            });
 
             return reply.code(200).send({
                 ...request.body.newValue,
@@ -256,18 +230,11 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         },
 
         handler: async function(request, reply) {
-            const result = (
-                await query(
-                    String.raw`
-                      WITH deleted AS (DELETE FROM people WHERE id = $1 RETURNING 1)
-                    SELECT COUNT(*) AS deleted_rows
-                      FROM deleted;
-                `,
-                    [request.params.id],
-                )
-            ).rows[0] as { deleted_rows: string };
+            const result = await runPreparedQuery(Queries.deletePerson, {
+                id: request.params.id,
+            });
 
-            switch (result.deleted_rows) {
+            switch (result[0].deleted_rows) {
                 case "0":
                     return reply.code(404).send("Couldn't find Id");
                 case "1":
@@ -275,7 +242,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                         .code(200)
                         .send({ message: "Person deleted successfully" });
                 default:
-                    throw `Deleted ${result.deleted_rows} rows.`;
+                    throw `Deleted ${result[0].deleted_rows} rows.`;
             }
         },
     });
