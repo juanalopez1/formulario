@@ -116,33 +116,34 @@ const loadPeople = async () => {
                         <div class="inputs-container">
                             <label>Nombre</label>
                             <input id="voidName-${person.id}" type="text" value="${person.name}" />
-                            <p id="voidMessage-name-${person.id}"></p>
                         </div>
+                        <p class='error-msg' id="voidMessage-name-${person.id}"></p>
                         <div class="inputs-container">
                             <label>Apellido</label>
                             <input id="voidSurname-${person.id}" type="text" value="${person.surname}" />
-                            <p id="voidMessage-surname-${person.id}"></p>
                         </div>
+                        <p class='error-msg' id="voidMessage-surname-${person.id}"></p>
                         <div class="inputs-container">
                             <label>Nuevo email</label>
                             <input id="voidEmail-${person.id}" type="email" value="${person.email}" />
-                            <p id="voidMessage-email-${person.id}"></p>
                         </div>
+                        <p class='error-msg' id="voidMessage-email-${person.id}"></p>
                         <div class="inputs-container">
                             <label>Nueva contraseña</label>
                             <input id="voidPsw1-${person.id}" type="password" value="" />
-                            <p id="voidMessage-pwd1-${person.id}"></p>
                         </div>
+                        <p class='error-msg' id="voidMessage-pwd1-${person.id}"></p>
                         <div class="inputs-container">
                             <label>Repetir contraseña</label>
                             <input id="voidPsw2-${person.id}" type="password" value="" />
-                            <p id="voidMessage-pwd2-${person.id}"></p>
                         </div>
+                        <p class='error-msg' id="voidMessage-pwd2-${person.id}"></p>
                         <div class="inputs-container">
                             <label>RUT</label>
                             <input id="voidRut-${person.id}" type="text" value="${person.rut}" />
-                            <p id="voidMessage-rut-${person.id}"></p>
                         </div>
+                        <p class='error-msg' id="voidMessage-rut-${person.id}"></p>
+
                     </form>
                     <div class="buttons">
                         <button id="sendButton-${person.id}" class="for-buttons">

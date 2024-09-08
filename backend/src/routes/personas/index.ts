@@ -36,7 +36,7 @@ async function searchByIdAndPassword(
 ) {
     const result = await query(
         "SELECT * FROM search_by_id_and_password($1, $2)",
-        [id, password],
+        [],
     );
 
     if (result.rows.length !== 1) {
