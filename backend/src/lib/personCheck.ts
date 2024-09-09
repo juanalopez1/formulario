@@ -222,8 +222,7 @@ function checkRut(rut: number): ErrorMessage | undefined {
         };
     }
 
-    return checkDigitRUT(stringifiedRut) ? { errorMessage: "Rut inválido." }
-        : undefined;
+    return checkDigitRUT(stringifiedRut) ? undefined : { errorMessage: "Rut inválido." };
 }
 
 function checkDigitRUT(rut: string): boolean {
