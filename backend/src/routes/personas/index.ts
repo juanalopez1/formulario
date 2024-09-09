@@ -36,7 +36,7 @@ async function searchByIdAndPassword(
 ) {
     const result = await query(
         "SELECT * FROM search_by_id_and_password($1, $2)",
-        [id, password],
+        [],
     );
 
     if (result.rows.length !== 1) {
@@ -45,13 +45,6 @@ async function searchByIdAndPassword(
 
     return result.rows[0] as PersonType;
 }
-
-/*async function checkPersonPassword(
-    id: PersonType["id"],
-    password: PersonWithPasswordType["password"],
-) { }*/
-
-console.log();
 
 const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify,
@@ -124,7 +117,10 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             body: Type.Object({
                 newValue: Type.Object({
                     ...PersonWithPasswordSchema.properties,
-                    person: Type.Omit(PersonSchema, ensureKeyArray<PersonType, ["id"]>(["id"])),
+                    person: Type.Omit(
+                        PersonSchema,
+                        ensureKeyArray<PersonType>()(["id"] as const),
+                    ),
                 }),
                 oldPassword: PersonWithPasswordSchema.properties.password,
             }),
@@ -190,7 +186,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 person: {
                     ...request.body.newValue.person,
                     id: request.params.id,
-                }
+                },
             });
         },
     });
