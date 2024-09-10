@@ -27,9 +27,7 @@ UPDATE people
      , password = :password!
  WHERE id = :id!;
 
-/*
-    @name deletePerson
-*/
+/* @name deletePerson */
   WITH deleted AS (DELETE FROM people WHERE id = :id! RETURNING 1)
 SELECT COUNT(*) AS deleted_rows
   FROM deleted;
