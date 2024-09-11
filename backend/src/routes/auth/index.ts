@@ -15,7 +15,8 @@ const auth : FastifyPluginAsyncTypebox = async (fastify, opts) : Promise<void> =
             if(request.body.email !== 'juanaxlopez1@gmail.com' || request.body.password !== 'Juana123!'){
                 reply.unauthorized("Invalid email or password");
             }
-            const token = fastify.jwt.sign({algo:'algo'});
+            const token = fastify.jwt.sign({algo:'algo'}); // ese algo es el payload!!! 
+            // validar el token va en onrequest
             reply.send({token})
         }
     });
