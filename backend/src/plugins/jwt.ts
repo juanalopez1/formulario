@@ -1,6 +1,6 @@
 import jwt, { FastifyJWTOptions } from '@fastify/jwt';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import fp from 'fastify-plugin';
+import fp from 'fastify-plugin'
 
 const jwtOptions : FastifyJWTOptions = {
     secret : 'MYSUPERSECRET',
