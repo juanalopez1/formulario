@@ -10,10 +10,10 @@ services:
     build: ./backend
     command: sh -c "npm install && npm run dev"
     environment:
-      - PG_DATABASE=${DB_DATABASE}
-      - PG_USER=${DB_USER}
-      - PG_PASSWORD=${DB_PASSWORD}
-      - PG_HOST=database
+      - PGDATABASE=${DB_DATABASE}
+      - PGUSER=${DB_USER}
+      - PGPASSWORD=${DB_PASSWORD}
+      - PGHOST=database
     volumes:
       - ./backend:/backend
 
@@ -29,6 +29,7 @@ services:
       - POSTGRES_DB=${DB_DATABASE}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_HOST=${DB_HOST}
 
   proxy:
     image: nginx:latest

@@ -1,13 +1,7 @@
 import pg from "pg";
 const { Pool } = pg;
 
-const pool = new Pool({
-    host: "database",
-    database: "personas",
-    user: "admin",
-    password: "admin",
-    port: 5432,
-});
+const pool = new Pool();
 
 export const query = async (
     text: string,
