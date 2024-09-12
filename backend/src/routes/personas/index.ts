@@ -34,13 +34,14 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify,
     _opts,
 ): Promise<void> => {
+
     fastify.get("/", {
+        onRequest: fastify.authenticate,
         schema: {
             response: {
                 200: Type.Array(Type.Ref(PersonSchema)),
             },
         },
-        onRequest: fastify.authenticate,
         handler: async function(_request, _reply) {
             return (
                 await query(`
@@ -52,6 +53,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     });
 
     fastify.put("/:id", {
+        onRequest: fastify.authenticate,
         schema: {
             params: Type.Object({
                 id: PersonSchema.properties.id,
@@ -98,7 +100,6 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                     .send("Person with such Id and password does not exist.");
             }
         },
-        onRequest: fastify.authenticate,
         handler: async function(request, reply) {
             const password = request.body.newValue.password;
             const person = request.body.newValue.person;
@@ -134,6 +135,8 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     });
 
     fastify.post("/check", {
+        // The token is not required for this route.
+        onRequest: undefined,
         schema: {
             body: Type.Ref(PersonWithOptionalFieldsSchema),
             response: {
@@ -153,6 +156,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     });
 
     fastify.post("/:id/check", {
+        onRequest: fastify.authenticate,
         schema: {
             params: Type.Object({ id: PersonSchema.properties.id }),
             body: Type.Object({
@@ -174,6 +178,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     });
 
     fastify.delete("/:id", {
+        onRequest: fastify.authenticate,
         schema: {
             params: Type.Object({
                 id: PersonSchema.properties.id,
@@ -202,7 +207,6 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
              }
             
          },
-        onRequest: fastify.authenticate,
         handler: async function(request, reply) {
             const result = (
                 await query(
