@@ -2,7 +2,6 @@ import {
     PersonWithPasswordSchema,
     PersonSchema,
     PersonWithPasswordType,
-    ErrorMessageSchema,
     PersonWithOptionalFieldsSchema,
     PersonWithPasswordCheckReturnSchema,
     PersonType,
@@ -11,24 +10,9 @@ import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import {
     checkPersonStructure,
-    checkPersonStructureIntoArray,
 } from "../../lib/personCheck.js";
 import { query } from "../../services/database.js";
 import { ensureKeyArray } from "../../lib/utils.js";
-
-async function checkPersonExists(id: PersonType["id"]) {
-    return (await getPersonFromId(id)) !== undefined;
-}
-
-async function getPersonFromId(id: PersonType["id"]) {
-    const result = await query("SELECT * FROM find_user($1)", [id]);
-
-    if (result.rows.length !== 1) {
-        return undefined;
-    }
-
-    return result.rows[0] as PersonType;
-}
 
 async function searchByIdAndPassword(
     id: PersonType["id"],
@@ -64,49 +48,6 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                   FROM get_curated_users();
                 `)
             ).rows as PersonType[];
-        },
-    });
-
-    fastify.post("/", {
-        schema: {
-            body: Type.Ref(PersonWithPasswordSchema),
-            response: {
-                200: Type.Ref(PersonWithPasswordSchema),
-                400: Type.Array(Type.Ref(ErrorMessageSchema)),
-            },
-        },
-        preHandler: async function(request, reply) {
-            const personaPost = request.body;
-
-            const err = checkPersonStructureIntoArray(request.body);
-
-            if (err.length !== 0) {
-                return reply.status(400).send(err);
-            }
-
-            if (await checkPersonExists(personaPost.person.id)) {
-                return reply.status(400).send([{ errorMessage: "Id already exists" }]);
-            }
-        },
-
-        handler: async function(request, reply) {
-            const body = request.body;
-            await query(
-                String.raw`
-                INSERT
-                  INTO people (name, surname, email, id, rut, password)
-                VALUES ($1, $2, $3, $4, $5, crypt($6, gen_salt('bf')))
-                `,
-                [
-                    body.person.name,
-                    body.person.surname,
-                    body.person.email,
-                    body.person.id,
-                    body.person.rut,
-                    body.password,
-                ],
-            );
-            return reply.code(200).send(body);
         },
     });
 
