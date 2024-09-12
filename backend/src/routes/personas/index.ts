@@ -9,8 +9,12 @@ import {
 } from "../../tipos/persona.js";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import { checkPersonStructure, checkPersonStructureIntoArray } from "../../lib/personCheck.js";
+import {
+    checkPersonStructure,
+    checkPersonStructureIntoArray,
+} from "../../lib/personCheck.js";
 import { query } from "../../services/database.js";
+import { ensureKeyArray } from "../../lib/utils.js";
 
 async function checkPersonExists(id: PersonType["id"]) {
     return (await getPersonFromId(id)) !== undefined;
@@ -32,7 +36,7 @@ async function searchByIdAndPassword(
 ) {
     const result = await query(
         "SELECT * FROM search_by_id_and_password($1, $2)",
-        [id, password],
+        [id,password],
     );
 
     if (result.rows.length !== 1) {
@@ -41,36 +45,6 @@ async function searchByIdAndPassword(
 
     return result.rows[0] as PersonType;
 }
-
-/*async function checkPersonPassword(
-    id: PersonType["id"],
-    password: PersonWithPasswordType["password"],
-) { }*/
-
-const personas: PersonWithPasswordType[] = [
-    {
-        person: {
-            name: "Juan",
-            surname: "Pérez",
-            email: "juan.perez@example.com",
-            id: "3.456.789-0",
-            rut: 123456789123,
-        },
-        password: "Juana123!",
-    },
-    {
-        person: {
-            name: "Cris",
-            surname: "RPia",
-            email: "ezponjares@gmail.com",
-            id: "5.563.253-7",
-            rut: 214873040084,
-        },
-        password: "Cris123!",
-    },
-];
-
-console.log();
 
 const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify,
@@ -120,7 +94,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             await query(
                 String.raw`
                 INSERT
-                  INTO people (name, surname, email, uruguayan_id, rut, password)
+                  INTO people (name, surname, email, id, rut, password)
                 VALUES ($1, $2, $3, $4, $5, crypt($6, gen_salt('bf')))
                 `,
                 [
@@ -142,7 +116,13 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 id: PersonSchema.properties.id,
             }),
             body: Type.Object({
-                newValue: Type.Ref(PersonWithPasswordSchema),
+                newValue: Type.Object({
+                    ...PersonWithPasswordSchema.properties,
+                    person: Type.Omit(
+                        PersonSchema,
+                        ensureKeyArray<PersonType>()(["id"] as const),
+                    ),
+                }),
                 oldPassword: PersonWithPasswordSchema.properties.password,
             }),
             response: {
@@ -184,27 +164,31 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
 
             await query(
                 String.raw`
-                UPDATE people
-                    SET name = $1,
-                        surname = $2,
-                        email = $3
-                        uruguayan_id = $4
-                        rut = $5
-                        password = $6
-                    WHERE uruguayan_id = $7;
+                    UPDATE people
+                       SET name = $1
+                         , surname = $2
+                         , email = $3
+                         , rut = $4
+                         , password = $5
+                     WHERE id = $6;
                 `,
                 [
                     person.name,
                     person.surname,
                     person.email,
-                    request.id,
                     person.rut,
                     password,
                     request.params.id,
                 ],
             );
 
-            return reply.code(200).send(request.body.newValue);
+            return reply.code(200).send({
+                ...request.body.newValue,
+                person: {
+                    ...request.body.newValue.person,
+                    id: request.params.id,
+                },
+            });
         },
     });
 
@@ -239,7 +223,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 }),
             },
         },
-        handler: async function(request, reply) {
+        handler: async function(request, _reply) {
             const result = await searchByIdAndPassword(
                 request.params.id,
                 request.body.password,
@@ -264,7 +248,8 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 400: Type.Literal("Incorrect password"),
             },
         },
-         preHandler: async function(request, reply) {
+        
+        preHandler: async function(request, reply) {
              const person = searchByIdAndPassword(
                  request.id,
                  request.body.password,
@@ -278,21 +263,26 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
          },
         onRequest: fastify.authenticate,
         handler: async function(request, reply) {
-            const personIndex = personas.findIndex(
-                (person) => person.person.id === request.params.id,
-            );
-            await query(
-                String.raw`
-                DELETE
-                  FROM people WHERE uruguayan_id = $1
+            const result = (
+                await query(
+                    String.raw`
+                      WITH deleted AS (DELETE FROM people WHERE id = $1 RETURNING 1)
+                    SELECT COUNT(*) AS deleted_rows
+                      FROM deleted;
                 `,
-                [ request.params.id ],
-            );
-            if (personIndex !== -1) {
-                personas.splice(personIndex, 1);
-                return reply.send({ message: "Person deleted successfully" });
-            } else {
-                return reply.notFound("Couldn't find person with such an Id");
+                    [request.params.id],
+                )
+            ).rows[0] as { deleted_rows: string };
+
+            switch (result.deleted_rows) {
+                case "0":
+                    return reply.code(404).send("Couldn't find Id");
+                case "1":
+                    return reply
+                        .code(200)
+                        .send({ message: "Person deleted successfully" });
+                default:
+                    throw `Deleted ${result.deleted_rows} rows.`;
             }
         },
     });

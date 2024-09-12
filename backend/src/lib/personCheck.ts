@@ -119,10 +119,12 @@ export function checkPersonStructure(
                             }
                         },
                         rut: () => {
+                            console.log("arriba", checkRut(personWithPassword.person!.rut!))
                             const rutCheck
                                 = checkRut(personWithPassword.person!.rut!);
 
                             if (rutCheck) {
+                                console.log("entre al if")
                                 output.person ??= {};
                                 output.person.rut = rutCheck;
                                 return true;
@@ -215,15 +217,15 @@ function checkDigit(id: string): boolean {
 function checkRut(rut: number): ErrorMessage | undefined {
     const stringifiedRut = rut.toString(10);
     console.log(rut);
-
     if (stringifiedRut.length !== 12) {
         return {
             errorMessage: "Un rut debe tener 12 dígitos.",
         };
     }
 
-    return checkDigitRUT(stringifiedRut) ? { errorMessage: "Rut inválido." }
-        : undefined;
+
+    return checkDigitRUT(stringifiedRut) ? undefined
+        : { errorMessage: "Rut inválido." };
 }
 
 function checkDigitRUT(rut: string): boolean {
@@ -238,14 +240,6 @@ function checkDigitRUT(rut: string): boolean {
     }
 
     const result = (11 - (sum % 11)) % 11;
-
-    if (result < 10 && result === digit) {
-        return true;
-    }
-
-    if (result === 11 && digit === 0) {
-        return true;
-    }
-
-    return false;
+    return ((result === digit) || (result === 10 && digit === 0));
 }
+

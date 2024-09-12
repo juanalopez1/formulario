@@ -116,38 +116,34 @@ const loadPeople = async () => {
                         <div class="inputs-container">
                             <label>Nombre</label>
                             <input id="voidName-${person.id}" type="text" value="${person.name}" />
-                            <p id="voidMessage-name-${person.id}"></p>
                         </div>
+                        <p class='error-msg' id="voidMessage-name-${person.id}"></p>
                         <div class="inputs-container">
                             <label>Apellido</label>
                             <input id="voidSurname-${person.id}" type="text" value="${person.surname}" />
-                            <p id="voidMessage-surname-${person.id}"></p>
                         </div>
-                        <div class="inputs-container">
-                            <label>Cédula</label>
-                            <input id="voidId-${person.id}" type="text" value="${person.id}" />
-                            <p id="voidMessage-id-${person.id}"></p>
-                        </div>
+                        <p class='error-msg' id="voidMessage-surname-${person.id}"></p>
                         <div class="inputs-container">
                             <label>Nuevo email</label>
                             <input id="voidEmail-${person.id}" type="email" value="${person.email}" />
-                            <p id="voidMessage-email-${person.id}"></p>
                         </div>
+                        <p class='error-msg' id="voidMessage-email-${person.id}"></p>
                         <div class="inputs-container">
                             <label>Nueva contraseña</label>
                             <input id="voidPsw1-${person.id}" type="password" value="" />
-                            <p id="voidMessage-pwd1-${person.id}"></p>
                         </div>
+                        <p class='error-msg' id="voidMessage-pwd1-${person.id}"></p>
                         <div class="inputs-container">
                             <label>Repetir contraseña</label>
                             <input id="voidPsw2-${person.id}" type="password" value="" />
-                            <p id="voidMessage-pwd2-${person.id}"></p>
                         </div>
+                        <p class='error-msg' id="voidMessage-pwd2-${person.id}"></p>
                         <div class="inputs-container">
                             <label>RUT</label>
                             <input id="voidRut-${person.id}" type="text" value="${person.rut}" />
-                            <p id="voidMessage-rut-${person.id}"></p>
                         </div>
+                        <p class='error-msg' id="voidMessage-rut-${person.id}"></p>
+
                     </form>
                     <div class="buttons">
                         <button id="sendButton-${person.id}" class="for-buttons">
@@ -301,12 +297,12 @@ const loadPeople = async () => {
         save.addEventListener('click', async () => {
             const defaultIfEmpty = (content, key) => content === "" ? person[key] : content;
 
+            alert(person.id);
             const body ={
                     "newValue": {
                         "person": {
                             "name": defaultIfEmpty(document.getElementById(`voidName-${person.id}`).value, "name"),
                             "surname": defaultIfEmpty(document.getElementById(`voidSurname-${person.id}`).value, "surname"),
-                            "id": defaultIfEmpty(document.getElementById(`voidId-${person.id}`).value, "id"),
                             "email": defaultIfEmpty(document.getElementById(`voidEmail-${person.id}`).value, "email"),
                             "rut": defaultIfEmpty(document.getElementById(`voidRut-${person.id}`).value, "rut")
                         },
@@ -315,7 +311,7 @@ const loadPeople = async () => {
                     "oldPassword": passwordsDict[person.id],
                 };
 
-            const put = await fetch(`http://localhost/backend/personas/${person.id}`, {
+            await fetch(`http://localhost/backend/personas/${person.id}`, {
                 method: 'PUT',
                 body: JSON.stringify(body),
                 headers: {
@@ -338,14 +334,9 @@ const loadPeople = async () => {
                 "handler": Checks.setErrorMessage(document.getElementById(`voidMessage-surname-${person.id}`)),
                 "dataTransformer": (v) => v,
             },
-            "id": {
-                input: document.getElementById(`voidId-${person.id}`),
-                "handler": Checks.setErrorMessage(document.getElementById(`voidMessage-id-${person.id}`)),
-                "dataTransformer": (v) => v,
-            },
             "email": {
                 input: document.getElementById(`voidEmail-${person.id}`),
-                "handler": Checks.setErrorMessage(document.getElementById(`voidMessage-id-${person.id}`)),
+                "handler": Checks.setErrorMessage(document.getElementById(`voidMessage-email-${person.id}`)),
                 "dataTransformer": (v) => v,
             },
             "password": {
