@@ -56,6 +56,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 200: Type.Array(Type.Ref(PersonSchema)),
             },
         },
+        onRequest: fastify.authenticate,
         handler: async function(_request, _reply) {
             return (
                 await query(`
@@ -156,7 +157,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                     .send("Person with such Id and password does not exist.");
             }
         },
-
+        onRequest: fastify.authenticate,
         handler: async function(request, reply) {
             const password = request.body.newValue.password;
             const person = request.body.newValue.person;
@@ -247,14 +248,20 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 400: Type.Literal("Incorrect password"),
             },
         },
-
+        
         preHandler: async function(request, reply) {
-            const person = searchByIdAndPassword(request.id, request.body.password);
-            if (person === undefined) {
-                return reply.status(404).send("Couldn't find Id");
-            }
-        },
-
+             const person = searchByIdAndPassword(
+                 request.id,
+                 request.body.password,
+             );
+             if (person === undefined) {
+                 return reply
+                     .status(404)
+                     .send("Couldn't find Id");
+             }
+            
+         },
+        onRequest: fastify.authenticate,
         handler: async function(request, reply) {
             const result = (
                 await query(
