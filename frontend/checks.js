@@ -12,15 +12,16 @@
  * @property {ErrorMessageHook} [surname]
  * @property {ErrorMessageHook} [id]
  * @property {ErrorMessageHook} [password]
+ * @property {ErrorMessageHook} [repeatPassword]
  * @property {ErrorMessageHook} [rut]
  */
 
 /** @param {PersonHooks} hooks */
 export async function hookPersonChecks(hooks) {
-    // For every element passed, in in their blur notify everyone whether their
+    // For every element passed, in their blur notify everyone whether their
     // values are still correct.
     /** @type {(element: HTMLInputElement) => void} */
-    const listener = async (element) => {
+    const listener = async (_element) => {
         const values = {
             person: {}
         };
@@ -30,7 +31,6 @@ export async function hookPersonChecks(hooks) {
                 /** @type {ErrorMessageHook} */
                 const hook = hooks[key];
 
-                console.log("hook", hook.input.value, key);
                 /** @type {HTMLInputElement} */
                 hook.input
 
@@ -46,7 +46,6 @@ export async function hookPersonChecks(hooks) {
             }
         }
 
-        console.log("send", values);
         const result = await (await fetch("http://localhost/backend/personas/check", {
             body: JSON.stringify(values),
             method: "POST",
@@ -55,15 +54,15 @@ export async function hookPersonChecks(hooks) {
             }
         })).json();
 
-        console.log("receive", result);
-
 
         for (const key in hooks) {
             if (hooks.hasOwnProperty(key)) {
                 /** @type {ErrorMessageHook} */
                 const hook = hooks[key];
 
-                const errToHandle = key === "password" ? result[key] : result.person?.[key];
+                const errToHandle = ["password", "repeatPassword"].includes(key)
+                    ? result[key]
+                    : result.person?.[key];
 
                 hook.handler(errToHandle ?? "");
             }

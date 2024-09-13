@@ -2,7 +2,7 @@ import {
     PersonWithPasswordSchema,
     PersonSchema,
     PersonWithPasswordType,
-    PersonWithOptionalFieldsSchema,
+    PersonToCheckSchema,
     PersonWithPasswordCheckReturnSchema,
     PersonType,
 } from "../../tipos/persona.js";
@@ -138,7 +138,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         // The token is not required for this route.
         onRequest: undefined,
         schema: {
-            body: Type.Ref(PersonWithOptionalFieldsSchema),
+            body: Type.Ref(PersonToCheckSchema),
             response: {
                 200: PersonWithPasswordCheckReturnSchema,
                 400: Type.Object({

@@ -45,21 +45,6 @@ export function showDelete(person) {
 }
 
 /**
- * @param {string} password
- */
-function checkPassword(password) {
-    console.log('entree')
-    console.log(document.getElementById('password').value);
-    console.log(password)
-    if (password === (document.getElementById('password').value)) {
-        open2(person);
-    } else {
-        console.log("AAAAAAAAAAAAA");
-    }
-}
-
-
-/**
  * @type {Person[]}
  */
 let personas = [];
@@ -342,6 +327,13 @@ const loadPeople = async () => {
             "password": {
                 input: document.getElementById(`voidPsw1-${person.id}`),
                 "handler": Checks.setErrorMessage(document.getElementById(`voidMessage-pwd1-${person.id}`)),
+                "dataTransformer": (v) => v,
+            },
+            // TODO: I added this, but can't test it since I cannot get the jtw
+            // token.
+            "repeatPassword": {
+                input: document.getElementById(`voidPsw2-${person.id}`),
+                "handler": Checks.setErrorMessage(document.getElementById(`voidMessage-pwd2-${person.id}`)),
                 "dataTransformer": (v) => v,
             },
             "rut": {
