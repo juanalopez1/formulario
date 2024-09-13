@@ -28,7 +28,7 @@ export function checkPersonStructure(
 
             match<keyof typeof person>({
                 name() {
-                    if (!personWithPassword.person?.name) {
+                    if (personWithPassword.person?.name === undefined) {
                         return;
                     }
 
@@ -51,7 +51,7 @@ export function checkPersonStructure(
                     }
                 },
                 surname() {
-                    if (!personWithPassword.person?.surname) {
+                    if (personWithPassword.person?.surname === undefined) {
                         return;
                     }
 
@@ -77,7 +77,7 @@ export function checkPersonStructure(
                     }
                 },
                 email() {
-                    if (!personWithPassword.person?.email) {
+                    if (personWithPassword.person?.email === undefined) {
                         return;
                     }
 
@@ -91,7 +91,7 @@ export function checkPersonStructure(
                     }
                 },
                 id() {
-                    if (!personWithPassword.person?.id) {
+                    if (personWithPassword.person?.id === undefined) {
                         return;
                     }
 
@@ -103,7 +103,7 @@ export function checkPersonStructure(
                     }
                 },
                 rut() {
-                    if (!personWithPassword.person?.rut) {
+                    if (personWithPassword.person?.rut === undefined) {
                         return;
                     }
                     const rutCheck = checkRut(personWithPassword.person!.rut!);
@@ -135,7 +135,7 @@ export function checkPersonStructure(
             }
         },
         password() {
-            if (!personWithPassword.password) {
+            if (personWithPassword.password === undefined) {
                 return;
             }
             const regexChecks = [
