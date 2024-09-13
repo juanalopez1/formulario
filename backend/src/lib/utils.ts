@@ -1,29 +1,39 @@
-export function exhaustiveMatchingGuard(_: never): never {
-    throw new Error("Key should not have this value");
-}
-
 export function typeSafeKeys<T extends {}>(obj: T): (keyof T)[] {
     return Object.keys(obj) as (keyof T)[];
 }
 
-type Matcher<T extends string | number | symbol, R> = {
+type ObjectIndex = string | number | symbol;
+
+type Matcher<T extends ObjectIndex, R> = {
     [K in T]: () => R;
 };
 
-type PartialMatcher<T extends string | number | symbol, R> = {
-    [K in T]?: () => R;
-} & {
-    _: () => R;
-};
+/**
+ * Executes each function in `branches`. Its signature guarantees that every
+ * type within `T` is matched at a type level; no guarantees are made at
+ * runtime.
+ * @example
+ * match<"a">({}); // Error!
+ * match<"a">({ a() {} }); // This works!
+ * match<"a" | "b">({ a() {} }); // Error, we miss one branch.
+ * match<"a" | "b">({
+ *  a() {},
+ *  b() {},
+ * }); // No error! Both a() and b() are executed.
+ */
+export function match<T extends ObjectIndex>(
+    branches: [T] extends [never] ? never : Matcher<T, void>,
+): void {
+    for (const branch of typeSafeKeys(branches)) {
+        const element = branches[branch];
 
-export function exhaustiveMatch<T extends string | number | symbol, R>(
-    input: T,
-    matchers: Matcher<T, R> | PartialMatcher<T, R>,
-): R {
-    if (input in matchers && matchers[input]) {
-        return matchers[input]!();
-    } else {
-        throw new Error(`No match found for ${String(input)}`);
+        if (typeof element !== "function") {
+            throw new Error(
+                `Branch '${String(branch)}' is not a function. The backend devs have messed up.`,
+            );
+        }
+
+        element();
     }
 }
 
@@ -44,9 +54,9 @@ export function exhaustiveMatch<T extends string | number | symbol, R>(
  * const b = ensureKey<{ id: number }>()("id"); // No error, b => "id"
  */
 export function ensureKey<T extends object>() {
-    return function<R extends keyof T>(value: R) {
+    return function <R extends keyof T>(value: R) {
         return value;
-    }
+    };
 }
 
 /**
@@ -64,10 +74,8 @@ export function ensureKey<T extends object>() {
  * ; // And even with zero
  * const d = ensureKeyArray<t>()([]); // a => never[];
  */
-export function ensureKeyArray<
-    T extends object,
->() {
-    return function<R extends (keyof T)[]>(value: R) {
+export function ensureKeyArray<T extends object>() {
+    return function <R extends (keyof T)[]>(value: R) {
         return value;
-    }
+    };
 }

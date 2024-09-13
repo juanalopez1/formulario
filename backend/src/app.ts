@@ -6,7 +6,7 @@ import {
     PersonWithPasswordSchema,
     PersonSchema,
     ErrorMessageSchema,
-    PersonWithOptionalFieldsSchema,
+    PersonToCheckSchema,
 } from "./tipos/persona.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -27,7 +27,7 @@ const app: FastifyPluginAsyncTypebox<AppOptions> = async (
     fastify.addSchema(PersonSchema);
     fastify.addSchema(PersonWithPasswordSchema);
     fastify.addSchema(ErrorMessageSchema);
-    fastify.addSchema(PersonWithOptionalFieldsSchema);
+    fastify.addSchema(PersonToCheckSchema);
 
     // Do not touch the following lines
 

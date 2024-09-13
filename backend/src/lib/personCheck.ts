@@ -7,29 +7,7 @@ import {
     PersonWithPasswordCheckReturn,
 } from "../tipos/persona.js";
 
-import { exhaustiveMatch, typeSafeKeys } from "./utils.js";
-
-export function checkPersonStructureIntoArray(
-    personWithPassword: PersonWithOptionalFields) {
-    const err = checkPersonStructure(personWithPassword);
-    const err_constructor: ErrorMessage[] = [];
-
-    for (const key of typeSafeKeys(err)) {
-        exhaustiveMatch(key, {
-            person: () => {
-                for (const key of typeSafeKeys(err.person!)) {
-                    if (err.person![key]) {
-                        err_constructor.push(err.person![key]);
-                    }
-                }
-            },
-            password:
-                () => { err_constructor.push(err.password!); }
-        });
-    };
-
-    return err_constructor;
-}
+import { match } from "./utils.js";
 
 /**
  * This function checks whether the given person matches our static checks.
@@ -40,143 +18,137 @@ export function checkPersonStructure(
 ): PersonWithPasswordCheckReturn {
     const output: PersonWithPasswordCheckReturn = {};
 
-    const keys = typeSafeKeys(personWithPassword);
-    for (const key of keys) {
-        exhaustiveMatch(key, {
-            person: () => {
-                const personKeys = typeSafeKeys(personWithPassword.person!);
+    match<keyof typeof personWithPassword>({
+        person() {
+            const person = personWithPassword?.person;
 
-                for (const key of personKeys) {
-                    const errorFound = exhaustiveMatch(key, {
-                        name: () => {
-                            const length
-                                = personWithPassword.person!.name!.length;
-                            const min = PersonSchema.properties.name.minLength;
-                            const max = PersonSchema.properties.name.maxLength;
+            if (person === undefined) {
+                return;
+            }
 
-                            if (min && length < min) {
-                                output.person ??= {};
-                                output.person.name = {
-                                    errorMessage:
-                                        `Mínimo de ${min} caracteres.`,
-                                };
-                                return true;
-                            }
+            match<keyof typeof person>({
+                name() {
+                    const length = personWithPassword.person!.name!.length;
+                    const min = PersonSchema.properties.name.minLength;
+                    const max = PersonSchema.properties.name.maxLength;
 
-                            if (max && length > max) {
-                                output.person ??= {};
-                                output.person.name = {
-                                    errorMessage:
-                                        `Máximo de ${max} caracteres.`,
-                                };
-                                return true;
-                            }
-                        },
-                        surname: () => {
-                            const surnameLength
-                                = personWithPassword.person!.surname!.length;
-                            const surnameMin
-                                = PersonSchema.properties.surname.minLength;
-                            const surnameMax
-                                = PersonSchema.properties.surname.maxLength;
+                    if (min && length < min) {
+                        output.person ??= {};
+                        output.person.name = {
+                            errorMessage: `Mínimo de ${min} caracteres.`,
+                        };
+                    }
 
-                            if (surnameMin && surnameLength < surnameMin) {
-                                output.person ??= {};
-                                output.person.surname = {
-                                    errorMessage: `Mínimo de ${surnameMin}`,
-                                };
-                                return true;
-                            }
+                    if (max && length > max) {
+                        output.person ??= {};
+                        output.person.name = {
+                            errorMessage: `Máximo de ${max} caracteres.`,
+                        };
+                    }
+                },
+                surname() {
+                    const surnameLength
+                        = personWithPassword.person!.surname!.length;
+                    const surnameMin
+                        = PersonSchema.properties.surname.minLength;
+                    const surnameMax
+                        = PersonSchema.properties.surname.maxLength;
 
-                            if (surnameMax && surnameLength > surnameMax) {
-                                output.person ??= {};
-                                output.person.surname = {
-                                    errorMessage: `Máximo de ${surnameMax}`,
-                                };
-                                return true;
-                            }
-                        },
-                        email: () => {
-                            if (!Value.Check(
-                                PersonSchema.properties.email,
-                                personWithPassword.person!.email,
-                            )) {
-                                output.person ??= {};
-                                output.person.email = {
-                                    errorMessage: "Email inválido."
-                                };
-                                return true;
-                            }
-                        },
-                        id: () => {
-                            const idCheck
-                                = checkID(personWithPassword.person!.id!);
+                    if (surnameMin && surnameLength < surnameMin) {
+                        output.person ??= {};
+                        output.person.surname = {
+                            errorMessage: `Mínimo de ${surnameMin}`,
+                        };
+                    }
 
-                            if (idCheck) {
-                                output.person ??= {};
-                                output.person.id = idCheck;
-                                return true;
-                            }
-                        },
-                        rut: () => {
-                            console.log("arriba", checkRut(personWithPassword.person!.rut!))
-                            const rutCheck
-                                = checkRut(personWithPassword.person!.rut!);
+                    if (surnameMax && surnameLength > surnameMax) {
+                        output.person ??= {};
+                        output.person.surname = {
+                            errorMessage: `Máximo de ${surnameMax}`,
+                        };
+                    }
+                },
+                email() {
+                    if (!Value.Check(
+                        PersonSchema.properties.email,
+                        personWithPassword.person!.email,
+                    )) {
+                        output.person ??= {};
+                        output.person.email
+                            = { errorMessage: "Email inválido." };
+                    }
+                },
+                id() {
+                    const idCheck = checkID(personWithPassword.person!.id!);
 
-                            if (rutCheck) {
-                                console.log("entre al if")
-                                output.person ??= {};
-                                output.person.rut = rutCheck;
-                                return true;
-                            }
-                        },
-                    });
+                    if (idCheck) {
+                        output.person ??= {};
+                        output.person.id = idCheck;
+                    }
+                },
+                rut() {
+                    const rutCheck = checkRut(personWithPassword.person!.rut!);
 
-                    if (errorFound) {
+                    if (rutCheck) {
+                        output.person ??= {};
+                        output.person.rut = rutCheck;
+                    }
+                },
+            });
+
+            for (const key in person) {
+                if (person.hasOwnProperty(key)) {
+                    const actualKey = key as keyof typeof person;
+                    const val = person[actualKey];
+
+                    if (val === undefined
+                        || output.person?.[actualKey] !== undefined
+                        || Value.Check(PersonSchema.properties[actualKey],
+                            val)) {
                         continue;
                     }
 
-                    const val = personWithPassword.person![key]!;
-                    if (val !== undefined
-                        && !Value.Check(
-                            PersonSchema.properties[key],
-                            val,
-                        )) {
-                        output.person ??= {};
-                        output.person[key] = {
-                            errorMessage: "Dato inválido",
-                        };
-                    }
+                    output.person ??= {};
+                    output.person[actualKey] = {
+                        errorMessage: "Dato inválido",
+                    };
                 }
-            },
-            password: () => {
-                const regexChecks = [
-                    [/[a-z]/, "La contraseña debe contener minúsculas."],
-                    [/[A-Z]/, "La contraseña debe contener mayúsculas."],
-                    [/\d/, "La contraseña debe contener dígitos."],
-                    [
-                        /[@$!%*?&]/,
-                        'La contraseña debe contener alguno de "@$!%*?&".'
-                    ],
-                    [
-                        /^[A-Za-z\d@$!%*?&]*$/,
-                        "La contraseña contiene caracteres ilegales.\n" +
-                        "Solo puede contener letras, dígitos y @$!%*?&.",
-                    ],
-                    [/^.{8}.*$/, "Mínimo de 8 caracteres."],
-                    [/^.{0,20}$/, "Máximo de 20 caracteres."],
-                ] as const;
+            }
+        },
+        password() {
+            const regexChecks = [
+                [/[a-z]/, "La contraseña debe contener minúsculas."],
+                [/[A-Z]/, "La contraseña debe contener mayúsculas."],
+                [/\d/, "La contraseña debe contener dígitos."],
+                [
+                    /[@$!%*?&]/,
+                    'La contraseña debe contener alguno de "@$!%*?&".'
+                ],
+                [
+                    /^[A-Za-z\d@$!%*?&]*$/,
+                    "La contraseña contiene caracteres ilegales.\n" +
+                    "Solo puede contener letras, dígitos y @$!%*?&.",
+                ],
+                [/^.{8}.*$/, "Mínimo de 8 caracteres."],
+                [/^.{0,20}$/, "Máximo de 20 caracteres."],
+            ] as const;
 
-                for (const [regex, message] of regexChecks) {
-                    if (!regex.test(personWithPassword.password!)) {
-                        output.password = { errorMessage: message };
-                    }
+            for (const [regex, message] of regexChecks) {
+                if (!regex.test(personWithPassword.password!)) {
+                    output.password = { errorMessage: message };
                 }
-            },
-        });
+            }
+        },
+        repeatPassword() {
+            const { password, repeatPassword } = personWithPassword;
+            if (!repeatPassword || password === repeatPassword) {
+                return;
+            }
 
-
-    }
+            output.repeatPassword
+                = { errorMessage: "Las contraseñas no coinciden" }
+        }
+    });
 
     return output;
 }
@@ -216,13 +188,11 @@ function checkDigit(id: string): boolean {
 
 function checkRut(rut: number): ErrorMessage | undefined {
     const stringifiedRut = rut.toString(10);
-    console.log(rut);
     if (stringifiedRut.length !== 12) {
         return {
             errorMessage: "Un rut debe tener 12 dígitos.",
         };
     }
-
 
     return checkDigitRUT(stringifiedRut) ? undefined
         : { errorMessage: "Rut inválido." };
@@ -240,6 +210,5 @@ function checkDigitRUT(rut: string): boolean {
     }
 
     const result = (11 - (sum % 11)) % 11;
-    return ((result === digit) || (result === 10 && digit === 0));
+    return result === digit || (result === 10 && digit === 0);
 }
-

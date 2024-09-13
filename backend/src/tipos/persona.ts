@@ -45,31 +45,15 @@ export const PersonWithPasswordSchema = Type.Object(
 );
 
 const simplifiedPerson = Type.Object({
-    ...Type.Mapped(Type.KeyOf(PersonSchema), (k) => Type.String()).properties,
+    ...Type.Mapped(Type.KeyOf(PersonSchema), (_) => Type.String()).properties,
     rut: Type.Number(),
 });
-type SimplifiedPerson = Static<typeof simplifiedPerson>;
 
-export const SpecificPersonWithPasswordCheckSchema = Type.Object({
-    person: Type.Object({
-        ...Type.Partial(simplifiedPerson).properties,
-        // If we are to check the data from a specific person, then be must
-        // be given their id.
-        id: Type.String(),
-    }),
-    password: Type.Optional(Type.String()),
-});
-
-export const PersonWithOptionalFieldsSchema = Type.Object(
+export const PersonToCheckSchema = Type.Object(
     {
-        person: Type.Optional(
-            Type.Partial(
-                Type.Object({
-                    ...simplifiedPerson.properties,
-                }),
-            ),
-        ),
+        person: Type.Optional(Type.Partial(simplifiedPerson)),
         password: Type.Optional(Type.String()),
+        repeatPassword: Type.Optional(Type.String()),
     },
     {
         $id: "optionalPerson",
@@ -88,15 +72,16 @@ export const ErrorMessageSchema = Type.Object(
 );
 
 export const PersonWithPasswordCheckReturnSchema = Type.Object({
+    ...Type.Mapped(Type.KeyOf(PersonToCheckSchema), (_) =>
+        Type.Optional(Type.Ref(ErrorMessageSchema)),
+    ).properties,
     person: Type.Optional(
         Type.Partial(
-            Type.Mapped(
-                Type.KeyOf(SpecificPersonWithPasswordCheckSchema.properties.person),
-                (_) => Type.Ref(ErrorMessageSchema),
+            Type.Mapped(Type.KeyOf(PersonToCheckSchema.properties.person), (_) =>
+                Type.Ref(ErrorMessageSchema),
             ),
         ),
     ),
-    password: Type.Optional(Type.Ref(ErrorMessageSchema)),
 });
 
 export type ErrorMessage = Static<typeof ErrorMessageSchema>;
@@ -105,13 +90,7 @@ export type PersonType = Static<typeof PersonSchema>;
 
 export type PersonWithPasswordType = Static<typeof PersonWithPasswordSchema>;
 
-export type PersonWithOptionalFields = Static<
-    typeof PersonWithOptionalFieldsSchema
->;
-
-export type SpecificPersonWithPasswordCheckType = Static<
-    typeof SpecificPersonWithPasswordCheckSchema
->;
+export type PersonWithOptionalFields = Static<typeof PersonToCheckSchema>;
 
 export type PersonWithPasswordCheckReturn = Static<
     typeof PersonWithPasswordCheckReturnSchema
@@ -121,6 +100,6 @@ export type PersonWithPasswordCheckReturn = Static<
 type AssertEqual<T, K> = T extends K ? (K extends T ? string : never) : never;
 
 const test = <T>(_: T) => { };
-test<AssertEqual<PersonType, SimplifiedPerson>>(
+test<AssertEqual<PersonType, Static<typeof simplifiedPerson>>>(
     "A simplified person should be the same as a person to typescript.",
 );
