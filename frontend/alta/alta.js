@@ -1,4 +1,7 @@
-import { hookPersonChecks, setErrorMessage } from '../checks.js';
+import {
+    hookPersonChecks,
+    setErrorMessage
+} from '../checks.js';
 
 /** @type {import('../checks.js').PersonHooks} */
 const personHooks = {
@@ -32,31 +35,14 @@ const personHooks = {
         "dataTransformer": (v) => parseInt(v, 10),
         "handler": setErrorMessage(document.querySelector("#messageRut"))
     },
+    "repeatPassword": {
+        "input": document.querySelector("#psw2"),
+        "dataTransformer": (v) => v,
+        "handler": setErrorMessage(document.querySelector("#messageP2")),
+    }
 };
 
 hookPersonChecks(personHooks);
-
-/** @type {HTMLInputElement} */
-const pwd1 = document.getElementById("psw1");
-/** @type {HTMLInputElement} */
-const pwd2 = document.getElementById("psw2");
-/** @type {HTMLEmbedElement} */
-const textPwd2 = document.getElementById("messageP2")
-
-function checkPasswords() {
-    if (pwd1.value === pwd2.value) {
-        textPwd2.innerText = "";
-        return true;
-    }
-
-    textPwd2.innerText = "Las contraseñas no coinciden.";
-
-    return false;
-}
-
-for (const element of [pwd1, pwd2]) {
-    element.addEventListener("blur", checkPasswords);
-}
 
 document.getElementById('enviarButton').addEventListener('click', async () => {
     if (!checkPasswords()) {

@@ -28,6 +28,10 @@ export function checkPersonStructure(
 
             match<keyof typeof person>({
                 name() {
+                    if (!personWithPassword.person?.name) {
+                        return;
+                    }
+
                     const length = personWithPassword.person!.name!.length;
                     const min = PersonSchema.properties.name.minLength;
                     const max = PersonSchema.properties.name.maxLength;
@@ -47,6 +51,10 @@ export function checkPersonStructure(
                     }
                 },
                 surname() {
+                    if (!personWithPassword.person?.surname) {
+                        return;
+                    }
+
                     const surnameLength
                         = personWithPassword.person!.surname!.length;
                     const surnameMin
@@ -69,6 +77,10 @@ export function checkPersonStructure(
                     }
                 },
                 email() {
+                    if (!personWithPassword.person?.email) {
+                        return;
+                    }
+
                     if (!Value.Check(
                         PersonSchema.properties.email,
                         personWithPassword.person!.email,
@@ -79,6 +91,10 @@ export function checkPersonStructure(
                     }
                 },
                 id() {
+                    if (!personWithPassword.person?.id) {
+                        return;
+                    }
+
                     const idCheck = checkID(personWithPassword.person!.id!);
 
                     if (idCheck) {
@@ -87,6 +103,9 @@ export function checkPersonStructure(
                     }
                 },
                 rut() {
+                    if (!personWithPassword.person?.rut) {
+                        return;
+                    }
                     const rutCheck = checkRut(personWithPassword.person!.rut!);
 
                     if (rutCheck) {
@@ -116,6 +135,9 @@ export function checkPersonStructure(
             }
         },
         password() {
+            if (!personWithPassword.password) {
+                return;
+            }
             const regexChecks = [
                 [/[a-z]/, "La contraseña debe contener minúsculas."],
                 [/[A-Z]/, "La contraseña debe contener mayúsculas."],
@@ -140,6 +162,9 @@ export function checkPersonStructure(
             }
         },
         repeatPassword() {
+            if (!personWithPassword.repeatPassword) {
+                return;
+            }
             const { password, repeatPassword } = personWithPassword;
             if (!repeatPassword || password === repeatPassword) {
                 return;
