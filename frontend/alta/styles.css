@@ -187,3 +187,17 @@ input[type=number] {
     -moz-appearance:textfield; /* Firefox */
     appearance: textfield;
 }
+
+.register {
+    color: #4F6F7F;
+    font-family: sans-serif;
+    margin-top: 2rem;
+    margin-bottom: 0rem;
+    text-decoration: none;
+}
+
+.registerButton {
+    margin-top: 1rem;
+    padding: 7px 14px;  /* Espaciado interno del botón */
+    font-size: 12px;
+}
