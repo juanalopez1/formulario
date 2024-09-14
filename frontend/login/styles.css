@@ -6,7 +6,8 @@ html {
     height: 100dvh;
 }
 
-h1, h2 {
+h1,
+h2 {
     margin-top: 0px;
     margin-bottom: 0px;
 }
@@ -14,16 +15,16 @@ h1, h2 {
 h2 {
     font-size: 3rem;
 }
+
 body {
     display: flex;
-    color: #3E5266;
+    color: #3e5266;
     align-items: center;
     justify-content: center;
     height: 100%;
     width: 100%;
     box-sizing: border-box;
     overflow: scroll;
-
 }
 
 main {
@@ -48,10 +49,10 @@ label {
     font-weight: 700;
     text-align: left;
     margin-bottom: 0.3rem;
-    margin-top: 0.8rem;
+    margin-top: 1rem;
 }
 
-input {
+.text-like-input {
     all: unset;
     padding: 0.25rem 0.5rem;
     line-height: 1.5em;
@@ -68,13 +69,12 @@ input {
 input:focus {
     box-shadow:
         rgb(255, 255, 255) 0px 0px 0px 0px inset,
-        #4F6F7F 0px 0px 0px 2px inset,
+        #4f6f7f 0px 0px 0px 2px inset,
         rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
 }
 
-
 .margin-top {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
 }
 
 .inset {
@@ -99,11 +99,11 @@ main {
     background: white;
 }
 
-.flex-right {
+.flex-between {
     display: flex;
     width: 100%;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: space-between;
 }
 
 @media (width < 30em) {
@@ -136,15 +136,34 @@ main {
     display: block;
 }
 
+.secondary-login {
+    height: 100%;
+    width: auto;
+    aspect-ratio: 1 / 1;
+}
+
+.secondary-logins-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 2.2rem;
+}
+
+.secondary-logins-wrapper > * {
+    margin-left: 0.5rem;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */
     -webkit-appearance: none;
-    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    margin: 0;
+    /* <-- Apparently some margin are still there even though it's hidden */
 }
 
-input[type=number] {
-    -moz-appearance:textfield; /* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+    /* Firefox */
     appearance: textfield;
 }
 

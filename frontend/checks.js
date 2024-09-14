@@ -16,8 +16,16 @@
  * @property {ErrorMessageHook} [rut]
  */
 
-/** @param {PersonHooks} hooks */
-export async function hookPersonChecks(hooks) {
+/** @param {object} obj  */
+function isEmpty(obj) {
+    return !obj && Object.keys(obj).length === 0;
+}
+
+/**
+ * @param {PersonHooks} hooks
+ * @param {(correct: boolean) => unknown} [callback] -- Called after hooks, `correct` says whether there are no format errors.
+ */
+export async function hookPersonChecks(hooks, callback) {
     // For every element passed, in their blur notify everyone whether their
     // values are still correct.
     /** @type {(element: HTMLInputElement) => void} */
@@ -60,13 +68,15 @@ export async function hookPersonChecks(hooks) {
                 /** @type {ErrorMessageHook} */
                 const hook = hooks[key];
 
-                const errToHandle = ["password", "repeatPassword"].includes(key)
-                    ? result[key]
-                    : result.person?.[key];
+                const errToHandle = ["password", "repeatPassword"].includes(key) ?
+                    result[key] :
+                    result.person?.[key];
 
                 hook.handler(errToHandle ?? "");
             }
         }
+
+        callback(isEmpty(result));
     };
 
     // Add listener
@@ -85,7 +95,7 @@ export async function hookPersonChecks(hooks) {
  * If err is undefined, the text will be set to "".
  * @param {HTMLElement} target id of elements whose text will be set to err.
  */
-export function setErrorMessage(target) {
+export function setErrorMessage(target, callback) {
     /**
      * @param {ErrorMessage | undefined} err
      */

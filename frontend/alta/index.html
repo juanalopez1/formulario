@@ -1,46 +1,49 @@
 <!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Formulario</title>
+    <link href="../fancy-button.css" rel="stylesheet" />
     <link href="styles.css" rel="stylesheet" />
     <script defer src="alta.js" type="module"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <main>
-        <h2>Formulario de registro</h2>
-        <form>
-            <label in>Nombre</label>
-            <input id="name" type="text" />
-            <p id="messageName" class="error-msg"></p>
-            <label>Apellido</label>
-            <input id="surname" type="text" />
-            <p id="messageSurname" class="error-msg"></p>
-            <label>Cédula</label>
-            <input id="id" type="text" />
-            <p id="messageId" class="error-msg"></p>
-            <label>Correo electronico</label>
-            <input id="email" type="email" />
-            <p id="messageEmail" class="error-msg"></p>
-            <label>Contraseña</label>
-            <input id="psw1" type="password" />
-            <p id="messageP1" class="error-msg"></p>
-            <label>Repetir contraseña</label>
-            <input id="psw2" type="password" />
-            <p id="messageP2" class="error-msg"></p>
-            <label>RUT</label>
-            <input id="rut" type="number" />
-            <p id="messageRut" class="error-msg"></p>
-        </form>
-        <div class="flex-right diagonal circular-right margin-top">
-            <button id="enviarButton">
-                <span>Enviar</span>
-            </button>
-        </div>
-    </main>
-</body>
+      <h2>¡Hola! 👋</h2>
+      <form>
+        <label in>Nombre</label>
+        <input id="name" type="text" />
+        <p id="messageName" class="error-msg"></p>
+        <label>Apellido</label>
+        <input id="surname" type="text" />
+        <p id="messageSurname" class="error-msg"></p>
+        <label>Cédula</label>
+        <input id="id" type="text" />
+        <p id="messageId" class="error-msg"></p>
+        <label>Correo electronico</label>
+        <input id="email" type="email" />
+        <p id="messageEmail" class="error-msg"></p>
+        <label>Contraseña</label>
+        <input id="psw1" type="password" />
+        <p id="messageP1" class="error-msg"></p>
+        <label>Repetir contraseña</label>
+        <input id="psw2" type="password" />
+        <p id="messageP2" class="error-msg"></p>
+        <label>RUT</label>
+        <input id="rut" type="number" />
+        <p id="messageRut" class="error-msg"></p>
+      </form>
+      <div
+        class="flex-right diagonal circular-right margin-top"
+      >
+        <button id="enviarButton" class="fancy-button fancy-button-right" disabled>
+          <span>Registrarme</span>
+        </button>
+      </div>
+        <a href="../login" class="minor-link">¿Primera vez? Crea una cuenta nueva</a>
 
+    </main>
+  </body>
 </html>
