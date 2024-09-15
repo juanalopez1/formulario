@@ -49,39 +49,3 @@ hookPersonChecks(personHooks, (result) => {
         !isEmpty(result) ||
         Object.values(personHooks).some((h) => h.input.value.length === 0);
 });
-
-document.getElementById("enviarButton").addEventListener("click", async () => {
-    if (!checkPasswords()) {
-        return;
-    }
-
-    const name = document.getElementById("name").value;
-    const surname = document.getElementById("surname").value;
-    const id = document.getElementById("id").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("psw1").value;
-    const rut = document.getElementById("rut").value;
-
-    const persona = {
-        person: {
-            name: name,
-            surname: surname,
-            id: id,
-            email: email,
-            rut: rut,
-        },
-        password: password,
-    };
-
-    const result = await fetch("http://localhost/backend/personas", {
-        method: "POST",
-        body: JSON.stringify(persona),
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-
-    if (result.ok) {
-        window.location.href = "../personas/index.html";
-    }
-});

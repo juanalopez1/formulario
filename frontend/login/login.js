@@ -22,13 +22,7 @@ const hooks = {
 /** @type {HTMLButtonElement} */
 const loginButton = document.querySelector('#loginButton');
 
-/** @param {Record<string, unknown>} backendResult  */
-function setLoginButton(backendResult) {
-    loginButton.disabled = !checks.isEmpty(backendResult)
-        || !inputs.password.value
-        || !inputs.email.value;
-}
-
 checks.hookPersonChecks(hooks, (result) => {
-    loginButton
+    loginButton.disabled = !checks.isEmpty(result)
+        || Object.values(hooks).some(h => h.input.value.length === 0);
 });

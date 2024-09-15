@@ -39,6 +39,8 @@ export async function hookPersonChecks(hooks, callback) {
             person: {},
         };
 
+        const flatKeys = ["password", "repeatPassword"]
+
         // Transform data
         for (const key in hooks) {
             if (hooks.hasOwnProperty(key)) {
@@ -52,8 +54,8 @@ export async function hookPersonChecks(hooks, callback) {
                     continue;
                 }
 
-                if (key === "password") {
-                    values.password = hook.dataTransformer(hook.input.value);
+                if (flatKeys.includes(key)) {
+                    values[key] = hook.dataTransformer(hook.input.value);
                 } else {
                     values.person[key] = hook.dataTransformer(hook.input.value);
                 }
@@ -76,7 +78,7 @@ export async function hookPersonChecks(hooks, callback) {
                 /** @type {ErrorMessageHook} */
                 const hook = hooks[key];
 
-                const errToHandle = ["password", "repeatPassword"].includes(key) ?
+                const errToHandle = flatKeys.includes(key) ?
                     result[key] :
                     result.person?.[key];
 
