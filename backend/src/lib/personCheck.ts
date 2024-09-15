@@ -17,6 +17,7 @@ export function checkPersonStructure(
     personWithPassword: PersonWithOptionalFields,
 ): PersonWithPasswordCheckReturn {
     const output: PersonWithPasswordCheckReturn = {};
+    console.log(personWithPassword);
 
     match<keyof typeof personWithPassword>({
         person() {
