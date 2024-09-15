@@ -67,7 +67,7 @@ document.getElementById('enviarButton').addEventListener('click', async () => {
         password: password,
     };
 
-    const result = await fetch("http://localhost/backend/personas", {
+    const result = await fetch("https://localhost/backend/personas", {
         method: 'POST',
         body: JSON.stringify(persona),
         headers: {

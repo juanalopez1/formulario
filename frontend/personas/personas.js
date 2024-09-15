@@ -296,7 +296,7 @@ const loadPeople = async () => {
                     "oldPassword": passwordsDict[person.id],
                 };
 
-            await fetch(`http://localhost/backend/personas/${person.id}`, {
+            await fetch(`https://localhost/backend/personas/${person.id}`, {
                 method: 'PUT',
                 body: JSON.stringify(body),
                 headers: {
