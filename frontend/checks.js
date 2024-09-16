@@ -17,13 +17,13 @@
  */
 
 /** @param {object} obj  */
-function isEmpty(obj) {
-    return !obj && Object.keys(obj).length === 0;
+export function isEmpty(obj) {
+    return !obj || Object.keys(obj).length === 0;
 }
 
 /**
  * @param {PersonHooks} hooks
- * @param {(correct: boolean) => unknown} [callback] -- Called after hooks, `correct` says whether there are no format errors.
+ * @param {(result: Record<string, unknown>) => unknown} [callback] -- Called after hooks, `correct` says whether there are no format errors.
  */
 export async function hookPersonChecks(hooks, callback) {
     // For every element passed, in their blur notify everyone whether their
@@ -46,15 +46,15 @@ export async function hookPersonChecks(hooks, callback) {
                     continue;
                 }
 
-                if (key === "password") {
-                    values.password = hook.dataTransformer(hook.input.value);
+                if (key === "password" || key === "repeatPassword") {
+                    values[key] = hook.dataTransformer(hook.input.value);
                 } else {
                     values.person[key] = hook.dataTransformer(hook.input.value);
                 }
             }
         }
 
-        const result = await (await fetch("http://localhost/backend/personas/check", {
+        const result = await (await fetch("https://localhost/backend/personas/check", {
             body: JSON.stringify(values),
             method: "POST",
             headers: {
@@ -76,7 +76,9 @@ export async function hookPersonChecks(hooks, callback) {
             }
         }
 
-        callback(isEmpty(result));
+        if (typeof callback === 'function'){
+            callback(result);
+        }
     };
 
     // Add listener
@@ -85,7 +87,7 @@ export async function hookPersonChecks(hooks, callback) {
             /** @type {ErrorMessageHook} */
             const hook = hooks[key];
 
-            hook.input.addEventListener("blur", listener)
+            hook.input.addEventListener('keyup', listener)
         }
     }
 }
@@ -95,7 +97,7 @@ export async function hookPersonChecks(hooks, callback) {
  * If err is undefined, the text will be set to "".
  * @param {HTMLElement} target id of elements whose text will be set to err.
  */
-export function setErrorMessage(target, callback) {
+export function setErrorMessage(target) {
     /**
      * @param {ErrorMessage | undefined} err
      */

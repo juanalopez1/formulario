@@ -95,7 +95,7 @@ if (isValid(myPerson)){
     console.log('entre a isvalid')
     const save = document.getElementById('sendButton');
     save.addEventListener('click', () => {
-        const put = fetch(`http://localhost/backend/personas/${persona.id}`, {
+        const put = fetch(`https://localhost/backend/personas/${persona.id}`, {
             method: 'PUT',
             body: {
                 "newValue": {

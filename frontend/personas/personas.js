@@ -57,7 +57,7 @@ const loadPeople = async () => {
     /**
      * @type {Person[]}
      */
-    personas = await (await fetch("http://localhost/backend/personas")).json();
+    personas = await (await fetch("https://localhost/backend/personas")).json();
 
     const card = document.getElementById("person-list-card-container");
     for (const i in personas) {
@@ -296,7 +296,7 @@ const loadPeople = async () => {
                     "oldPassword": passwordsDict[person.id],
                 };
 
-            await fetch(`http://localhost/backend/personas/${person.id}`, {
+            await fetch(`https://localhost/backend/personas/${person.id}`, {
                 method: 'PUT',
                 body: JSON.stringify(body),
                 headers: {
