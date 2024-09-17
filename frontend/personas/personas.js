@@ -54,10 +54,19 @@ export function getPersonas() {
 }
 
 const loadPeople = async () => {
+    const result = await fetch(
+        "https://localhost/backend/personas", {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
+        }
+    });
+
+    console.log(localStorage.getItem("token"));
+
     /**
      * @type {Person[]}
      */
-    personas = await (await fetch("http://localhost/backend/personas")).json();
+    personas = await result.json();
 
     const card = document.getElementById("person-list-card-container");
     for (const i in personas) {
@@ -199,17 +208,17 @@ const loadPeople = async () => {
         const close = document.getElementById(`modify-password-dialog-${person.id}`);
         document
             .getElementById(`closeButton-modify-${person.id}`)
-            .addEventListener('click', () => close.close() )
+            .addEventListener('click', () => close.close())
 
         const closeDelete = document.getElementById(`dialog3-${person.id}`);
         document
             .getElementById(`closeButton-delete-${person.id}`)
-            .addEventListener('click', () => closeDelete.close() )
+            .addEventListener('click', () => closeDelete.close())
 
         const closeEditor = document.getElementById(`updateDialog-${person.id}`);
         document
             .getElementById(`closeButton-${person.id}`)
-            .addEventListener('click', () => closeEditor.close() )
+            .addEventListener('click', () => closeEditor.close())
 
         document
             .getElementById(`openButton-${person.id}`)
@@ -250,7 +259,7 @@ const loadPeople = async () => {
             const psw = {
                 'password': document.getElementById(`password-modify-${person.id}`).value
             };
-            
+
 
             const response = await fetch(`http://localhost/backend/personas/${person.id}/check`, {
                 method: 'POST',
@@ -283,18 +292,18 @@ const loadPeople = async () => {
             const defaultIfEmpty = (content, key) => content === "" ? person[key] : content;
 
             alert(person.id);
-            const body ={
-                    "newValue": {
-                        "person": {
-                            "name": defaultIfEmpty(document.getElementById(`voidName-${person.id}`).value, "name"),
-                            "surname": defaultIfEmpty(document.getElementById(`voidSurname-${person.id}`).value, "surname"),
-                            "email": defaultIfEmpty(document.getElementById(`voidEmail-${person.id}`).value, "email"),
-                            "rut": defaultIfEmpty(document.getElementById(`voidRut-${person.id}`).value, "rut")
-                        },
-                        "password": document.getElementById(`voidPsw1-${person.id}`).value
+            const body = {
+                "newValue": {
+                    "person": {
+                        "name": defaultIfEmpty(document.getElementById(`voidName-${person.id}`).value, "name"),
+                        "surname": defaultIfEmpty(document.getElementById(`voidSurname-${person.id}`).value, "surname"),
+                        "email": defaultIfEmpty(document.getElementById(`voidEmail-${person.id}`).value, "email"),
+                        "rut": defaultIfEmpty(document.getElementById(`voidRut-${person.id}`).value, "rut")
                     },
-                    "oldPassword": passwordsDict[person.id],
-                };
+                    "password": document.getElementById(`voidPsw1-${person.id}`).value
+                },
+                "oldPassword": passwordsDict[person.id],
+            };
 
             await fetch(`https://localhost/backend/personas/${person.id}`, {
                 method: 'PUT',

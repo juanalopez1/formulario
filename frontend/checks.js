@@ -16,56 +16,78 @@
  * @property {ErrorMessageHook} [rut]
  */
 
-/** @param {PersonHooks} hooks */
-export async function hookPersonChecks(hooks) {
+/**
+ * @param {Record<string, unknown>} obj
+ * */
+export function isEmpty(obj) {
+    return !obj || Object.keys(obj).length === 0;
+}
+
+/**
+ * @param {PersonHooks} hooks
+ * @param {(result: Record<string, unknown>) => unknown} [callback]
+ *      - Called after hooks, gives the object returned from the backend.
+ *      If any empty value is passed in a hook, the backend will treat the
+ *      value as 'having no error'. Beware.
+ */
+export async function hookPersonChecks(hooks, callback) {
     // For every element passed, in their blur notify everyone whether their
     // values are still correct.
     /** @type {(element: HTMLInputElement) => void} */
     const listener = async (_element) => {
         const values = {
-            person: {}
+            person: {},
         };
 
+        const flatKeys = ["password", "repeatPassword"]
+
+        // Transform data
         for (const key in hooks) {
             if (hooks.hasOwnProperty(key)) {
                 /** @type {ErrorMessageHook} */
                 const hook = hooks[key];
 
                 /** @type {HTMLInputElement} */
-                hook.input
+                hook.input;
 
                 if (hook.input && !hook.input.value) {
                     continue;
                 }
 
-                if (key === "password") {
-                    values.password = hook.dataTransformer(hook.input.value);
+                if (flatKeys.includes(key)) {
+                    values[key] = hook.dataTransformer(hook.input.value);
                 } else {
                     values.person[key] = hook.dataTransformer(hook.input.value);
                 }
             }
         }
 
-        const result = await (await fetch("https://localhost/backend/personas/check", {
-            body: JSON.stringify(values),
-            method: "POST",
-            headers: {
-                "Content-Type": 'application/json'
-            }
-        })).json();
-
+        // Query backend
+        const result = await (
+            await fetch("https://localhost/backend/personas/check", {
+                body: JSON.stringify(values),
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+        ).json();
 
         for (const key in hooks) {
             if (hooks.hasOwnProperty(key)) {
                 /** @type {ErrorMessageHook} */
                 const hook = hooks[key];
 
-                const errToHandle = ["password", "repeatPassword"].includes(key)
-                    ? result[key]
-                    : result.person?.[key];
+                const errToHandle = flatKeys.includes(key) ?
+                    result[key] :
+                    result.person?.[key];
 
                 hook.handler(errToHandle ?? "");
             }
+        }
+
+        if (typeof callback === "function") {
+            callback(result);
         }
     };
 
@@ -75,7 +97,7 @@ export async function hookPersonChecks(hooks) {
             /** @type {ErrorMessageHook} */
             const hook = hooks[key];
 
-            hook.input.addEventListener("blur", listener)
+            hook.input.addEventListener("keyup", listener);
         }
     }
 }

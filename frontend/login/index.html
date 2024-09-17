@@ -1,28 +1,43 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../alta/styles.css" rel="stylesheet" />
     <title>Ingreso</title>
+    <script defer type="module" src="login.js"></script>
+    <link href="styles.css" rel="stylesheet" />
+    <link href="../fancy-button.css" rel="stylesheet" />
 </head>
+
 <body>
     <main>
-        <h2>Bienvenido!</h2>
+        <h2>¡Hola de nuevo!</h2>
+        <p style="margin: 0.2rem">Recuérdanos tus datos</p>
         <form>
             <label>Correo electronico</label>
-            <input id="email" type="email" />
+            <input id="email" type="email" class="text-like-input" />
             <p id="messageEmail" class="error-msg"></p>
             <label>Contraseña</label>
-            <input id="psw1" type="password" />
+            <input id="psw1" type="password" class="text-like-input" />
             <p id="messageP1" class="error-msg"></p>
         </form>
-        <div class="flex-right diagonal circular-right margin-top">
-            <button id="enviarButton">
-                <span>Ingresar</span>
+        <div class="flex-between diagonal circular-right margin-top" style="align-items: center">
+            <div class="secondary-logins-wrapper">
+                <button class="unstyle-button secondary-login">
+                    <img src="../assets/spotify.svg" style="width: 100%; height: 100%" alt="spotify" />
+                </button>
+                <button class="unstyle-button secondary-login">
+                    <img src="../assets/google.svg" style="width: 100%; height: 100%" alt="google" />
+                </button>
+            </div>
+            <button id="loginButton" disabled class="fancy-button fancy-button-right">
+                <span>Iniciar sesión</span>
             </button>
         </div>
-            <a href="../../backend/src/routes/auth/register" class="register">Registrate aquí</a>.
+        <a href="../alta" class="minor-link">¿Primera vez? Crea una cuenta nueva</a>
     </main>
 </body>
+
 </html>

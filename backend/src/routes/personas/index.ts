@@ -52,6 +52,17 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         },
     });
 
+    fastify.get("/verify", {
+        onRequest: fastify.authenticate,
+        schema: {
+            response: {
+                200: Type.Object({ ok: Type.Literal(true)}),
+                401: Type.Any(),
+            }
+        },
+        handler: (_request, reply) => { return reply.code(200).send({ ok: true })},
+    });
+
     fastify.put("/:id", {
         onRequest: fastify.authenticate,
         schema: {

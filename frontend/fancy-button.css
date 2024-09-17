@@ -1,0 +1,66 @@
+.fancy-button {
+    align-self: center;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    font-weight: 700;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    position: relative;
+    background: #EBF2F5;
+    transition:
+        all 0.2s ease-in-out;
+    color: #4F6F7F;
+    cursor: pointer;
+}
+
+.fancy-button-right:disabled {
+    border-top-left-radius: 0rem;
+    border-bottom-left-radius: 0rem;
+}
+
+.fancy-button:disabled {
+    color: #1e293b;
+    cursor: not-allowed;
+}
+
+.fancy-button > * {
+    z-index: 2;
+    position: relative;
+}
+
+.fancy-button:disabled {
+    scale: 1;
+}
+
+.fancy-button:enabled {
+    scale: 1.15;
+}
+
+.fancy-button:enabled:hover {
+    color: #DEF8F9;
+}
+
+.fancy-button:disabled {
+    background: #e2e8f0;
+}
+
+.fancy-button::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    height: 100%;
+    border-radius: 9999px;
+    background: #447E9B;
+    width: 0%;
+    height: auto;
+    transform: translate(-50%, 50%);
+    aspect-ratio: 1 / 1;
+    transition: all 0.5s ease-in-out;
+    z-index: 1;
+}
+
+.fancy-button:enabled:hover::before {
+    width: calc(100% + 1rem);
+}
