@@ -26,4 +26,20 @@ checks.hookPersonChecks(hooks, (result) => {
     }
 });
 
+const result = await fetch('https://localhost/backend/auth/login', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        email: hooks.email.input.value, 
+        password: hooks.password.input.value
+    })
+});
 
+if (result.ok){
+    sessionStorage.setItem('token', result);
+    window.location.href = "../personas/index.html";
+}else{
+    // error
+}

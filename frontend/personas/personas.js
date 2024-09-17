@@ -57,7 +57,11 @@ const loadPeople = async () => {
     /**
      * @type {Person[]}
      */
-    personas = await (await fetch("https://localhost/backend/personas")).json();
+    personas = await (await fetch("https://localhost/backend/personas"),{
+        headers: {
+            'Authorization' : `Bearer ${sessionStorage.getItem('token')}`
+        }
+    }).json();
 
     const card = document.getElementById("person-list-card-container");
     for (const i in personas) {
@@ -228,6 +232,9 @@ const loadPeople = async () => {
 
             const response = await fetch(`http://localhost/backend/personas/${person.id}`, {
                 method: 'DELETE',
+                headers: {
+                    'Authorization' : `Bearer ${sessionStorage.getItem('token')}`
+                },
                 body: JSON.stringify(psw),
                 headers: {
                     "Content-Type": 'application/json'
@@ -298,6 +305,9 @@ const loadPeople = async () => {
 
             await fetch(`https://localhost/backend/personas/${person.id}`, {
                 method: 'PUT',
+                headers: {
+                    'Authorization' : `Bearer ${sessionStorage.getItem('token')}`
+                },
                 body: JSON.stringify(body),
                 headers: {
                     "Content-Type": 'application/json'
