@@ -82,6 +82,7 @@ const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
             return reply.code(200).send({ jwtToken: token });
         },
     });
+
     fastify.post("/check", {
         schema: {
             security: [],
