@@ -69,3 +69,19 @@ loginButton.addEventListener("click", async (_) => {
         }
     }
 });
+
+const googleButton = document.getElementById(`googleButton`);
+
+googleButton.addEventListener(`click`, async () => {
+    // va login antes de google???? JUAN DECIA QUE NO
+    const response = await fetch(`https://localhost/backend/auth/login/google`, {
+        headers: {
+            "Content-Type": "application/json",
+        }
+    });
+
+    const token = await response.json();
+    if (response.ok) {
+        localStorage.setItem("token", JSON.stringify(token));
+    }
+});
