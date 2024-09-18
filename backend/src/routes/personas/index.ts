@@ -145,27 +145,6 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         },
     });
 
-    fastify.post("/check", {
-        // The token is not required for this route.
-        onRequest: undefined,
-        schema: {
-            body: Type.Ref(PersonToCheckSchema),
-            response: {
-                200: PersonWithPasswordCheckReturnSchema,
-                400: Type.Object({
-                    statusCode: Type.Number(),
-                    code: Type.String(),
-                    error: Type.String(),
-                    message: Type.String(),
-                }),
-            },
-        },
-
-        handler: async function(request, reply) {
-            return reply.code(200).send(checkPersonStructure(request.body));
-        },
-    });
-
     fastify.post("/:id/check", {
         onRequest: fastify.authenticate,
         schema: {

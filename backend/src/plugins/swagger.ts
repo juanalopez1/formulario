@@ -15,11 +15,11 @@ export default fp<FastifySwaggerOptions>(async (fastify, opts) => {
             components: {
                 securitySchemes: {
                     bearerAuth: {
-                        type: 'apiKey',
-                        name: 'Authorization',
-                        in: 'header'
-                    }
-                }
+                        type: "http",
+                        scheme: "bearer",
+                        bearerFormat: "JWT",
+                    },
+                },
             },
             servers: [
                 {
@@ -27,6 +27,7 @@ export default fp<FastifySwaggerOptions>(async (fastify, opts) => {
                     description: "Development server",
                 },
             ],
+            security: [{ bearerAuth: []}],
         },
     });
 
@@ -51,5 +52,4 @@ export default fp<FastifySwaggerOptions>(async (fastify, opts) => {
         },
         transformSpecificationClone: true,
     });
-
 });
