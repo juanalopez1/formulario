@@ -2,15 +2,10 @@ import {
     PersonWithPasswordSchema,
     PersonSchema,
     PersonWithPasswordType,
-    PersonToCheckSchema,
-    PersonWithPasswordCheckReturnSchema,
     PersonType,
 } from "../../tipos/persona.js";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import {
-    checkPersonStructure,
-} from "../../lib/personCheck.js";
 import { query } from "../../services/database.js";
 import { ensureKeyArray } from "../../lib/utils.js";
 
