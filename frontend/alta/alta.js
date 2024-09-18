@@ -39,45 +39,61 @@ const personHooks = {
     },
 };
 
-const inputs = Object.values(personHooks).map((m) => m.input);
+const hookInputs = Object.values(personHooks).map((m) => m.input);
 
 /** @type {HTMLButtonElement} */
 const registerButton = document.querySelector("#registerButton");
 
 hookPersonChecks(personHooks, (result) => {
     registerButton.disabled =
-        !isEmpty(result) ||
-        Object.values(personHooks).some((h) => h.input.value.length === 0);
+        !isEmpty(result) || hookInputs.some((i) => i.value.length === 0);
 });
 
-async function temp() {
-    const name = document.getElementById('name').value;
-    const surname = document.getElementById('surname').value;
-    const id = document.getElementById('id').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('psw1').value;
-    const rut = document.getElementById('rut').value;
+const helperMessage = document.getElementById("helperMessage");
 
-    const persona = {
-        person: {
-            name: name,
-            surname: surname,
-            id: id,
-            email: email,
-            rut: rut,
-        },
-        password: password,
-    };
+registerButton.addEventListener("click", async () => {
+    const allInputs = [...hookInputs, registerButton];
+    try {
+        for (const input of allInputs) {
+            input.disabled = false;
+        }
 
-    const result = await fetch("https://localhost/backend/personas", {
-        method: 'POST',
-        body: JSON.stringify(persona),
-        headers: {
-            "Content-Type": 'application/json'
-        },
-    });
+        const persona = {
+            person: {
+                name: personHooks.name.input.value,
+                surname: personHooks.surname.input.value,
+                id: personHooks.id.input.value,
+                email: personHooks.email.input.value,
+                rut: personHooks.rut.input.value,
+            },
+            password: personHooks.password.input.value,
+        };
 
-    if (result.ok) {
-        window.location.href = "../personas/index.html";
+        const result = await fetch("https://localhost/backend/auth/register", {
+            method: "POST",
+            body: JSON.stringify(persona),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (result.ok) {
+            const token = await result.json();
+            localStorage.setItem("token", JSON.stringify(token.jwtToken));
+            const aimPage = sessionStorage.getItem("aimPage");
+            sessionStorage.removeItem("aimPage");
+            window.location.href = aimPage ?? "../personas";
+        } else {
+            helperMessage.innerText = "Error al crear la cuenta.";
+            helperMessage.style.color = "red";
+        }
+    } catch (e) {
+        helperMessage.innerText = "Error de red";
+        helperMessage.style.color = "red";
+        console.error(e);
+    } finally {
+        for (const input of allInputs) {
+            input.disabled = false;
+        }
     }
-}
+});

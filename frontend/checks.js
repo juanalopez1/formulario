@@ -31,15 +31,12 @@ export function isEmpty(obj) {
  *      value as 'having no error'. Beware.
  */
 export async function hookPersonChecks(hooks, callback) {
-    // For every element passed, in their blur notify everyone whether their
-    // values are still correct.
-    /** @type {(element: HTMLInputElement) => void} */
-    const listener = async (_element) => {
+    const listener = async () => {
         const values = {
             person: {},
         };
 
-        const flatKeys = ["password", "repeatPassword"]
+        const flatKeys = ["password", "repeatPassword"];
 
         // Transform data
         for (const key in hooks) {
@@ -78,9 +75,9 @@ export async function hookPersonChecks(hooks, callback) {
                 /** @type {ErrorMessageHook} */
                 const hook = hooks[key];
 
-                const errToHandle = flatKeys.includes(key) ?
-                    result[key] :
-                    result.person?.[key];
+                const errToHandle = flatKeys.includes(key)
+                    ? result[key]
+                    : result.person?.[key];
 
                 hook.handler(errToHandle ?? "");
             }
@@ -97,9 +94,11 @@ export async function hookPersonChecks(hooks, callback) {
             /** @type {ErrorMessageHook} */
             const hook = hooks[key];
 
-            hook.input.addEventListener("keyup", listener);
+            hook.input.addEventListener("input", listener);
         }
     }
+
+    listener();
 }
 
 /**
