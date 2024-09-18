@@ -14,7 +14,6 @@ export default fp<FastifySwaggerOptions>(async (fastify, opts) => {
             },
             components: {
                 securitySchemes: {
-                    // TODO: Make this work with the jwt token.
                     bearerAuth: {
                         type: "http",
                         scheme: "bearer",
@@ -24,7 +23,7 @@ export default fp<FastifySwaggerOptions>(async (fastify, opts) => {
             },
             servers: [
                 {
-                    url: "http://localhost/backend",
+                    url: "https://localhost/backend",
                     description: "Development server",
                 },
             ],

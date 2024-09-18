@@ -17,6 +17,7 @@ export function checkPersonStructure(
     personWithPassword: PersonWithOptionalFields,
 ): PersonWithPasswordCheckReturn {
     const output: PersonWithPasswordCheckReturn = {};
+    console.error(personWithPassword);
 
     match<keyof typeof personWithPassword>({
         person() {
@@ -55,12 +56,9 @@ export function checkPersonStructure(
                         return;
                     }
 
-                    const surnameLength
-                        = personWithPassword.person!.surname!.length;
-                    const surnameMin
-                        = PersonSchema.properties.surname.minLength;
-                    const surnameMax
-                        = PersonSchema.properties.surname.maxLength;
+                    const surnameLength = personWithPassword.person!.surname!.length;
+                    const surnameMin = PersonSchema.properties.surname.minLength;
+                    const surnameMax = PersonSchema.properties.surname.maxLength;
 
                     if (surnameMin && surnameLength < surnameMin) {
                         output.person ??= {};
@@ -81,13 +79,14 @@ export function checkPersonStructure(
                         return;
                     }
 
-                    if (!Value.Check(
-                        PersonSchema.properties.email,
-                        personWithPassword.person!.email,
-                    )) {
+                    if (
+                        !Value.Check(
+                            PersonSchema.properties.email,
+                            personWithPassword.person!.email,
+                        )
+                    ) {
                         output.person ??= {};
-                        output.person.email
-                            = { errorMessage: "Email inválido." };
+                        output.person.email = { errorMessage: "Email inválido." };
                     }
                 },
                 id() {
@@ -95,7 +94,7 @@ export function checkPersonStructure(
                         return;
                     }
 
-                    const idCheck = checkID(personWithPassword.person!.id!);
+                    const idCheck = checkID(personWithPassword.person.id);
 
                     if (idCheck) {
                         output.person ??= {};
@@ -120,10 +119,11 @@ export function checkPersonStructure(
                     const actualKey = key as keyof typeof person;
                     const val = person[actualKey];
 
-                    if (val === undefined
-                        || output.person?.[actualKey] !== undefined
-                        || Value.Check(PersonSchema.properties[actualKey],
-                            val)) {
+                    if (
+                        val === undefined ||
+                        output.person?.[actualKey] !== undefined ||
+                        Value.Check(PersonSchema.properties[actualKey], val)
+                    ) {
                         continue;
                     }
 
@@ -142,10 +142,7 @@ export function checkPersonStructure(
                 [/[a-z]/, "La contraseña debe contener minúsculas."],
                 [/[A-Z]/, "La contraseña debe contener mayúsculas."],
                 [/\d/, "La contraseña debe contener dígitos."],
-                [
-                    /[@$!%*?&]/,
-                    'La contraseña debe contener alguno de "@$!%*?&".'
-                ],
+                [/[@$!%*?&]/, 'La contraseña debe contener alguno de "@$!%*?&".'],
                 [
                     /^[A-Za-z\d@$!%*?&]*$/,
                     "La contraseña contiene caracteres ilegales.\n" +
@@ -162,17 +159,13 @@ export function checkPersonStructure(
             }
         },
         repeatPassword() {
-            if (!personWithPassword.repeatPassword) {
-                return;
-            }
             const { password, repeatPassword } = personWithPassword;
-            if (!repeatPassword || password === repeatPassword) {
+            if (repeatPassword === undefined || password === repeatPassword) {
                 return;
             }
 
-            output.repeatPassword
-                = { errorMessage: "Las contraseñas no coinciden" }
-        }
+            output.repeatPassword = { errorMessage: "Las contraseñas no coinciden" };
+        },
     });
 
     return output;
@@ -219,13 +212,17 @@ function checkRut(rut: number): ErrorMessage | undefined {
         };
     }
 
-    return checkDigitRUT(stringifiedRut) ? undefined
+    return checkDigitRUT(stringifiedRut)
+        ? undefined
         : { errorMessage: "Rut inválido." };
 }
 
 function checkDigitRUT(rut: string): boolean {
     const digit = Number(rut[rut.length - 1]);
-    const numero = rut.slice(0, 11).split("").map((c) => parseInt(c));
+    const numero = rut
+        .slice(0, 11)
+        .split("")
+        .map((c) => parseInt(c));
 
     const coeficientes = [4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
     let sum = 0;

@@ -2,17 +2,15 @@ import {
     PersonWithPasswordSchema,
     PersonSchema,
     PersonWithPasswordType,
+    PersonType,
     PersonToCheckSchema,
     PersonWithPasswordCheckReturnSchema,
-    PersonType,
 } from "../../tipos/persona.js";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
-import {
-    checkPersonStructure,
-} from "../../lib/personCheck.js";
 import { query } from "../../services/database.js";
 import { ensureKeyArray } from "../../lib/utils.js";
+import { checkPersonStructure } from "../../lib/personCheck.js";
 
 async function searchByIdAndPassword(
     id: PersonType["id"],
@@ -20,7 +18,7 @@ async function searchByIdAndPassword(
 ) {
     const result = await query(
         "SELECT * FROM search_by_id_and_password($1, $2)",
-        [id,password],
+        [id, password],
     );
 
     if (result.rows.length !== 1) {
@@ -50,6 +48,17 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 `)
             ).rows as PersonType[];
         },
+    });
+
+    fastify.get("/verify", {
+        onRequest: fastify.authenticate,
+        schema: {
+            response: {
+                200: Type.Object({ ok: Type.Literal(true) }),
+                401: Type.Any(),
+            }
+        },
+        handler: (_request, reply) => { return reply.code(200).send({ ok: true }) },
     });
 
     fastify.put("/:id", {
@@ -156,6 +165,27 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         },
     });
 
+    fastify.post("/check", {
+        // The token is not required for this route.
+        onRequest: undefined,
+        schema: {
+            body: Type.Ref(PersonToCheckSchema),
+            response: {
+                200: PersonWithPasswordCheckReturnSchema,
+                400: Type.Object({
+                    statusCode: Type.Number(),
+                    code: Type.String(),
+                    error: Type.String(),
+                    message: Type.String(),
+                }),
+            },
+        },
+
+        handler: async function(request, reply) {
+            return reply.code(200).send(checkPersonStructure(request.body));
+        },
+    });
+
     fastify.delete("/:id", {
         onRequest: fastify.authenticate,
         schema: {
@@ -173,19 +203,19 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 400: Type.Literal("Incorrect password"),
             },
         },
-        
+
         preHandler: async function(request, reply) {
-             const person = searchByIdAndPassword(
-                 request.id,
-                 request.body.password,
-             );
-             if (person === undefined) {
-                 return reply
-                     .status(404)
-                     .send("Couldn't find Id");
-             }
-            
-         },
+            const person = searchByIdAndPassword(
+                request.id,
+                request.body.password,
+            );
+            if (person === undefined) {
+                return reply
+                    .status(404)
+                    .send("Couldn't find Id");
+            }
+
+        },
         handler: async function(request, reply) {
             const result = (
                 await query(
