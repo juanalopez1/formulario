@@ -39,7 +39,7 @@ body {
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    overflow: hidden;
+    overflow-x: hidden;
     background-color: white;
     border-radius: 0.25rem;
     border-top-right-radius: 0.5rem;
@@ -61,8 +61,6 @@ body {
 }
 
 .card-content h3 {
-    overflow-y: unset;
-    overflow-x: unset;
     font-weight: unset;
     font-size: unset;
     max-width: unset;
@@ -71,7 +69,6 @@ body {
     font-size: 1.5rem;
     font-weight: 700;
     max-width: 20ch;
-    overflow: hidden;
 }
 
 .text-ellipsis {
@@ -147,7 +144,7 @@ body {
 /* CONTAINER */
 
 .container {
-    background-color: #4a044e;
+    background-color: #3b0764;
     align-self: center;
     align-content: center;
     height: 100%;
@@ -245,7 +242,7 @@ abbr {
     border-radius: 0.5rem;
     display: grid;
     place-items: center;
-background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 .add-person-icon {
@@ -302,4 +299,54 @@ background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0
 .icon-hover:hover {
     color: inherit;
     border-bottom: 1px solid;
+}
+
+.button-row-personas {
+    background: #faf5ff;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    left: -50%;
+    position: relative;
+    border-radius: 9999px;
+    transform: translateY(-50%);
+    margin-inline: auto;
+    width: fit-content;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
+
+.button-row-personas>button {
+    border-radius: 9999px;
+}
+
+.button-row-personas>button:first-child {
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+}
+
+.button-row-personas>button:last-child {
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+}
+
+.button-row-personas>button:not(:last-child, :first-child) {
+    border-radius: 0.25rem;
+}
+
+.button-row-personas>button {
+    display: flex;
+    flex-direction: row;
+    background: none;
+    color: black;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    align-items: center;
+}
+
+.button-row-personas>button>svg {
+    width: 2rem;
 }
