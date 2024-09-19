@@ -29,11 +29,11 @@
     position: relative;
 }
 
-.fancy-button:disabled {
+.grow:disabled {
     scale: 1;
 }
 
-.fancy-button:enabled {
+.grow:enabled {
     scale: 1.15;
 }
 
