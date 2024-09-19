@@ -51,6 +51,7 @@ hookPersonChecks(personHooks, (result) => {
 
 const helperMessage = document.getElementById("helperMessage");
 
+/* evento antes
 registerButton.addEventListener("click", async () => {
     const allInputs = [...hookInputs, registerButton];
     try {
@@ -96,4 +97,34 @@ registerButton.addEventListener("click", async () => {
             input.disabled = false;
         }
     }
-});
+});*/
+
+const register = async (event) => {
+    event.preventDefault();
+    const altaForm = document.getElementById("altaForm");
+    const formData = new FormData(altaForm);
+    console.log({ formData });
+
+    try {
+        const response = await fetch("backend/personas/multipart", {
+            // headers: {
+            //   ContentType: "multipart/form-data",
+            // },
+            method: "POST",
+            body: formData,
+        });
+
+        if (result.ok) {
+            const token = await response.json();
+            localStorage.setItem("token", JSON.stringify(token.jwtToken));
+            const aimPage = sessionStorage.getItem("aimPage");
+            sessionStorage.removeItem("aimPage");
+            window.location.href = aimPage ?? "../personas";
+        } else {
+            helperMessage.innerText = "Error al crear la cuenta.";
+            helperMessage.style.color = "red";
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
