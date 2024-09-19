@@ -1,4 +1,4 @@
-import { Type, Static } from "@sinclair/typebox";
+import { Type } from "@sinclair/typebox";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import {
     ErrorMessageSchema,
