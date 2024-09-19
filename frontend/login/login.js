@@ -47,8 +47,10 @@ loginButton.addEventListener("click", async (_) => {
         });
 
         const token = await result.json();
+        console.log(token)
 
         if (result.ok) {
+            console.log('entre')
             localStorage.setItem("token", JSON.stringify(token.jwtToken));
             const aimPage = sessionStorage.getItem("aimPage");
             sessionStorage.removeItem("aimPage");
@@ -69,3 +71,8 @@ loginButton.addEventListener("click", async (_) => {
         }
     }
 });
+
+const googleButton = document.getElementById('googleButton');
+googleButton.addEventListener('click', () => {
+    window.location.href = "https://localhost/backend/auth/login/google";
+})
