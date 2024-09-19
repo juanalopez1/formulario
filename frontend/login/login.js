@@ -48,6 +48,7 @@ loginButton.addEventListener("click", async (_) => {
         });
 
         const token = await result.json();
+        console.log(token)
 
         if (result.ok) {
             localStorage.setItem(
@@ -74,3 +75,8 @@ loginButton.addEventListener("click", async (_) => {
         }
     }
 });
+
+const googleButton = document.getElementById('googleButton');
+googleButton.addEventListener('click', () => {
+    window.location.href = "https://localhost/backend/auth/login/google";
+})
