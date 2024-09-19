@@ -88,17 +88,14 @@ export async function hookPersonChecks(hooks, callback) {
         }
     };
 
-    // Add listener
-    for (const key in hooks) {
-        if (hooks.hasOwnProperty(key)) {
-            /** @type {ErrorMessageHook} */
-            const hook = hooks[key];
-
-            hook.input.addEventListener("input", listener);
-        }
+    // Add listener to each hook
+    for (const hook of Object.values(hooks)) {
+        hook.input.addEventListener("input", listener);
     }
 
-    listener();
+    // Call this once in case the form already has the correct data
+    // (from browser autocomplete, for example).
+    await listener();
 }
 
 /**
