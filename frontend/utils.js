@@ -39,12 +39,10 @@ export function logOut(loginAimPage) {
     window.location.href = "/login";
 }
 
-/** @enum {string} */
-export const localStorageKeys = /** @type {const} */ ({
+export const localStorageKeys = /** @type {const} */ {
     jwtToken: "jwtToken",
-});
+};
 
-/** @enum {string} */
 export const sessionStorageKeys = /** @type {const} */ ({
     aimPage: "aimPage",
 });
