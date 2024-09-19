@@ -22,6 +22,18 @@ export const PersonSchema = Type.Object(
         }),
         id: Type.String({ pattern: idRegex.source }),
         rut: Type.Number({ minimum: 100000000000, maximum: 999999999999 }),
+        photo: Type.Object(
+            {
+                type: Type.Literal("file"),
+                fieldname: Type.String(),
+                filename: Type.String(),
+                encoding: Type.String(),
+                mimetype: Type.String(),
+                file: Type.Object({}),
+                _buf: Type.Object({}),
+            },
+            { additionalProperties: false }
+        ),
     },
     {
         $id: "Person",

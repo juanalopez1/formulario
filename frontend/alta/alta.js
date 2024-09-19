@@ -106,7 +106,7 @@ const register = async (event) => {
     console.log({ formData });
 
     try {
-        const response = await fetch("backend/personas/multipart", {
+        const response = await fetch("https://localhost/backend/auth/register", {
             // headers: {
             //   ContentType: "multipart/form-data",
             // },
