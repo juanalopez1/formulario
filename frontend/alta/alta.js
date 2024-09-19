@@ -1,5 +1,5 @@
 import { hookPersonChecks, isEmpty, setErrorMessage } from "../checks.js";
-import { localStorageKeys, sessionStorageKeys } from "../localStuff.js";
+import { localStorageKeys, sessionStorageKeys } from "../utils.js";
 
 /** @type {import('../checks.js').PersonHooks} */
 const personHooks = {
@@ -82,7 +82,7 @@ registerButton.addEventListener("click", async () => {
             const token = await result.json();
             localStorage.setItem(
                 localStorageKeys.jwtToken,
-                JSON.stringify(token.jwtToken),
+                token.jwtToken,
             );
             const aimPage = sessionStorage.getItem(sessionStorageKeys.aimPage);
             sessionStorage.removeItem(sessionStorageKeys.aimPage);
