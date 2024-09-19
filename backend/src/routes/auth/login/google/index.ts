@@ -11,8 +11,6 @@ const googleRoutes: FastifyPluginAsyncTypebox = async (fastify, opts) => {
         fastify.log.info(userInfo);
         reply.code(200);
     }
-
-    
   );
 }
 

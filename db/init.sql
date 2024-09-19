@@ -101,3 +101,5 @@ SELECT *
   WITH deleted AS (DELETE FROM people WHERE id = '5.501.862-4' RETURNING 1)
 SELECT COUNT(*) AS deleted_rows
   FROM deleted;
+
+select  * from people;
