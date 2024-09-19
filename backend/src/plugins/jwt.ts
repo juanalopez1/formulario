@@ -14,7 +14,7 @@ export default fp<FastifyJWTOptions>(async (fastify) => {
             try {
                 await request.jwtVerify();
             } catch (err) {
-                throw reply.unauthorized("Something went wrong");
+                throw reply.unauthorized("Invalid jwt token" + request.headers.authorization);
             }
         },
     );

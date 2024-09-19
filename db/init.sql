@@ -54,11 +54,11 @@ $$ LANGUAGE plpgsql;
 
 INSERT
   INTO people (name, surname, email, id, rut, password)
-VALUES ('Pepito', 'Rodriguez', 'juancito@icloud.com', '5.440.395-7', 215777930016, encrypt_password('Juana123!'))
-     , ('Pepote', 'Rodriguez', 'juancito2@icloud.com', '3.803.148-1', 215777930024, encrypt_password('Pepe123!'))
-     , ('Cris', 'Rpia', 'ezponjares@gmail.com', '5.563.253-7', 215777930032, encrypt_password('Pep123!'))
-     , ( 'Juana Inés', 'López Rocca', 'juanita@gmail.com', '5.501.862-4', 215777930040
-       , encrypt_password('Pep123!'));
+VALUES ('Pepito', 'Rodriguez', 'juancito@icloud.com', '5.440.395-7', 216885950010, encrypt_password('Pepito123!'))
+     , ('Pepote', 'Rodriguez', 'juancito2@icloud.com', '3.803.148-1', 216298610018, encrypt_password('Pepote123!'))
+     , ('Cris', 'Rpia', 'ezponjares@gmail.com', '5.563.253-7', 217094520019, encrypt_password('Cris123!'))
+     , ( 'Juana Inés', 'López Rocca', 'juanita@gmail.com', '5.501.862-4', 214950090010
+       , encrypt_password('Juana123!'));
 
 SELECT *
   FROM get_curated_users();

@@ -1,4 +1,5 @@
 import * as checks from "../checks.js";
+import { localStorageKeys, sessionStorageKeys } from "../utils.js";
 
 /** @type {checks.PersonHooks} */
 const hooks = {
@@ -49,9 +50,13 @@ loginButton.addEventListener("click", async (_) => {
         const token = await result.json();
 
         if (result.ok) {
-            localStorage.setItem("token", JSON.stringify(token.jwtToken));
-            const aimPage = sessionStorage.getItem("aimPage");
-            sessionStorage.removeItem("aimPage");
+            localStorage.setItem(
+                localStorageKeys.jwtToken,
+                token.jwtToken,
+            );
+            const aimPage = sessionStorage.getItem(sessionStorageKeys.aimPage);
+            console.log(aimPage);
+            sessionStorage.removeItem(sessionStorageKeys.aimPage, "aimPage");
             window.location.href = aimPage ?? "../personas";
         } else if (result.status === 404) {
             helperMessage.innerText = "No pudimos encontrarte";

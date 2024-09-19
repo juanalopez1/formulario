@@ -1,4 +1,5 @@
 import { hookPersonChecks, isEmpty, setErrorMessage } from "../checks.js";
+import { localStorageKeys, sessionStorageKeys } from "../localStuff.js";
 
 /** @type {import('../checks.js').PersonHooks} */
 const personHooks = {
@@ -79,9 +80,12 @@ registerButton.addEventListener("click", async () => {
 
         if (result.ok) {
             const token = await result.json();
-            localStorage.setItem("token", JSON.stringify(token.jwtToken));
-            const aimPage = sessionStorage.getItem("aimPage");
-            sessionStorage.removeItem("aimPage");
+            localStorage.setItem(
+                localStorageKeys.jwtToken,
+                JSON.stringify(token.jwtToken),
+            );
+            const aimPage = sessionStorage.getItem(sessionStorageKeys.aimPage);
+            sessionStorage.removeItem(sessionStorageKeys.aimPage);
             window.location.href = aimPage ?? "../personas";
         } else {
             helperMessage.innerText = "Error al crear la cuenta.";
