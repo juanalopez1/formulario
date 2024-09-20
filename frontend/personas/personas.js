@@ -55,7 +55,7 @@ async function main() {
     logoutButton.addEventListener("click", () => logOut());
 
     // Setup modify dialog
-    const user = personas.find((p) => (p.id = selfId));
+    const user = personas.find((p) => (p.id === selfId));
 
     if (!user) {
         logOut();
