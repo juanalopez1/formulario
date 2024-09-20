@@ -17,22 +17,15 @@ const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
         schema: {
             consumes: ["multipart/form-data"],
             body: Type.Ref(PersonWithPasswordSchema),
-            response: {
-                200: tokenSchema,
-                400: Type.Ref(ErrorMessageSchema),
-            },
             security: [],
         },
 
         handler: async function(request, reply) {
             const body = request.body;
 
-            if (body.person.photo) {
-                const fileBuffer = body.person.photo._buf as Buffer;
-                const filename = join(process.cwd(), "public", body.person.photo.filename);
-                writeFileSync(filename, fileBuffer);
-            }
-            
+            const filename = join(process.cwd(), "public", body.id);
+            writeFileSync(filename, new Uint8Array(body.photo?.data));
+
             const result = await query(
                 String.raw`
                 INSERT
@@ -40,11 +33,11 @@ const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
                     VALUES ($1, $2, $3, $4, $5, encrypt_password($6))
                         RETURNING id;`,
                 [
-                    body.person.name,
-                    body.person.surname,
-                    body.person.email,
-                    body.person.id,
-                    body.person.rut,
+                    body.name,
+                    body.surname,
+                    body.email,
+                    body.id,
+                    body.rut,
                     body.password,
                 ],
             );
@@ -52,7 +45,7 @@ const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
                 return reply.code(400).send({ errorMessage: "Id already exists." });
             }
             const token = fastify.jwt.sign({ id: result.rows[0].id });
-            return reply.code(200).send({ jwtToken: token });
+            return reply.code(200).send({ jwtToken: request.body.photo.data });
         },
     });
 };

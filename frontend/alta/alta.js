@@ -102,13 +102,30 @@ registerButton.addEventListener("click", async () => {
         }
     }
 });*/
-
-const register = async (event) => {
-    event.preventDefault();
     const altaForm = document.getElementById("altaForm");
     const formData = new FormData(altaForm);
-    console.log({ formData });
-    return;
+
+/** @type {HTMLInputElement} */
+const photo = document.getElementById("photo");
+
+photo.addEventListener("input", () => {
+    console.log(photo.files);
+    console.log(formData.entries());
+});
+
+registerButton.addEventListener('click', async (event) => {
+    event.preventDefault();
+
+    const person = {
+        person: {
+            name: personHooks.name.input.value,
+            surname: personHooks.surname.input.value,
+            id: personHooks.id.input.value,
+            email: personHooks.email.input.value,
+            rut: personHooks.rut.input.value,
+        },
+        password: personHooks.password.input.value,
+    };
 
     try {
         const response = await fetch("https://localhost/backend/auth/register", {
@@ -116,7 +133,7 @@ const register = async (event) => {
             //   ContentType: "multipart/form-data",
             // },
             method: "POST",
-            body: formData,
+            body: JSON.stringify(person),
         });
 
         if (result.ok) {

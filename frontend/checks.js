@@ -36,8 +36,6 @@ export async function hookPersonChecks(hooks, callback) {
             person: {},
         };
 
-        const flatKeys = ["password", "repeatPassword"];
-
         // Transform data
         for (const key in hooks) {
             if (hooks.hasOwnProperty(key)) {
@@ -51,17 +49,13 @@ export async function hookPersonChecks(hooks, callback) {
                     continue;
                 }
 
-                if (flatKeys.includes(key)) {
-                    values[key] = hook.dataTransformer(hook.input.value);
-                } else {
-                    values.person[key] = hook.dataTransformer(hook.input.value);
-                }
+                values[key] = hook.dataTransformer(hook.input.value);
             }
         }
 
         // Query backend
         const result = await (
-            await fetch("https://localhost/backend/personas/check", {
+            await fetch("https://localhost/backend/auth/check", {
                 body: JSON.stringify(values),
                 method: "POST",
                 headers: {
@@ -75,11 +69,7 @@ export async function hookPersonChecks(hooks, callback) {
                 /** @type {ErrorMessageHook} */
                 const hook = hooks[key];
 
-                const errToHandle = flatKeys.includes(key)
-                    ? result[key]
-                    : result.person?.[key];
-
-                hook.handler(errToHandle ?? "");
+                hook.handler(result[key] ?? "");
             }
         }
 

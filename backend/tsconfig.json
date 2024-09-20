@@ -1,12 +1,17 @@
 {
-  "extends": "fastify-tsconfig",
-  "compilerOptions": {
-    "outDir": "dist",
-    "sourceMap": true,
-    "moduleResolution": "NodeNext",
-    "module": "NodeNext",
-    "target": "ES2022",
-    "esModuleInterop": true
-  },
-  "include": ["src/**/*.ts", "src/plugins/google-auth.todo"]
+    "$schema": "https://json.schemastore.org/tsconfig.json",
+    "extends": "fastify-tsconfig",
+    "compilerOptions": {
+        "outDir": "dist",
+        "sourceMap": true,
+        "noUnusedLocals": false,
+        "moduleResolution": "NodeNext",
+        "module": "NodeNext",
+        "target": "ES2022",
+        "esModuleInterop": true
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/plugins/google-auth.todo"
+    ]
 }

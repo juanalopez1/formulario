@@ -3,14 +3,11 @@ import {
     PersonSchema,
     PersonWithPasswordType,
     PersonType,
-    PersonToCheckSchema,
-    PersonWithPasswordCheckReturnSchema,
 } from "../../tipos/persona.js";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { query } from "../../services/database.js";
 import { ensureType } from "../../lib/utils.js";
-import { checkPersonStructure } from "../../lib/personCheck.js";
 
 async function searchByIdAndPassword(
     id: PersonType["id"],
@@ -81,16 +78,14 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify.put("/:id", {
         onRequest: fastify.authenticate,
         schema: {
-            params: Type.Object({
-                id: PersonSchema.properties.id,
-            }),
-            body: Type.Object({
-                ...PersonWithPasswordSchema.properties,
-                person: Type.Omit(
-                    PersonSchema,
-                    ensureType<(keyof PersonType)[]>()(["id"] as const),
-                ),
-            }),
+            params: Type.Pick(
+                PersonSchema,
+                ensureType<Array<keyof PersonType>>()(["id"]),
+            ),
+            body: Type.Omit(
+                PersonWithPasswordSchema,
+                ensureType<Array<keyof PersonWithPasswordType>>()(["id"]),
+            ),
             response: {
                 200: Type.Ref(PersonWithPasswordSchema),
                 401: Type.Object({
@@ -109,7 +104,6 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         },
 
         handler: async function(request, reply) {
-            const { person, password } = request.body;
             const user = request.user as {
                 id: string;
             };
@@ -125,11 +119,11 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                      WHERE id = $6;
                 `,
                 [
-                    person.name,
-                    person.surname,
-                    person.email,
-                    person.rut,
-                    password,
+                    request.body.name,
+                    request.body.surname,
+                    request.body.email,
+                    request.body.rut,
+                    request.body.password,
                     user.id,
                 ],
             );
@@ -140,10 +134,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
 
             return reply.code(200).send({
                 ...request.body,
-                person: {
-                    ...request.body.person,
-                    id: request.params.id,
-                },
+                id: request.params.id,
             });
         },
     });
@@ -151,10 +142,14 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify.post("/:id/check", {
         onRequest: fastify.authenticate,
         schema: {
-            params: Type.Object({ id: PersonSchema.properties.id }),
-            body: Type.Object({
-                password: PersonWithPasswordSchema.properties.password,
-            }),
+            params: Type.Pick(
+                PersonWithPasswordSchema,
+                ensureType<(keyof PersonWithPasswordType)[]>()(["id"]),
+            ),
+            body: Type.Pick(
+                PersonWithPasswordSchema,
+                ensureType<(keyof PersonWithPasswordType)[]>()(["password"]),
+            ),
             response: {
                 200: Type.Object({
                     correct: Type.Boolean(),
@@ -170,36 +165,17 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         },
     });
 
-    fastify.post("/check", {
-        // The token is not required for this route.
-        onRequest: undefined,
-        schema: {
-            body: Type.Ref(PersonToCheckSchema),
-            response: {
-                200: PersonWithPasswordCheckReturnSchema,
-                400: Type.Object({
-                    statusCode: Type.Number(),
-                    code: Type.String(),
-                    error: Type.String(),
-                    message: Type.String(),
-                }),
-            },
-        },
-
-        handler: async function(request, reply) {
-            return reply.code(200).send(checkPersonStructure(request.body));
-        },
-    });
-
     fastify.delete("/:id", {
         onRequest: fastify.authenticate,
         schema: {
-            params: Type.Object({
-                id: PersonSchema.properties.id,
-            }),
-            body: Type.Object({
-                password: PersonWithPasswordSchema.properties.password,
-            }),
+            params: Type.Pick(
+                PersonWithPasswordSchema,
+                ensureType<(keyof PersonWithPasswordType)[]>()(["password"]),
+            ),
+            body: Type.Pick(
+                PersonWithPasswordSchema,
+                ensureType<(keyof PersonWithPasswordType)[]>()(["password"]),
+            ),
             response: {
                 200: Type.Object({
                     message: Type.Literal("Person deleted successfully"),
@@ -212,23 +188,24 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 id: string;
             };
 
-            const result = (
-                await query(`
+            const result = await query(
+                `
                        DELETE
                          FROM people
                         WHERE id = $1
                           AND check_password(password, $2)
                     RETURNING 1;
                 `,
-                    [user.id, request.body.password],
-                )
+                [user.id, request.body.password],
             );
 
             fastify.log.warn("asdsa " + user.id + request.body.password);
 
             switch (result.rowCount) {
                 case 0:
-                    return reply.unauthorized("Could not delete person with such crentials.");
+                    return reply.unauthorized(
+                        "Could not delete person with such crentials.",
+                    );
                 case 1:
                     return reply
                         .code(200)

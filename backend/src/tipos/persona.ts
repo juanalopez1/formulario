@@ -1,4 +1,4 @@
-import { Static, Type } from "@sinclair/typebox";
+import { Static, TSchema, Type } from "@sinclair/typebox";
 import { ensureType } from "../lib/utils.js";
 
 // Expresión regular para el correo electrónico
@@ -23,18 +23,7 @@ export const PersonSchema = Type.Object(
         }),
         id: Type.String({ pattern: idRegex.source }),
         rut: Type.Number({ minimum: 100000000000, maximum: 999999999999 }),
-        photo: Type.Object(
-            {
-                type: Type.Literal("file"),
-                fieldname: Type.String(),
-                filename: Type.String(),
-                encoding: Type.String(),
-                mimetype: Type.String(),
-                file: Type.Object({}),
-                _buf: Type.Object({}),
-            },
-            { additionalProperties: false }
-        ),
+        photo: Type.Any(),
     },
     {
         $id: "Person",
@@ -42,32 +31,46 @@ export const PersonSchema = Type.Object(
     },
 );
 
-export const PersonWithPasswordSchema = Type.Object(
-    {
-        person: Type.Ref(PersonSchema),
-        password: Type.String({
-            minLength: 8,
-            maxLength: 20,
-            pattern: passwordRegex.source,
+export const PersonWithPasswordSchema = Type.Intersect(
+    [
+        PersonSchema,
+        Type.Object({
+            password: Type.String({
+                minLength: 8,
+                maxLength: 20,
+                pattern: passwordRegex.source,
+            }),
         }),
-    },
+    ],
     {
         $id: "PersonWithPassword",
         title: "personWithPassword",
     },
 );
 
-const simplifiedPerson = Type.Omit(Type.Object({
-    ...Type.Mapped(Type.KeyOf(PersonSchema), (_) => Type.String()).properties,
-    rut: Type.Number(),
-}), ensureType<(keyof PersonType)[]>()(["photo"]));
+const simplifiedPerson = Type.Omit(
+    Type.Intersect([
+        Type.Omit(
+            Type.Mapped(Type.KeyOf(PersonSchema), (_) => Type.String()),
+            ensureType<(keyof PersonType)[]>()(["rut"]),
+        ),
+        Type.Object(
+            ensureType<{ [K in keyof PersonType]?: TSchema }>()({
+                rut: Type.Number(),
+            }),
+        ),
+    ]),
+    ensureType<(keyof PersonType)[]>()(["photo"]),
+);
 
-export const PersonToCheckSchema = Type.Object(
-    {
-        person: Type.Optional(Type.Partial(simplifiedPerson)),
-        password: Type.Optional(Type.String()),
-        repeatPassword: Type.Optional(Type.String()),
-    },
+export const PersonToCheckSchema = Type.Partial(
+    Type.Intersect([
+        Type.Optional(Type.Partial(simplifiedPerson)),
+        Type.Object({
+            password: Type.String(),
+            repeatPassword: Type.String(),
+        }),
+    ]),
     {
         $id: "optionalPerson",
         title: "Persona con campos opcionales.",
@@ -84,18 +87,11 @@ export const ErrorMessageSchema = Type.Object(
     },
 );
 
-export const PersonWithPasswordCheckReturnSchema = Type.Object({
-    ...Type.Mapped(Type.KeyOf(PersonToCheckSchema), (_) =>
-        Type.Optional(Type.Ref(ErrorMessageSchema)),
-    ).properties,
-    person: Type.Optional(
-        Type.Partial(
-            Type.Mapped(Type.KeyOf(PersonToCheckSchema.properties.person), (_) =>
-                Type.Ref(ErrorMessageSchema),
-            ),
-        ),
+export const PersonWithPasswordCheckReturnSchema = Type.Partial(
+    Type.Mapped(Type.KeyOf(PersonToCheckSchema), (_) =>
+        Type.Ref(ErrorMessageSchema),
     ),
-});
+);
 
 export type ErrorMessage = Static<typeof ErrorMessageSchema>;
 
@@ -114,5 +110,5 @@ type AssertEqual<T, K> = T extends K ? (K extends T ? string : never) : never;
 
 const test = <T>(_: T) => { };
 test<AssertEqual<Omit<PersonType, "photo">, Static<typeof simplifiedPerson>>>(
-    "A simplified person should be the same as a person to typescript.",
+    "A simplified person should be the same as a person, excluding their photo, to typescript.",
 );

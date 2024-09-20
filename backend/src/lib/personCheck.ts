@@ -20,120 +20,84 @@ export function checkPersonStructure(
     console.error(personWithPassword);
 
     match<keyof typeof personWithPassword>({
-        person() {
-            const person = personWithPassword?.person;
-
-            if (person === undefined) {
+        name() {
+            if (personWithPassword.name === undefined) {
                 return;
             }
 
-            match<keyof typeof person>({
-                name() {
-                    if (personWithPassword.person?.name === undefined) {
-                        return;
-                    }
+            const length = personWithPassword.name.length;
+            const min = PersonSchema.properties.name.minLength;
+            const max = PersonSchema.properties.name.maxLength;
 
-                    const length = personWithPassword.person!.name!.length;
-                    const min = PersonSchema.properties.name.minLength;
-                    const max = PersonSchema.properties.name.maxLength;
+            if (min && length < min) {
+                output.name = {
+                    errorMessage: `Mínimo de ${min} caracteres.`,
+                };
+            }
 
-                    if (min && length < min) {
-                        output.person ??= {};
-                        output.person.name = {
-                            errorMessage: `Mínimo de ${min} caracteres.`,
-                        };
-                    }
-
-                    if (max && length > max) {
-                        output.person ??= {};
-                        output.person.name = {
-                            errorMessage: `Máximo de ${max} caracteres.`,
-                        };
-                    }
-                },
-                surname() {
-                    if (personWithPassword.person?.surname === undefined) {
-                        return;
-                    }
-
-                    const surnameLength = personWithPassword.person!.surname!.length;
-                    const surnameMin = PersonSchema.properties.surname.minLength;
-                    const surnameMax = PersonSchema.properties.surname.maxLength;
-
-                    if (surnameMin && surnameLength < surnameMin) {
-                        output.person ??= {};
-                        output.person.surname = {
-                            errorMessage: `Mínimo de ${surnameMin}`,
-                        };
-                    }
-
-                    if (surnameMax && surnameLength > surnameMax) {
-                        output.person ??= {};
-                        output.person.surname = {
-                            errorMessage: `Máximo de ${surnameMax}`,
-                        };
-                    }
-                },
-                email() {
-                    if (personWithPassword.person?.email === undefined) {
-                        return;
-                    }
-
-                    if (
-                        !Value.Check(
-                            PersonSchema.properties.email,
-                            personWithPassword.person!.email,
-                        )
-                    ) {
-                        output.person ??= {};
-                        output.person.email = { errorMessage: "Email inválido." };
-                    }
-                },
-                id() {
-                    if (personWithPassword.person?.id === undefined) {
-                        return;
-                    }
-
-                    const idCheck = checkID(personWithPassword.person.id);
-
-                    if (idCheck) {
-                        output.person ??= {};
-                        output.person.id = idCheck;
-                    }
-                },
-                rut() {
-                    if (personWithPassword.person?.rut === undefined) {
-                        return;
-                    }
-                    const rutCheck = checkRut(personWithPassword.person!.rut!);
-
-                    if (rutCheck) {
-                        output.person ??= {};
-                        output.person.rut = rutCheck;
-                    }
-                },
-            });
-
-            for (const key in person) {
-                if (person.hasOwnProperty(key)) {
-                    const actualKey = key as keyof typeof person;
-                    const val = person[actualKey];
-
-                    if (
-                        val === undefined ||
-                        output.person?.[actualKey] !== undefined ||
-                        Value.Check(PersonSchema.properties[actualKey], val)
-                    ) {
-                        continue;
-                    }
-
-                    output.person ??= {};
-                    output.person[actualKey] = {
-                        errorMessage: "Dato inválido",
-                    };
-                }
+            if (max && length > max) {
+                output.name = {
+                    errorMessage: `Máximo de ${max} caracteres.`,
+                };
             }
         },
+        surname() {
+            if (personWithPassword.surname === undefined) {
+                return;
+            }
+
+            const surnameLength = personWithPassword.surname.length;
+            const surnameMin = PersonSchema.properties.surname.minLength;
+            const surnameMax = PersonSchema.properties.surname.maxLength;
+
+            if (surnameMin && surnameLength < surnameMin) {
+                output.surname = {
+                    errorMessage: `Mínimo de ${surnameMin}`,
+                };
+            }
+
+            if (surnameMax && surnameLength > surnameMax) {
+                output.surname = {
+                    errorMessage: `Máximo de ${surnameMax}`,
+                };
+            }
+        },
+        email() {
+            if (personWithPassword.email === undefined) {
+                return;
+            }
+
+            if (
+                !Value.Check(
+                    PersonSchema.properties.email,
+                    personWithPassword.email,
+                )
+            ) {
+                output.email = { errorMessage: "Email inválido." };
+            }
+        },
+        id() {
+            if (personWithPassword.id === undefined) {
+                return;
+            }
+
+            const idCheck = checkID(personWithPassword.id);
+
+            if (idCheck) {
+                output.id = idCheck;
+            }
+        },
+        rut() {
+            if (personWithPassword.rut === undefined) {
+                return;
+            }
+            const rutCheck = checkRut(personWithPassword.rut);
+
+            if (rutCheck) {
+                output.rut = rutCheck;
+            }
+        },
+
         password() {
             if (personWithPassword.password === undefined) {
                 return;
