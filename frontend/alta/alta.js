@@ -108,6 +108,7 @@ const register = async (event) => {
     const altaForm = document.getElementById("altaForm");
     const formData = new FormData(altaForm);
     console.log({ formData });
+    return;
 
     try {
         const response = await fetch("https://localhost/backend/auth/register", {

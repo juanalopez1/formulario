@@ -5,6 +5,8 @@ import {
     PersonWithPasswordSchema,
 } from "../../../tipos/persona.js";
 import { query } from "../../../services/database.js";
+import { writeFileSync } from "fs";
+import { join } from "path";
 
 const tokenSchema = Type.Object({
     jwtToken: Type.String(),
@@ -13,6 +15,7 @@ const tokenSchema = Type.Object({
 const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
     fastify.post("/", {
         schema: {
+            consumes: ["multipart/form-data"],
             body: Type.Ref(PersonWithPasswordSchema),
             response: {
                 200: tokenSchema,
@@ -23,6 +26,13 @@ const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
 
         handler: async function(request, reply) {
             const body = request.body;
+
+            if (body.person.photo) {
+                const fileBuffer = body.person.photo._buf as Buffer;
+                const filename = join(process.cwd(), "public", body.person.photo.filename);
+                writeFileSync(filename, fileBuffer);
+            }
+            
             const result = await query(
                 String.raw`
                 INSERT

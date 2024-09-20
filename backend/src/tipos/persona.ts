@@ -1,4 +1,5 @@
 import { Static, Type } from "@sinclair/typebox";
+import { ensureType } from "../lib/utils.js";
 
 // Expresión regular para el correo electrónico
 // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -56,10 +57,10 @@ export const PersonWithPasswordSchema = Type.Object(
     },
 );
 
-const simplifiedPerson = Type.Object({
+const simplifiedPerson = Type.Omit(Type.Object({
     ...Type.Mapped(Type.KeyOf(PersonSchema), (_) => Type.String()).properties,
     rut: Type.Number(),
-});
+}), ensureType<(keyof PersonType)[]>()(["photo"]));
 
 export const PersonToCheckSchema = Type.Object(
     {
@@ -112,6 +113,6 @@ export type PersonWithPasswordCheckReturn = Static<
 type AssertEqual<T, K> = T extends K ? (K extends T ? string : never) : never;
 
 const test = <T>(_: T) => { };
-test<AssertEqual<PersonType, Static<typeof simplifiedPerson>>>(
+test<AssertEqual<Omit<PersonType, "photo">, Static<typeof simplifiedPerson>>>(
     "A simplified person should be the same as a person to typescript.",
 );
