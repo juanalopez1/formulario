@@ -1,5 +1,4 @@
 import { Static, TSchema, Type } from "@sinclair/typebox";
-import { ensureType } from "../lib/utils.js";
 
 // Expresión regular para el correo electrónico
 // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -52,15 +51,13 @@ const simplifiedPerson = Type.Omit(
     Type.Intersect([
         Type.Omit(
             Type.Mapped(Type.KeyOf(PersonSchema), (_) => Type.String()),
-            ensureType<(keyof PersonType)[]>()(["rut"]),
+            ["rut"] satisfies (keyof PersonType)[],
         ),
-        Type.Object(
-            ensureType<{ [K in keyof PersonType]?: TSchema }>()({
-                rut: Type.Number(),
-            }),
-        ),
+        Type.Object({
+            rut: Type.Number(),
+        } satisfies { [K in keyof PersonType]?: TSchema }),
     ]),
-    ensureType<(keyof PersonType)[]>()(["photo"]),
+    ["photo"] satisfies (keyof PersonType)[],
 );
 
 export const PersonToCheckSchema = Type.Partial(

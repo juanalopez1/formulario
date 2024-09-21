@@ -7,7 +7,6 @@ import {
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { query } from "../../services/database.js";
-import { ensureType } from "../../lib/utils.js";
 
 async function searchByIdAndPassword(
     id: PersonType["id"],
@@ -80,11 +79,11 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         schema: {
             params: Type.Pick(
                 PersonSchema,
-                ensureType<Array<keyof PersonType>>()(["id"]),
+                ["id"] satisfies (keyof PersonType)[],
             ),
             body: Type.Omit(
                 PersonWithPasswordSchema,
-                ensureType<Array<keyof PersonWithPasswordType>>()(["id"]),
+                ["id"] satisfies (keyof PersonWithPasswordType)[]
             ),
             response: {
                 200: Type.Ref(PersonWithPasswordSchema),
@@ -144,11 +143,11 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         schema: {
             params: Type.Pick(
                 PersonWithPasswordSchema,
-                ensureType<(keyof PersonWithPasswordType)[]>()(["id"]),
+                ["id"] satisfies (keyof PersonWithPasswordType)[],
             ),
             body: Type.Pick(
                 PersonWithPasswordSchema,
-                ensureType<(keyof PersonWithPasswordType)[]>()(["password"]),
+                ["password"] satisfies (keyof PersonWithPasswordType)[],
             ),
             response: {
                 200: Type.Object({
@@ -170,11 +169,11 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         schema: {
             params: Type.Pick(
                 PersonWithPasswordSchema,
-                ensureType<(keyof PersonWithPasswordType)[]>()(["password"]),
+                ["id"] satisfies (keyof PersonWithPasswordType)[],
             ),
             body: Type.Pick(
                 PersonWithPasswordSchema,
-                ensureType<(keyof PersonWithPasswordType)[]>()(["password"]),
+                ["password"] satisfies (keyof PersonWithPasswordType)[],
             ),
             response: {
                 200: Type.Object({

@@ -36,19 +36,3 @@ export function match<T extends ObjectIndex>(
         element();
     }
 }
-
-/**
- * Returns the passed value. It is recommended to pass an `as const` type to
- * get the exact type back, if using literals. This function is useful to
- * whenever some other signature does not enforce enough restrictions for actual
- * type-safety, so you can use this to ensure a compile-time error is thrown
- * when appropriate
- * @example
- * type myObj = { id: number; email: string };
- * const a = ensureType<(keyof myObj)[]>()(["id", "email"] as const); // a => ["id", "email"]
- */
-export function ensureType<T>() {
-    return function <R extends T>(value: R): R {
-        return value;
-    };
-}
