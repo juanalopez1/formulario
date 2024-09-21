@@ -7,6 +7,7 @@ import {
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { query } from "../../services/database.js";
+import { typedEnv } from "../../tipos/env.js";
 
 async function searchByIdAndPassword(
     id: PersonType["id"],
@@ -32,16 +33,28 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
         onRequest: fastify.authenticate,
         schema: {
             response: {
-                200: Type.Array(Type.Ref(PersonSchema)),
+                200: Type.Array(
+                    Type.Intersect([
+                        Type.Ref(PersonSchema),
+                        Type.Object({
+                            photo: Type.String(),
+                        }),
+                    ])
+                ),
             },
         },
         handler: async function (_request, _reply) {
-            return (
+            const dbPeople = (
                 await query(`
                 SELECT *
                   FROM get_curated_users();
                 `)
             ).rows as PersonType[];
+
+            return dbPeople.map((person) => ({
+                ...person,
+                photo: `https://${typedEnv.FRONT_URL}/backend/public/${person.id}`,
+            }));
         },
     });
 

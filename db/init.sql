@@ -10,8 +10,7 @@ CREATE TABLE public.people (
     email     TEXT   NOT NULL UNIQUE,
     id        TEXT UNIQUE PRIMARY KEY,
     rut       BIGINT NOT NULL UNIQUE,
-    password  TEXT   NOT NULL,
-    image_url TEXT   NOT NULL
+    password  TEXT   NOT NULL
 );
 
 CREATE TYPE curated_user AS (
@@ -60,7 +59,7 @@ VALUES ('Pepito', 'Rodriguez', 'juancito@icloud.com', '5.440.395-7', 21688595001
      , ('Cris', 'Rpia', 'ezponjares@gmail.com', '5.563.253-7', 217094520019, encrypt_password('Cris123!'))
      , ( 'Juana Inés', 'López Rocca', 'juanita@gmail.com', '5.501.862-4', 214950090010
        , encrypt_password('Juana123!'))
-     , ( 'Juan', 'Tanca', 'juanantoniotancarosete@gmail.com', '2.860.798-5', 214950090010
+     , ( 'Juan', 'Tanca', 'juanantoniotancarosete@gmail.com', '2.860.798-5', 217793540019
        , encrypt_password('Juancho123!'));
 
 SELECT *

@@ -24,7 +24,6 @@ export const PersonSchema = Type.Object(
         }),
         id: Type.String({ pattern: idRegex.source }),
         rut: Type.Number({ minimum: 100000000000, maximum: 999999999999 }),
-        photo: Type.Unknown(),
     },
     {
         $id: "Person",
@@ -42,9 +41,7 @@ export const PersonCreationSchema = Type.Intersect(
                 pattern: passwordRegex.source,
             }),
         }),
-        Type.Object({ photo: BinarySchema } satisfies {
-            [K in keyof PersonType]?: unknown;
-        }),
+        Type.Object({ photo: BinarySchema }),
     ],
     {
         $id: "PersonCreation",
@@ -52,8 +49,7 @@ export const PersonCreationSchema = Type.Intersect(
     }
 );
 
-const simplifiedPerson = Type.Omit(
-    Type.Intersect([
+const simplifiedPerson = Type.Intersect([
         Type.Omit(
             Type.Mapped(Type.KeyOf(PersonSchema), (_) => Type.String()),
             ["rut"] satisfies (keyof PersonType)[]
@@ -61,9 +57,7 @@ const simplifiedPerson = Type.Omit(
         Type.Object({
             rut: Type.Number(),
         } satisfies { [K in keyof PersonType]?: TSchema }),
-    ]),
-    ["photo"] satisfies (keyof PersonType)[]
-);
+    ]);
 
 export const PersonToCheckSchema = Type.Partial(
     Type.Intersect([
