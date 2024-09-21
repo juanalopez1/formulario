@@ -170,7 +170,7 @@ async function main() {
     deleteButton.disabled = false;
 
     deleteButton.addEventListener("click", async () => {
-        const password = prompt("Ingrese su contraseña para eliminar su cuenta");
+        const password = confirm("Seguro que desea eliminar su cuenta?");
 
         if (!password) {
             return;
@@ -178,11 +178,7 @@ async function main() {
 
         const del = await fetch(`https://localhost/backend/personas/${user.id}`, {
             method: "DELETE",
-            body: JSON.stringify({
-                password,
-            }),
             headers: {
-                "Content-Type": "application/json",
                 ...authorization,
             },
         });

@@ -9,6 +9,17 @@ import {
 
 import { match } from "./utils.js";
 
+export function createErrorMessageFromPersonStructure(
+    personWithPassword: PersonWithOptionalFields
+): string | undefined {
+    const errors = checkPersonStructure(personWithPassword);
+    if (Object.values(errors).length !== 0) {
+        return Object.entries(errors)
+            .map(([key, val]) => key + ": " + val.errorMessage)
+            .join(";");
+    }
+}
+
 /**
  * This function checks whether the given person matches our static checks.
  * It does not query the database, only validates data.
@@ -17,7 +28,6 @@ export function checkPersonStructure(
     personWithPassword: PersonWithOptionalFields
 ): PersonWithPasswordCheckReturn {
     const output: PersonWithPasswordCheckReturn = {};
-    console.error(personWithPassword);
 
     match<keyof typeof personWithPassword>({
         name() {
@@ -113,7 +123,7 @@ export function checkPersonStructure(
                 [
                     /^[A-Za-z\d@$!%*?&]*$/,
                     "La contraseña contiene caracteres ilegales.\n" +
-                        "Solo puede contener letras, dígitos y @$!%*?&.",
+                    "Solo puede contener letras, dígitos y @$!%*?&.",
                 ],
                 [/^.{8}.*$/, "Mínimo de 8 caracteres."],
                 [/^.{0,20}$/, "Máximo de 20 caracteres."],

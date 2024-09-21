@@ -1,3 +1,4 @@
+import { MultipartFile } from "@fastify/multipart";
 import { Static, TSchema, Type } from "@sinclair/typebox";
 
 // Expresión regular para el correo electrónico
@@ -13,7 +14,8 @@ const idRegex = /^[1-9]{1}\.[0-9]{3}\.[0-9]{3}-[0-9]{1}$/;
 // Expresión regular para el formato del RUT
 // const rutRegex = /^\d{12}$/;
 
-export const BinarySchema = Type.Unsafe<Uint8Array>();
+export const BinarySchema = Type.Unsafe<Buffer>();
+export const FileSchema = Type.Unsafe<MultipartFile>();
 
 export const PersonSchema = Type.Object(
     {
@@ -41,7 +43,7 @@ export const PersonCreationSchema = Type.Intersect(
                 pattern: passwordRegex.source,
             }),
         }),
-        Type.Object({ photo: BinarySchema }),
+        Type.Object({ photo: Type.Optional(FileSchema) }),
     ],
     {
         $id: "PersonCreation",
@@ -50,14 +52,14 @@ export const PersonCreationSchema = Type.Intersect(
 );
 
 const simplifiedPerson = Type.Intersect([
-        Type.Omit(
-            Type.Mapped(Type.KeyOf(PersonSchema), (_) => Type.String()),
-            ["rut"] satisfies (keyof PersonType)[]
-        ),
-        Type.Object({
-            rut: Type.Number(),
-        } satisfies { [K in keyof PersonType]?: TSchema }),
-    ]);
+    Type.Omit(
+        Type.Mapped(Type.KeyOf(PersonSchema), (_) => Type.String()),
+        ["rut"] satisfies (keyof PersonType)[]
+    ),
+    Type.Object({
+        rut: Type.Number(),
+    } satisfies { [K in keyof PersonType]?: TSchema }),
+]);
 
 export const PersonToCheckSchema = Type.Partial(
     Type.Intersect([
@@ -104,7 +106,7 @@ export type PersonWithPasswordCheckReturn = Static<
 // Type tests
 type AssertEqual<T, K> = T extends K ? (K extends T ? string : never) : never;
 
-const test = <T>(_: T) => {};
+const test = <T>(_: T) => { };
 test<AssertEqual<Omit<PersonType, "photo">, Static<typeof simplifiedPerson>>>(
     "A simplified person should be the same as a person, excluding their photo, to typescript."
 );

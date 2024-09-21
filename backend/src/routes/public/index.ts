@@ -19,17 +19,17 @@ const pub: FastifyPluginAsyncTypebox = async (fastify, opts) => {
             response: {
                 200: BinarySchema,
             },
-            security: [],
+            security: []
         },
         handler: async (request, reply) => {
             try {
-                return await fs.promises.readFile(
+                return (await fs.promises.readFile(
                     __dirname + "/../../../public/" + request.params.id
-                );
+                ));
             } catch {
-                return await fs.promises.readFile(
+                return (await fs.promises.readFile(
                     __dirname + "/../../../public/default.png"
-                );
+                ));
             }
         },
     });

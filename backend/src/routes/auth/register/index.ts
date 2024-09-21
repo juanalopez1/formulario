@@ -6,12 +6,14 @@ import {
     PersonWithPasswordType,
 } from "../../../tipos/persona.js";
 import { query } from "../../../services/database.js";
-import { writeFileSync } from "fs";
+import fs from "fs";
 import { join } from "path";
+import { checkPersonStructure, createErrorMessageFromPersonStructure } from "../../../lib/personCheck.js";
 
 const tokenSchema = Type.Object({
     jwtToken: Type.String(),
 });
+// TODO: Fix performance issues.
 
 const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
     fastify.post("/", {
@@ -20,20 +22,29 @@ const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
             body: Type.Intersect([Type.Ref(PersonCreationSchema)]),
             response: {
                 200: tokenSchema,
-                400: Type.Ref(ErrorMessageSchema),
             },
             security: [],
         },
 
-        preParsing: async (request, reply) => {
-            request.body;
+
+        preHandler(request, reply) {
+            const errors = createErrorMessageFromPersonStructure(request.body);
+            if (errors !== undefined) {
+                return reply.badRequest(errors);
+            }
         },
 
         handler: async function (request, reply) {
             const body = request.body;
-
             const filename = join(process.cwd(), "public", body.id);
-            writeFileSync(filename, body.photo);
+
+            if (body.photo !== undefined) {
+                fastify.log.info(
+                    `writing ${body.photo.filename} to ${filename}...`
+                );
+                await fs.promises.writeFile(filename, body.photo.file);
+                fastify.log.info("Written!");
+            }
 
             const result = await query(
                 String.raw`

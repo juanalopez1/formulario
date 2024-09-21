@@ -21,7 +21,6 @@ export async function jwtGuard() {
         });
 
         if (result.status === 401) {
-            alert("hi");
             logOut(window.location.href);
         }
 

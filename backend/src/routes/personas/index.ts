@@ -3,6 +3,7 @@ import {
     PersonSchema,
     PersonWithPasswordType,
     PersonType,
+    FileSchema,
 } from "../../tipos/persona.js";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
@@ -10,7 +11,8 @@ import { query } from "../../services/database.js";
 import { typedEnv } from "../../tipos/env.js";
 import fs from "fs";
 import { fileURLToPath } from "url";
-import path from "path";
+import path, { join } from "path";
+import { createErrorMessageFromPersonStructure } from "../../lib/personCheck.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -99,9 +101,14 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             params: Type.Pick(PersonSchema, [
                 "id",
             ] satisfies (keyof PersonType)[]),
-            body: Type.Omit(PersonCreationSchema, [
-                "id",
-            ] satisfies (keyof PersonWithPasswordType)[]),
+            body: Type.Intersect([
+                Type.Omit(PersonCreationSchema, [
+                    "id",
+                ] satisfies (keyof PersonWithPasswordType)[]),
+                Type.Object({
+                    photo: FileSchema,
+                }),
+            ]),
             response: {
                 200: Type.Ref(PersonCreationSchema),
                 401: Type.Object({
@@ -119,10 +126,22 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             },
         },
 
+        preHandler(request, reply) {
+            const errors = createErrorMessageFromPersonStructure(request.body);
+            if (errors !== undefined) {
+                return reply.badRequest(errors);
+            }
+        },
+
         handler: async function(request, reply) {
             const user = request.user as {
                 id: string;
             };
+
+            if (request.body.photo !== undefined) {
+                const filename = join(process.cwd(), "public", user.id);
+                await fs.promises.writeFile(filename, request.body.photo.file);
+            }
 
             const queryResult = await query(
                 `
@@ -185,9 +204,6 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             params: Type.Pick(PersonCreationSchema, [
                 "id",
             ] satisfies (keyof PersonWithPasswordType)[]),
-            body: Type.Pick(PersonCreationSchema, [
-                "password",
-            ] satisfies (keyof PersonWithPasswordType)[]),
             response: {
                 200: Type.Object({
                     message: Type.Literal("Person deleted successfully"),
@@ -205,13 +221,11 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                        DELETE
                          FROM people
                         WHERE id = $1
-                          AND check_password(password, $2)
+                          AND id = $2
                     RETURNING 1;
                 `,
-                [user.id, request.body.password]
+                [user.id, user.id]
             );
-
-            fastify.log.warn("asdsa " + user.id + request.body.password);
 
             switch (result.rowCount) {
                 case 0:
@@ -219,10 +233,17 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                         "Could not delete person with such crentials."
                     );
                 case 1:
-                    await fs.promises.rm(__dirname + "/../../../public/" + user.id);
-                    return reply
-                        .code(200)
-                        .send({ message: "Person deleted successfully" });
+                    try {
+                        // If the file does not exist this may error. We don't
+                        // care.
+                        await fs.promises.rm(
+                            __dirname + "/../../../public/" + user.id
+                        );
+                    } finally {
+                        return reply
+                            .code(200)
+                            .send({ message: "Person deleted successfully" });
+                    }
                 default:
                     throw `Deleted ${result.rowCount} rows.`;
             }

@@ -3,7 +3,6 @@ import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
 import { fileURLToPath } from "url";
 import {
     FastifyPluginAsyncTypebox,
-    TypeBoxValidatorCompiler,
 } from "@fastify/type-provider-typebox";
 import {
     PersonCreationSchema,
