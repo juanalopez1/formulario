@@ -15,11 +15,11 @@ async function main() {
 
     if (!result.ok) {
         confirm("Error inesperado. Te redirigiremos al login.");
-        logOut();
+        // logOut();
     }
 
     /**
-     * @type {Person[]}
+     * @type {(Person & { photo: string })[]}
      */
     const personas = await result.json();
 
@@ -29,7 +29,9 @@ async function main() {
         const li = document.createElement("li");
         li.className = "person-list-card";
         li.innerHTML = `
-            <div class="person-list-card-decoration"></div>
+            <div class="person-list-card-decoration">
+                <img class="avatar" src="${person.photo}" alt="avatar de ${person.name}">
+            </div>
             <article class="card-content">
                 <div class="person-list-card-header">
                     <h3 title="${person.name} ${person.surname}" class="text-ellipsis">
@@ -165,14 +167,11 @@ async function main() {
     /** @type {HTMLButtonElement} */
     const deleteButton = document.getElementById("delete-button");
 
-    console.log(deleteButton);
     deleteButton.disabled = false;
 
     deleteButton.addEventListener("click", async () => {
-        // FIXME: Make this an actual dialog.
         const password = prompt("Ingrese su contraseña para eliminar su cuenta");
 
-        console.log(password);
         if (!password) {
             return;
         }
@@ -180,7 +179,7 @@ async function main() {
         const del = await fetch(`https://localhost/backend/personas/${user.id}`, {
             method: "DELETE",
             body: JSON.stringify({
-                password
+                password,
             }),
             headers: {
                 "Content-Type": "application/json",

@@ -8,6 +8,12 @@ import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { query } from "../../services/database.js";
 import { typedEnv } from "../../tipos/env.js";
+import fs from "fs";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function searchByIdAndPassword(
     id: PersonType["id"],
@@ -43,7 +49,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 ),
             },
         },
-        handler: async function (_request, _reply) {
+        handler: async function(_request, _reply) {
             const dbPeople = (
                 await query(`
                 SELECT *
@@ -113,7 +119,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             },
         },
 
-        handler: async function (request, reply) {
+        handler: async function(request, reply) {
             const user = request.user as {
                 id: string;
             };
@@ -164,7 +170,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 }),
             },
         },
-        handler: async function (request, _reply) {
+        handler: async function(request, _reply) {
             const result = await searchByIdAndPassword(
                 request.params.id,
                 request.body.password
@@ -189,7 +195,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             },
         },
 
-        handler: async function (request, reply) {
+        handler: async function(request, reply) {
             const user = request.user as {
                 id: string;
             };
@@ -213,6 +219,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                         "Could not delete person with such crentials."
                     );
                 case 1:
+                    await fs.promises.rm(__dirname + "/../../../public/" + user.id);
                     return reply
                         .code(200)
                         .send({ message: "Person deleted successfully" });

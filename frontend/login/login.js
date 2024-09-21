@@ -48,7 +48,6 @@ loginButton.addEventListener("click", async (_) => {
         });
 
         const token = await result.json();
-        console.log(token)
 
         if (result.ok) {
             localStorage.setItem(
@@ -56,7 +55,6 @@ loginButton.addEventListener("click", async (_) => {
                 token.jwtToken,
             );
             const aimPage = sessionStorage.getItem(sessionStorageKeys.aimPage);
-            console.log(aimPage);
             sessionStorage.removeItem(sessionStorageKeys.aimPage, "aimPage");
             window.location.href = aimPage ?? "../personas";
         } else if (result.status === 404) {

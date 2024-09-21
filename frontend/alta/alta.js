@@ -52,7 +52,8 @@ hookPersonChecks(personHooks, (result) => {
 
 const helperMessage = document.getElementById("helperMessage");
 
-/* evento antes
+const altaForm = document.getElementById("altaForm");
+
 registerButton.addEventListener("click", async () => {
     const allInputs = [...hookInputs, registerButton];
     try {
@@ -60,23 +61,16 @@ registerButton.addEventListener("click", async () => {
             input.disabled = false;
         }
 
-        const persona = {
-            person: {
-                name: personHooks.name.input.value,
-                surname: personHooks.surname.input.value,
-                id: personHooks.id.input.value,
-                email: personHooks.email.input.value,
-                rut: personHooks.rut.input.value,
-            },
-            password: personHooks.password.input.value,
-        };
+        const formData = new FormData(altaForm);
+
+        console.log(formData);
 
         const result = await fetch("https://localhost/backend/auth/register", {
-            method: "POST",
-            body: JSON.stringify(persona),
             headers: {
-                "Content-Type": "application/json",
+              ContentType: "multipart/form-data",
             },
+            method: "POST",
+            body: formData,
         });
 
         if (result.ok) {
@@ -101,52 +95,4 @@ registerButton.addEventListener("click", async () => {
             input.disabled = false;
         }
     }
-});*/
-    const altaForm = document.getElementById("altaForm");
-    const formData = new FormData(altaForm);
-
-/** @type {HTMLInputElement} */
-const photo = document.getElementById("photo");
-
-photo.addEventListener("input", () => {
-    console.log(photo.files);
-    console.log(formData.entries());
 });
-
-registerButton.addEventListener('click', async (event) => {
-    event.preventDefault();
-
-    const person = {
-        person: {
-            name: personHooks.name.input.value,
-            surname: personHooks.surname.input.value,
-            id: personHooks.id.input.value,
-            email: personHooks.email.input.value,
-            rut: personHooks.rut.input.value,
-        },
-        password: personHooks.password.input.value,
-    };
-
-    try {
-        const response = await fetch("https://localhost/backend/auth/register", {
-            // headers: {
-            //   ContentType: "multipart/form-data",
-            // },
-            method: "POST",
-            body: JSON.stringify(person),
-        });
-
-        if (result.ok) {
-            const token = await response.json();
-            localStorage.setItem("token", JSON.stringify(token.jwtToken));
-            const aimPage = sessionStorage.getItem("aimPage");
-            sessionStorage.removeItem("aimPage");
-            window.location.href = aimPage ?? "../personas";
-        } else {
-            helperMessage.innerText = "Error al crear la cuenta.";
-            helperMessage.style.color = "red";
-        }
-    } catch (error) {
-        console.error("Error:", error);
-    }
-}

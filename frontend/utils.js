@@ -14,23 +14,29 @@ export async function jwtGuard() {
     const headers = {
         Authorization: `Bearer ${token}`,
     };
-    const result = await fetch("https://localhost/backend/personas/verify", {
-        headers,
-    });
 
-    if (result.status === 401) {
-        logOut(window.location.href);
+    try {
+        const result = await fetch("https://localhost/backend/personas/verify", {
+            headers,
+        });
+
+        if (result.status === 401) {
+            alert("hi");
+            logOut(window.location.href);
+        }
+
+        const parsed = await result.json();
+        return parsed.id;
+    } catch (e) {
+        console.error(e);
+        confirm("Error al autenticarte. te redirigiremos al login.");
     }
-
-    const parsed = await result.json();
-    return parsed.id;
 }
 
 /** @type {(loginAimPage: string) => never} */
 export function logOut(loginAimPage) {
     localStorage.clear();
     sessionStorage.clear();
-    console.log(loginAimPage);
     if (loginAimPage !== undefined) {
         sessionStorage.setItem(sessionStorageKeys.aimPage, loginAimPage);
     }

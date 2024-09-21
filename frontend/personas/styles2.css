@@ -33,13 +33,14 @@ body {
 /* CARDS */
 
 .person-list-card {
+    --decoration-width: 2rem;
     padding: 0rem;
     height: fit-content;
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    overflow-x: hidden;
+    overflow: hidden;
     background-color: white;
     border-radius: 0.25rem;
     border-top-right-radius: 0.5rem;
@@ -53,7 +54,7 @@ body {
 }
 
 .person-list-card-decoration {
-    min-width: 2rem;
+    min-width: var(--decoration-width);
     background-size: 1rem;
     background-size: 100%;
     background-color: #dfdbe5;
@@ -74,6 +75,7 @@ body {
 .text-ellipsis {
     display: inline-block;
     text-wrap: nowrap;
+    overflow-x: clip;
     text-overflow: ellipsis;
 }
 
@@ -110,6 +112,7 @@ body {
     content: "";
     height: 1.5em;
     width: 1.5em;
+    min-width: 1.5em;
     margin-right: 0.2rem;
     color: white;
     display: inline-block;
@@ -278,7 +281,6 @@ abbr {
 .person-list-card-header {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     align-items: baseline;
     height: 1.8em;
 }
@@ -302,6 +304,7 @@ abbr {
 }
 
 .button-row-personas {
+    z-index: 10;
     background: #faf5ff;
     background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
     padding: 0.5rem;
@@ -349,4 +352,16 @@ abbr {
 
 .button-row-personas>button>svg {
     width: 2rem;
+}
+
+.avatar {
+    --size: var(--decoration-width);
+    position: relative;
+    height: var(--size);
+    box-sizing: border-box;
+    width: auto;
+    aspect-ratio: 1;
+    border-bottom-right-radius: 50%;
+    border-top-left-radius: 0.25rem;
+    object-fit: cover;
 }
