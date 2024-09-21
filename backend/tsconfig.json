@@ -10,8 +10,5 @@
         "target": "ES2022",
         "esModuleInterop": true
     },
-    "include": [
-        "src/**/*.ts",
-        "src/plugins/google-auth.todo"
-    ]
+    "include": ["src/**/*.ts", "src/plugins/google-auth.todo"]
 }

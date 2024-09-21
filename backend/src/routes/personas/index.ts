@@ -1,5 +1,5 @@
 import {
-    PersonWithPasswordSchema,
+    PersonCreationSchema,
     PersonSchema,
     PersonWithPasswordType,
     PersonType,
@@ -10,11 +10,11 @@ import { query } from "../../services/database.js";
 
 async function searchByIdAndPassword(
     id: PersonType["id"],
-    password: PersonWithPasswordType["password"],
+    password: PersonWithPasswordType["password"]
 ) {
     const result = await query(
         "SELECT * FROM search_by_id_and_password($1, $2)",
-        [id, password],
+        [id, password]
     );
 
     if (result.rows.length !== 1) {
@@ -26,7 +26,7 @@ async function searchByIdAndPassword(
 
 const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify,
-    _opts,
+    _opts
 ): Promise<void> => {
     fastify.get("/", {
         onRequest: fastify.authenticate,
@@ -35,7 +35,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 200: Type.Array(Type.Ref(PersonSchema)),
             },
         },
-        handler: async function(_request, _reply) {
+        handler: async function (_request, _reply) {
             return (
                 await query(`
                 SELECT *
@@ -63,7 +63,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                   FROM people
                  WHERE id = $1;
             `,
-                [user.id],
+                [user.id]
             );
 
             if (queryResult.rowCount === 0) {
@@ -77,16 +77,14 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify.put("/:id", {
         onRequest: fastify.authenticate,
         schema: {
-            params: Type.Pick(
-                PersonSchema,
-                ["id"] satisfies (keyof PersonType)[],
-            ),
-            body: Type.Omit(
-                PersonWithPasswordSchema,
-                ["id"] satisfies (keyof PersonWithPasswordType)[]
-            ),
+            params: Type.Pick(PersonSchema, [
+                "id",
+            ] satisfies (keyof PersonType)[]),
+            body: Type.Omit(PersonCreationSchema, [
+                "id",
+            ] satisfies (keyof PersonWithPasswordType)[]),
             response: {
-                200: Type.Ref(PersonWithPasswordSchema),
+                200: Type.Ref(PersonCreationSchema),
                 401: Type.Object({
                     statusCode: Type.Number(),
                     code: Type.String(),
@@ -102,7 +100,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             },
         },
 
-        handler: async function(request, reply) {
+        handler: async function (request, reply) {
             const user = request.user as {
                 id: string;
             };
@@ -124,7 +122,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                     request.body.rut,
                     request.body.password,
                     user.id,
-                ],
+                ]
             );
 
             if (queryResult.rowCount !== 1) {
@@ -141,24 +139,22 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify.post("/:id/check", {
         onRequest: fastify.authenticate,
         schema: {
-            params: Type.Pick(
-                PersonWithPasswordSchema,
-                ["id"] satisfies (keyof PersonWithPasswordType)[],
-            ),
-            body: Type.Pick(
-                PersonWithPasswordSchema,
-                ["password"] satisfies (keyof PersonWithPasswordType)[],
-            ),
+            params: Type.Pick(PersonCreationSchema, [
+                "id",
+            ] satisfies (keyof PersonWithPasswordType)[]),
+            body: Type.Pick(PersonCreationSchema, [
+                "password",
+            ] satisfies (keyof PersonWithPasswordType)[]),
             response: {
                 200: Type.Object({
                     correct: Type.Boolean(),
                 }),
             },
         },
-        handler: async function(request, _reply) {
+        handler: async function (request, _reply) {
             const result = await searchByIdAndPassword(
                 request.params.id,
-                request.body.password,
+                request.body.password
             );
             return { correct: result !== undefined };
         },
@@ -167,14 +163,12 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify.delete("/:id", {
         onRequest: fastify.authenticate,
         schema: {
-            params: Type.Pick(
-                PersonWithPasswordSchema,
-                ["id"] satisfies (keyof PersonWithPasswordType)[],
-            ),
-            body: Type.Pick(
-                PersonWithPasswordSchema,
-                ["password"] satisfies (keyof PersonWithPasswordType)[],
-            ),
+            params: Type.Pick(PersonCreationSchema, [
+                "id",
+            ] satisfies (keyof PersonWithPasswordType)[]),
+            body: Type.Pick(PersonCreationSchema, [
+                "password",
+            ] satisfies (keyof PersonWithPasswordType)[]),
             response: {
                 200: Type.Object({
                     message: Type.Literal("Person deleted successfully"),
@@ -182,7 +176,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             },
         },
 
-        handler: async function(request, reply) {
+        handler: async function (request, reply) {
             const user = request.user as {
                 id: string;
             };
@@ -195,7 +189,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                           AND check_password(password, $2)
                     RETURNING 1;
                 `,
-                [user.id, request.body.password],
+                [user.id, request.body.password]
             );
 
             fastify.log.warn("asdsa " + user.id + request.body.password);
@@ -203,7 +197,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             switch (result.rowCount) {
                 case 0:
                     return reply.unauthorized(
-                        "Could not delete person with such crentials.",
+                        "Could not delete person with such crentials."
                     );
                 case 1:
                     return reply

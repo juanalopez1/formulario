@@ -1,9 +1,12 @@
 import * as path from "path";
 import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
 import { fileURLToPath } from "url";
-import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import {
-    PersonWithPasswordSchema,
+    FastifyPluginAsyncTypebox,
+    TypeBoxValidatorCompiler,
+} from "@fastify/type-provider-typebox";
+import {
+    PersonCreationSchema,
     PersonSchema,
     ErrorMessageSchema,
     PersonToCheckSchema,
@@ -21,11 +24,11 @@ const options: AppOptions = {};
 
 const app: FastifyPluginAsyncTypebox<AppOptions> = async (
     fastify,
-    opts,
+    opts
 ): Promise<void> => {
     // Place here your custom code!
     fastify.addSchema(PersonSchema);
-    fastify.addSchema(PersonWithPasswordSchema);
+    fastify.addSchema(PersonCreationSchema);
     fastify.addSchema(ErrorMessageSchema);
     fastify.addSchema(PersonToCheckSchema);
 

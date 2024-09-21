@@ -26,9 +26,7 @@ export async function jwtGuard() {
     return parsed.id;
 }
 
-/** 
- * @param {string} [loginAimPage]
- * @returns {never} */
+/** @type {(loginAimPage: string) => never} */
 export function logOut(loginAimPage) {
     localStorage.clear();
     sessionStorage.clear();
@@ -39,9 +37,9 @@ export function logOut(loginAimPage) {
     window.location.href = "/login";
 }
 
-export const localStorageKeys = /** @type {const} */ {
+export const localStorageKeys = /** @type {const} */ ({
     jwtToken: "jwtToken",
-};
+});
 
 export const sessionStorageKeys = /** @type {const} */ ({
     aimPage: "aimPage",

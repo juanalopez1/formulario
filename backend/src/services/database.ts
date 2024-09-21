@@ -11,7 +11,7 @@ const pool = new Pool({
 
 export const query = async (
     text: string,
-    params?: (string | number | string[] | number[])[],
+    params?: (string | number | string[] | number[])[]
 ) => {
     // const start = Date.now()
     const res = await pool.query(text, params);

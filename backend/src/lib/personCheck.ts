@@ -14,7 +14,7 @@ import { match } from "./utils.js";
  * It does not query the database, only validates data.
  */
 export function checkPersonStructure(
-    personWithPassword: PersonWithOptionalFields,
+    personWithPassword: PersonWithOptionalFields
 ): PersonWithPasswordCheckReturn {
     const output: PersonWithPasswordCheckReturn = {};
     console.error(personWithPassword);
@@ -70,7 +70,7 @@ export function checkPersonStructure(
             if (
                 !Value.Check(
                     PersonSchema.properties.email,
-                    personWithPassword.email,
+                    personWithPassword.email
                 )
             ) {
                 output.email = { errorMessage: "Email inválido." };
@@ -106,11 +106,14 @@ export function checkPersonStructure(
                 [/[a-z]/, "La contraseña debe contener minúsculas."],
                 [/[A-Z]/, "La contraseña debe contener mayúsculas."],
                 [/\d/, "La contraseña debe contener dígitos."],
-                [/[@$!%*?&]/, 'La contraseña debe contener alguno de "@$!%*?&".'],
+                [
+                    /[@$!%*?&]/,
+                    'La contraseña debe contener alguno de "@$!%*?&".',
+                ],
                 [
                     /^[A-Za-z\d@$!%*?&]*$/,
                     "La contraseña contiene caracteres ilegales.\n" +
-                    "Solo puede contener letras, dígitos y @$!%*?&.",
+                        "Solo puede contener letras, dígitos y @$!%*?&.",
                 ],
                 [/^.{8}.*$/, "Mínimo de 8 caracteres."],
                 [/^.{0,20}$/, "Máximo de 20 caracteres."],
@@ -128,7 +131,9 @@ export function checkPersonStructure(
                 return;
             }
 
-            output.repeatPassword = { errorMessage: "Las contraseñas no coinciden" };
+            output.repeatPassword = {
+                errorMessage: "Las contraseñas no coinciden",
+            };
         },
     });
 
@@ -139,7 +144,9 @@ function checkID(id: string): ErrorMessage | undefined {
     const pattern = PersonSchema.properties.id.pattern;
 
     if (pattern && !new RegExp(pattern).test(id)) {
-        return { errorMessage: "Debe ingresar la cédula con puntos y guiones." };
+        return {
+            errorMessage: "Debe ingresar la cédula con puntos y guiones.",
+        };
     }
 
     if (checkDigit(id) === false) {

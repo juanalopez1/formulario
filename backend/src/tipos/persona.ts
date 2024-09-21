@@ -13,6 +13,8 @@ const idRegex = /^[1-9]{1}\.[0-9]{3}\.[0-9]{3}-[0-9]{1}$/;
 // Expresión regular para el formato del RUT
 // const rutRegex = /^\d{12}$/;
 
+export const BinarySchema = Type.Unsafe<Uint8Array>();
+
 export const PersonSchema = Type.Object(
     {
         name: Type.String({ minLength: 3, maxLength: 20 }),
@@ -22,15 +24,15 @@ export const PersonSchema = Type.Object(
         }),
         id: Type.String({ pattern: idRegex.source }),
         rut: Type.Number({ minimum: 100000000000, maximum: 999999999999 }),
-        photo: Type.Any(),
+        photo: Type.Unknown(),
     },
     {
         $id: "Person",
         title: "person",
-    },
+    }
 );
 
-export const PersonWithPasswordSchema = Type.Intersect(
+export const PersonCreationSchema = Type.Intersect(
     [
         PersonSchema,
         Type.Object({
@@ -40,24 +42,27 @@ export const PersonWithPasswordSchema = Type.Intersect(
                 pattern: passwordRegex.source,
             }),
         }),
+        Type.Object({ photo: BinarySchema } satisfies {
+            [K in keyof PersonType]?: unknown;
+        }),
     ],
     {
-        $id: "PersonWithPassword",
-        title: "personWithPassword",
-    },
+        $id: "PersonCreation",
+        title: "personCreation",
+    }
 );
 
 const simplifiedPerson = Type.Omit(
     Type.Intersect([
         Type.Omit(
             Type.Mapped(Type.KeyOf(PersonSchema), (_) => Type.String()),
-            ["rut"] satisfies (keyof PersonType)[],
+            ["rut"] satisfies (keyof PersonType)[]
         ),
         Type.Object({
             rut: Type.Number(),
         } satisfies { [K in keyof PersonType]?: TSchema }),
     ]),
-    ["photo"] satisfies (keyof PersonType)[],
+    ["photo"] satisfies (keyof PersonType)[]
 );
 
 export const PersonToCheckSchema = Type.Partial(
@@ -71,7 +76,7 @@ export const PersonToCheckSchema = Type.Partial(
     {
         $id: "optionalPerson",
         title: "Persona con campos opcionales.",
-    },
+    }
 );
 
 export const ErrorMessageSchema = Type.Object(
@@ -81,20 +86,20 @@ export const ErrorMessageSchema = Type.Object(
     {
         title: "An error message",
         $id: "errorMessage",
-    },
+    }
 );
 
 export const PersonWithPasswordCheckReturnSchema = Type.Partial(
     Type.Mapped(Type.KeyOf(PersonToCheckSchema), (_) =>
-        Type.Ref(ErrorMessageSchema),
-    ),
+        Type.Ref(ErrorMessageSchema)
+    )
 );
 
 export type ErrorMessage = Static<typeof ErrorMessageSchema>;
 
 export type PersonType = Static<typeof PersonSchema>;
 
-export type PersonWithPasswordType = Static<typeof PersonWithPasswordSchema>;
+export type PersonWithPasswordType = Static<typeof PersonCreationSchema>;
 
 export type PersonWithOptionalFields = Static<typeof PersonToCheckSchema>;
 
@@ -105,7 +110,7 @@ export type PersonWithPasswordCheckReturn = Static<
 // Type tests
 type AssertEqual<T, K> = T extends K ? (K extends T ? string : never) : never;
 
-const test = <T>(_: T) => { };
+const test = <T>(_: T) => {};
 test<AssertEqual<Omit<PersonType, "photo">, Static<typeof simplifiedPerson>>>(
-    "A simplified person should be the same as a person, excluding their photo, to typescript.",
+    "A simplified person should be the same as a person, excluding their photo, to typescript."
 );

@@ -7,7 +7,6 @@ import {
 import { checkPersonStructure } from "../../../lib/personCheck.js";
 
 const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
-
     fastify.post("/", {
         schema: {
             security: [],
@@ -23,11 +22,10 @@ const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
             },
         },
 
-        handler: async function(request, reply) {
+        handler: async function (request, reply) {
             return reply.code(200).send(checkPersonStructure(request.body));
         },
     });
-
 };
 
 export default auth;
