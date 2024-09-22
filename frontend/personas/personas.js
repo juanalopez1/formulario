@@ -110,6 +110,13 @@ async function main() {
             ),
             dataTransformer: (v) => v,
         },
+        photo: {
+            input: document.getElementById("voidPhoto"),
+            dataTransformer: (v) => v,
+            handler: checks.setErrorMessage(
+                document.getElementById("voidMessage-photo"),
+            ),
+        },
     };
 
     hooks.rut.input.value = user.id;
@@ -140,20 +147,13 @@ async function main() {
     closeButton.addEventListener("click", () => modifyDialog.close());
 
     sendButton.addEventListener("click", async () => {
+        /** @type {HTMLFormElement} */
+        const form = document.querySelector("#modify-form");
         const put = await fetch(`https://localhost/backend/personas/${user.id}`, {
             method: "PUT",
-            body: JSON.stringify({
-                person: {
-                    name: document.getElementById("voidName").value,
-                    surname: document.getElementById("voidSurname").value,
-                    email: document.getElementById("voidEmail").value,
-                    id: user.id,
-                    rut: document.getElementById("voidRut").value,
-                },
-                password: document.getElementById("voidPsw1").value,
-            }),
+            body: new FormData(form),
             headers: {
-                "Content-Type": "application/json",
+                ContentType: "multipart/form-data",
                 ...authorization,
             },
         });

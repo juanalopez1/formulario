@@ -38,6 +38,11 @@ const personHooks = {
         dataTransformer: (v) => v,
         handler: setErrorMessage(document.querySelector("#messageP2")),
     },
+    photo: {
+        input: document.querySelector("#photo"),
+        dataTransformer: (v) => v,
+        handler: setErrorMessage(document.querySelector("#messagePhoto"))
+    }
 };
 
 const hookInputs = Object.values(personHooks).map((m) => m.input);
@@ -46,6 +51,7 @@ const hookInputs = Object.values(personHooks).map((m) => m.input);
 const registerButton = document.querySelector("#registerButton");
 
 hookPersonChecks(personHooks, (result) => {
+    console.log(result);
     registerButton.disabled =
         !isEmpty(result) || hookInputs.some((i) => i.value.length === 0);
 });
@@ -72,6 +78,8 @@ registerButton.addEventListener("click", async () => {
             method: "POST",
             body: formData,
         });
+
+        console.log(result);
 
         if (result.ok) {
             const token = await result.json();

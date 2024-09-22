@@ -28,7 +28,10 @@ export async function jwtGuard() {
         return parsed.id;
     } catch (e) {
         console.error(e);
-        confirm("Error al autenticarte. te redirigiremos al login.");
+        if (confirm("Error inesperado al autenticar. ¿Reintentar?")) {
+            return await jwtGuard();
+        }
+        logOut(window.location.href);
     }
 }
 

@@ -1,19 +1,18 @@
 import { Type } from "@sinclair/typebox";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import {
-    ErrorMessageSchema,
     PersonCreationSchema,
-    PersonWithPasswordType,
 } from "../../../tipos/persona.js";
 import { query } from "../../../services/database.js";
 import fs from "fs";
 import { join } from "path";
-import { checkPersonStructure, createErrorMessageFromPersonStructure } from "../../../lib/personCheck.js";
+import {
+    createErrorMessageFromPersonStructure,
+} from "../../../lib/personCheck.js";
 
 const tokenSchema = Type.Object({
     jwtToken: Type.String(),
 });
-// TODO: Fix performance issues.
 
 const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
     fastify.post("/", {
@@ -26,25 +25,14 @@ const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
             security: [],
         },
 
-
-        preHandler(request, reply) {
+        handler: async function (request, reply) {
             const errors = createErrorMessageFromPersonStructure(request.body);
             if (errors !== undefined) {
                 return reply.badRequest(errors);
             }
-        },
 
-        handler: async function (request, reply) {
             const body = request.body;
             const filename = join(process.cwd(), "public", body.id);
-
-            if (body.photo !== undefined) {
-                fastify.log.info(
-                    `writing ${body.photo.filename} to ${filename}...`
-                );
-                await fs.promises.writeFile(filename, body.photo.file);
-                fastify.log.info("Written!");
-            }
 
             const result = await query(
                 String.raw`
@@ -62,10 +50,13 @@ const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
                 ]
             );
             if (result.rowCount !== 1) {
-                return reply
-                    .code(400)
-                    .send({ errorMessage: "Id already exists." });
+                return reply.badRequest("Id already exists.");
             }
+
+            if (body.photo !== undefined) {
+                await fs.promises.writeFile(filename, body.photo.file);
+            }
+
             const token = fastify.jwt.sign({ id: result.rows[0].id });
             return reply.code(200).send({ jwtToken: token });
         },

@@ -1,5 +1,5 @@
 import { MultipartFile } from "@fastify/multipart";
-import { Static, TSchema, Type } from "@sinclair/typebox";
+import { Static, TSchema, TUnsafe, Type } from "@sinclair/typebox";
 
 // Expresión regular para el correo electrónico
 // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -15,7 +15,16 @@ const idRegex = /^[1-9]{1}\.[0-9]{3}\.[0-9]{3}-[0-9]{1}$/;
 // const rutRegex = /^\d{12}$/;
 
 export const BinarySchema = Type.Unsafe<Buffer>();
-export const FileSchema = Type.Unsafe<MultipartFile>();
+export const FileSchema = Type.Object(
+    {
+        filename: Type.String(),
+        mimetype: Type.String(),
+        file: Type.Unsafe<MultipartFile["file"]>(),
+        toBuffer: Type.Unsafe<MultipartFile["toBuffer"]>(),
+    } satisfies { [K in keyof MultipartFile]?: TUnsafe<MultipartFile[K]> },
+    { additionalProperties: false }
+);
+export type ParsedFile = Static<typeof FileSchema>;
 
 export const PersonSchema = Type.Object(
     {
@@ -106,7 +115,7 @@ export type PersonWithPasswordCheckReturn = Static<
 // Type tests
 type AssertEqual<T, K> = T extends K ? (K extends T ? string : never) : never;
 
-const test = <T>(_: T) => { };
+const test = <T>(_: T) => {};
 test<AssertEqual<Omit<PersonType, "photo">, Static<typeof simplifiedPerson>>>(
     "A simplified person should be the same as a person, excluding their photo, to typescript."
 );

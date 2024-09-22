@@ -9,10 +9,10 @@ import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { query } from "../../services/database.js";
 import { typedEnv } from "../../tipos/env.js";
-import fs from "fs";
+import fs, { createWriteStream } from "fs";
 import { fileURLToPath } from "url";
 import path, { join } from "path";
-import { createErrorMessageFromPersonStructure } from "../../lib/personCheck.js";
+import { pipeline } from "stream/promises";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -51,7 +51,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 ),
             },
         },
-        handler: async function(_request, _reply) {
+        handler: async function (_request, _reply) {
             const dbPeople = (
                 await query(`
                 SELECT *
@@ -98,6 +98,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify.put("/:id", {
         onRequest: fastify.authenticate,
         schema: {
+            consumes: ["multipart/form-data"],
             params: Type.Pick(PersonSchema, [
                 "id",
             ] satisfies (keyof PersonType)[]),
@@ -125,23 +126,10 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 }),
             },
         },
-
-        preHandler(request, reply) {
-            const errors = createErrorMessageFromPersonStructure(request.body);
-            if (errors !== undefined) {
-                return reply.badRequest(errors);
-            }
-        },
-
-        handler: async function(request, reply) {
+        handler: async function (request, reply) {
             const user = request.user as {
                 id: string;
             };
-
-            if (request.body.photo !== undefined) {
-                const filename = join(process.cwd(), "public", user.id);
-                await fs.promises.writeFile(filename, request.body.photo.file);
-            }
 
             const queryResult = await query(
                 `
@@ -150,7 +138,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                          , surname = $2
                          , email = $3
                          , rut = $4
-                         , password = $5
+                         , password = encrypt_password($5)
                      WHERE id = $6;
                 `,
                 [
@@ -167,8 +155,14 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 return reply.unauthorized("You cannot modify someone else.");
             }
 
+            if (request.body.photo !== undefined) {
+                const filename = join(process.cwd(), "public", user.id);
+                fs.promises.writeFile(filename, await request.body.photo.toBuffer());
+            }
+
             return reply.code(200).send({
                 ...request.body,
+                photo: undefined,
                 id: request.params.id,
             });
         },
@@ -189,7 +183,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 }),
             },
         },
-        handler: async function(request, _reply) {
+        handler: async function (request, _reply) {
             const result = await searchByIdAndPassword(
                 request.params.id,
                 request.body.password
@@ -211,7 +205,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             },
         },
 
-        handler: async function(request, reply) {
+        handler: async function (request, reply) {
             const user = request.user as {
                 id: string;
             };

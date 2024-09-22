@@ -48,25 +48,25 @@
         <dialog id="modify-dialog" style="z-index: 11;">
             <section class="container-modify">
                 <h2>Editar datos</h2>
-                <form>
+                <form id="modify-form">
                     <div class="inputs-container">
                         <label>Nombre</label>
-                        <input id="voidName" type="text" />
+                        <input id="voidName" name="name" type="text" />
                     </div>
                     <p class="error-msg" id="voidMessage-name"></p>
                     <div class="inputs-container">
                         <label>Apellido</label>
-                        <input id="voidSurname" type="text" />
+                        <input id="voidSurname" name="surname" type="text" />
                     </div>
                     <p class="error-msg" id="voidMessage-surname"></p>
                     <div class="inputs-container">
                         <label>Nuevo email</label>
-                        <input id="voidEmail" type="email" />
+                        <input id="voidEmail" name="email" type="email" />
                     </div>
                     <p class="error-msg" id="voidMessage-email"></p>
                     <div class="inputs-container">
                         <label>Nueva contraseña</label>
-                        <input id="voidPsw1" type="password" value="" />
+                        <input id="voidPsw1" name="password" type="password" value="" />
                     </div>
                     <p class="error-msg" id="voidMessage-pwd1"></p>
                     <div class="inputs-container">
@@ -76,9 +76,14 @@
                     <p class="error-msg" id="voidMessage-pwd2"></p>
                     <div class="inputs-container">
                         <label>RUT</label>
-                        <input id="voidRut" type="text" />
+                        <input id="voidRut" name="rut" type="text" />
                     </div>
                     <p class="error-msg" id="voidMessage-rut"></p>
+                    <div class="inputs-container">
+                        <label>Foto</label>
+                        <input id="voidPhoto" name="photo" type="file" accept="image/*" />
+                    </div>
+                    <p class="error-msg" id="voidMessage-photo"></p>
                 </form>
                 <div class="buttons">
                     <button id="send-button" class="for-buttons">
