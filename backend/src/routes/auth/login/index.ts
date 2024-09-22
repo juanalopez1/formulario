@@ -2,8 +2,8 @@ import { Type } from "@sinclair/typebox";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import {
     ErrorMessageSchema,
-    PersonSchema,
-    PersonWithPasswordSchema,
+    PersonCreationSchema,
+    PersonWithPasswordType,
 } from "../../../tipos/persona.js";
 import { query } from "../../../services/database.js";
 
@@ -11,13 +11,13 @@ const tokenSchema = Type.Object({
     jwtToken: Type.String(),
 });
 
-const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
+const auth: FastifyPluginAsyncTypebox = async (fastify, _opts) => {
     fastify.post("/", {
         schema: {
-            body: Type.Object({
-                email: PersonSchema.properties.email,
-                password: PersonWithPasswordSchema.properties.password,
-            }),
+            body: Type.Pick(PersonCreationSchema, [
+                "email",
+                "password",
+            ] satisfies (keyof PersonWithPasswordType)[]),
             response: {
                 200: tokenSchema,
                 404: Type.Ref(ErrorMessageSchema),
@@ -25,7 +25,7 @@ const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
             security: [],
         },
 
-        handler: async function(request, reply) {
+        handler: async function (request, reply) {
             const result = await query(
                 `
                 SELECT id
@@ -33,7 +33,7 @@ const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
                 WHERE email = $1
                 AND check_password(password, $2);
             `,
-                [request.body.email, request.body.password],
+                [request.body.email, request.body.password]
             );
             if (result.rowCount !== 1) {
                 return reply

@@ -1,24 +1,29 @@
 import {
-    PersonWithPasswordSchema,
+    PersonCreationSchema,
     PersonSchema,
     PersonWithPasswordType,
     PersonType,
-    PersonToCheckSchema,
-    PersonWithPasswordCheckReturnSchema,
+    FileSchema,
 } from "../../tipos/persona.js";
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "@sinclair/typebox";
 import { query } from "../../services/database.js";
-import { ensureType } from "../../lib/utils.js";
-import { checkPersonStructure } from "../../lib/personCheck.js";
+import { typedEnv } from "../../tipos/env.js";
+import fs, { createWriteStream } from "fs";
+import { fileURLToPath } from "url";
+import path, { join } from "path";
+import { pipeline } from "stream/promises";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function searchByIdAndPassword(
     id: PersonType["id"],
-    password: PersonWithPasswordType["password"],
+    password: PersonWithPasswordType["password"]
 ) {
     const result = await query(
         "SELECT * FROM search_by_id_and_password($1, $2)",
-        [id, password],
+        [id, password]
     );
 
     if (result.rows.length !== 1) {
@@ -30,22 +35,34 @@ async function searchByIdAndPassword(
 
 const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify,
-    _opts,
+    _opts
 ): Promise<void> => {
     fastify.get("/", {
         onRequest: fastify.authenticate,
         schema: {
             response: {
-                200: Type.Array(Type.Ref(PersonSchema)),
+                200: Type.Array(
+                    Type.Intersect([
+                        Type.Ref(PersonSchema),
+                        Type.Object({
+                            photo: Type.String(),
+                        }),
+                    ])
+                ),
             },
         },
-        handler: async function(_request, _reply) {
-            return (
+        handler: async function (_request, _reply) {
+            const dbPeople = (
                 await query(`
                 SELECT *
                   FROM get_curated_users();
                 `)
             ).rows as PersonType[];
+
+            return dbPeople.map((person) => ({
+                ...person,
+                photo: `https://${typedEnv.FRONT_URL}/backend/public/${person.id}`,
+            }));
         },
     });
 
@@ -67,7 +84,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                   FROM people
                  WHERE id = $1;
             `,
-                [user.id],
+                [user.id]
             );
 
             if (queryResult.rowCount === 0) {
@@ -81,18 +98,20 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify.put("/:id", {
         onRequest: fastify.authenticate,
         schema: {
-            params: Type.Object({
-                id: PersonSchema.properties.id,
-            }),
-            body: Type.Object({
-                ...PersonWithPasswordSchema.properties,
-                person: Type.Omit(
-                    PersonSchema,
-                    ensureType<(keyof PersonType)[]>()(["id"] as const),
-                ),
-            }),
+            consumes: ["multipart/form-data"],
+            params: Type.Pick(PersonSchema, [
+                "id",
+            ] satisfies (keyof PersonType)[]),
+            body: Type.Intersect([
+                Type.Omit(PersonCreationSchema, [
+                    "id",
+                ] satisfies (keyof PersonWithPasswordType)[]),
+                Type.Object({
+                    photo: FileSchema,
+                }),
+            ]),
             response: {
-                200: Type.Ref(PersonWithPasswordSchema),
+                200: Type.Ref(PersonCreationSchema),
                 401: Type.Object({
                     statusCode: Type.Number(),
                     code: Type.String(),
@@ -107,9 +126,7 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                 }),
             },
         },
-
-        handler: async function(request, reply) {
-            const { person, password } = request.body;
+        handler: async function (request, reply) {
             const user = request.user as {
                 id: string;
             };
@@ -121,29 +138,32 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
                          , surname = $2
                          , email = $3
                          , rut = $4
-                         , password = $5
+                         , password = encrypt_password($5)
                      WHERE id = $6;
                 `,
                 [
-                    person.name,
-                    person.surname,
-                    person.email,
-                    person.rut,
-                    password,
+                    request.body.name,
+                    request.body.surname,
+                    request.body.email,
+                    request.body.rut,
+                    request.body.password,
                     user.id,
-                ],
+                ]
             );
 
             if (queryResult.rowCount !== 1) {
                 return reply.unauthorized("You cannot modify someone else.");
             }
 
+            if (request.body.photo !== undefined) {
+                const filename = join(process.cwd(), "public", user.id);
+                fs.promises.writeFile(filename, await request.body.photo.toBuffer());
+            }
+
             return reply.code(200).send({
                 ...request.body,
-                person: {
-                    ...request.body.person,
-                    id: request.params.id,
-                },
+                photo: undefined,
+                id: request.params.id,
             });
         },
     });
@@ -151,55 +171,33 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
     fastify.post("/:id/check", {
         onRequest: fastify.authenticate,
         schema: {
-            params: Type.Object({ id: PersonSchema.properties.id }),
-            body: Type.Object({
-                password: PersonWithPasswordSchema.properties.password,
-            }),
+            params: Type.Pick(PersonCreationSchema, [
+                "id",
+            ] satisfies (keyof PersonWithPasswordType)[]),
+            body: Type.Pick(PersonCreationSchema, [
+                "password",
+            ] satisfies (keyof PersonWithPasswordType)[]),
             response: {
                 200: Type.Object({
                     correct: Type.Boolean(),
                 }),
             },
         },
-        handler: async function(request, _reply) {
+        handler: async function (request, _reply) {
             const result = await searchByIdAndPassword(
                 request.params.id,
-                request.body.password,
+                request.body.password
             );
             return { correct: result !== undefined };
-        },
-    });
-
-    fastify.post("/check", {
-        // The token is not required for this route.
-        onRequest: undefined,
-        schema: {
-            body: Type.Ref(PersonToCheckSchema),
-            response: {
-                200: PersonWithPasswordCheckReturnSchema,
-                400: Type.Object({
-                    statusCode: Type.Number(),
-                    code: Type.String(),
-                    error: Type.String(),
-                    message: Type.String(),
-                }),
-            },
-        },
-
-        handler: async function(request, reply) {
-            return reply.code(200).send(checkPersonStructure(request.body));
         },
     });
 
     fastify.delete("/:id", {
         onRequest: fastify.authenticate,
         schema: {
-            params: Type.Object({
-                id: PersonSchema.properties.id,
-            }),
-            body: Type.Object({
-                password: PersonWithPasswordSchema.properties.password,
-            }),
+            params: Type.Pick(PersonCreationSchema, [
+                "id",
+            ] satisfies (keyof PersonWithPasswordType)[]),
             response: {
                 200: Type.Object({
                     message: Type.Literal("Person deleted successfully"),
@@ -207,32 +205,39 @@ const personaRoute: FastifyPluginAsyncTypebox = async (
             },
         },
 
-        handler: async function(request, reply) {
+        handler: async function (request, reply) {
             const user = request.user as {
                 id: string;
             };
 
-            const result = (
-                await query(`
+            const result = await query(
+                `
                        DELETE
                          FROM people
                         WHERE id = $1
-                          AND check_password(password, $2)
+                          AND id = $2
                     RETURNING 1;
                 `,
-                    [user.id, request.body.password],
-                )
+                [user.id, user.id]
             );
-
-            fastify.log.warn("asdsa " + user.id + request.body.password);
 
             switch (result.rowCount) {
                 case 0:
-                    return reply.unauthorized("Could not delete person with such crentials.");
+                    return reply.unauthorized(
+                        "Could not delete person with such crentials."
+                    );
                 case 1:
-                    return reply
-                        .code(200)
-                        .send({ message: "Person deleted successfully" });
+                    try {
+                        // If the file does not exist this may error. We don't
+                        // care.
+                        await fs.promises.rm(
+                            __dirname + "/../../../public/" + user.id
+                        );
+                    } finally {
+                        return reply
+                            .code(200)
+                            .send({ message: "Person deleted successfully" });
+                    }
                 default:
                     throw `Deleted ${result.rowCount} rows.`;
             }

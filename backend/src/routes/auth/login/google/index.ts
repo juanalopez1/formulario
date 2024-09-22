@@ -14,10 +14,10 @@ interface GoogleBody {
 }
 
 const googleRoutes: FastifyPluginAsyncTypebox = async (fastify, _opts) => {
-    fastify.get("/callback", async function(request, reply) {
+    fastify.get("/callback", async function (request, reply) {
         const { token: googleToken } =
             await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(
-                request,
+                request
             );
 
         const accessToken = googleToken.access_token;
@@ -29,26 +29,29 @@ const googleRoutes: FastifyPluginAsyncTypebox = async (fastify, _opts) => {
                 headers: {
                     authorization: "Bearer " + googleToken.access_token,
                 },
-            },
+            }
         );
 
         const body: GoogleBody = JSON.parse(userInfo.body);
 
-        const queryResult = await query(`
+        const queryResult = await query(
+            `
             SELECT id
               FROM people
              WHERE email = $1;
-        `, [
-            body.email,
-        ]);
+        `,
+            [body.email]
+        );
 
         if (queryResult.rowCount !== 1) {
             return reply.redirect(`https://${typedEnv.FRONT_URL}/alta`);
         }
 
-        const token = fastify.jwt.sign({ id: queryResult.rows[0].id })
+        const token = fastify.jwt.sign({ id: queryResult.rows[0].id });
 
-        reply.redirect(`https://${typedEnv.FRONT_URL}/login/google?token=${token}`);
+        reply.redirect(
+            `https://${typedEnv.FRONT_URL}/login/google?token=${token}`
+        );
     });
 };
 

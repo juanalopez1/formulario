@@ -12,6 +12,7 @@
  * @property {ErrorMessageHook} [surname]
  * @property {ErrorMessageHook} [id]
  * @property {ErrorMessageHook} [password]
+ * @property {ErrorMessageHook} [photo]
  * @property {ErrorMessageHook} [repeatPassword]
  * @property {ErrorMessageHook} [rut]
  */
@@ -36,50 +37,55 @@ export async function hookPersonChecks(hooks, callback) {
             person: {},
         };
 
-        const flatKeys = ["password", "repeatPassword"];
-
         // Transform data
         for (const key in hooks) {
             if (hooks.hasOwnProperty(key)) {
                 /** @type {ErrorMessageHook} */
                 const hook = hooks[key];
 
-                /** @type {HTMLInputElement} */
-                hook.input;
-
                 if (hook.input && !hook.input.value) {
                     continue;
                 }
 
-                if (flatKeys.includes(key)) {
-                    values[key] = hook.dataTransformer(hook.input.value);
-                } else {
-                    values.person[key] = hook.dataTransformer(hook.input.value);
+                values[key] = hook.dataTransformer(hook.input.value);
+            }
+        }
+
+        let photoResult;
+
+        if (hooks.photo !== undefined) {
+            const files = hooks.photo.input.files;
+            if (files.length === 1 && files[0].size > 1024 * 10) {
+                photoResult = {
+                    errorMessage: "Máximo de 10kb",
                 }
             }
         }
 
         // Query backend
-        const result = await (
-            await fetch("https://localhost/backend/personas/check", {
-                body: JSON.stringify(values),
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
-        ).json();
+        const result = {
+            ...(await (
+                await fetch("https://localhost/backend/auth/check", {
+                    body: JSON.stringify({ ...values, photo: undefined }),
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+            ).json()),
+        };
+
+        if (photoResult !== undefined) {
+            result.photo = photoResult;
+        }
 
         for (const key in hooks) {
+
             if (hooks.hasOwnProperty(key)) {
                 /** @type {ErrorMessageHook} */
                 const hook = hooks[key];
 
-                const errToHandle = flatKeys.includes(key)
-                    ? result[key]
-                    : result.person?.[key];
-
-                hook.handler(errToHandle ?? "");
+                hook.handler(result[key] ?? "");
             }
         }
 

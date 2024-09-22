@@ -27,7 +27,7 @@ export default fp<FastifySwaggerOptions>(async (fastify, opts) => {
                     description: "Development server",
                 },
             ],
-            security: [{ bearerAuth: []}],
+            security: [{ bearerAuth: [] }],
         },
     });
 
@@ -38,10 +38,10 @@ export default fp<FastifySwaggerOptions>(async (fastify, opts) => {
             deepLinking: false,
         },
         uiHooks: {
-            onRequest: function(request, reply, next) {
+            onRequest: function (request, reply, next) {
                 next();
             },
-            preHandler: function(request, reply, next) {
+            preHandler: function (request, reply, next) {
                 next();
             },
         },

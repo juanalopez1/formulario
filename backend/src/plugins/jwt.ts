@@ -10,12 +10,14 @@ export default fp<FastifyJWTOptions>(async (fastify) => {
     fastify.register(jwt, jwtOptions);
     fastify.decorate(
         "authenticate",
-        async function(request: FastifyRequest, reply: FastifyReply) {
+        async function (request: FastifyRequest, reply: FastifyReply) {
             try {
                 await request.jwtVerify();
             } catch (err) {
-                throw reply.unauthorized("Invalid jwt token" + request.headers.authorization);
+                throw reply.unauthorized(
+                    "Invalid jwt token" + request.headers.authorization
+                );
             }
-        },
+        }
     );
 });

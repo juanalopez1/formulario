@@ -32,8 +32,8 @@ type ReverseMap<T extends Record<keyof T, keyof any>> = {
 
 export const codeToMessage = Object.freeze(
     Object.fromEntries(
-        Object.entries(messageCode).map(([key, val]) => [val, key]),
-    ) as ReverseMap<typeof messageCode>,
+        Object.entries(messageCode).map(([key, val]) => [val, key])
+    ) as ReverseMap<typeof messageCode>
 );
 
 export type SpecificResponse<
@@ -55,7 +55,7 @@ export function createResponseSchema<
 
 export function createResponse<S extends string, N extends ResponseMessage>(
     code: N,
-    message: S,
+    message: S
 ): SpecificResponse<S, N> {
     return {
         statusCode: messageCode[code],
@@ -65,5 +65,7 @@ export function createResponse<S extends string, N extends ResponseMessage>(
 }
 
 export function createResponses<T extends ResponseMessage[]>(input: T) {
-    return input.map((val) => [messageCode, createResponseSchema(val, val)] as const);
+    return input.map(
+        (val) => [messageCode, createResponseSchema(val, val)] as const
+    );
 }

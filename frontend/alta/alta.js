@@ -38,6 +38,11 @@ const personHooks = {
         dataTransformer: (v) => v,
         handler: setErrorMessage(document.querySelector("#messageP2")),
     },
+    photo: {
+        input: document.querySelector("#photo"),
+        dataTransformer: (v) => v,
+        handler: setErrorMessage(document.querySelector("#messagePhoto"))
+    }
 };
 
 const hookInputs = Object.values(personHooks).map((m) => m.input);
@@ -46,11 +51,14 @@ const hookInputs = Object.values(personHooks).map((m) => m.input);
 const registerButton = document.querySelector("#registerButton");
 
 hookPersonChecks(personHooks, (result) => {
+    console.log(result);
     registerButton.disabled =
         !isEmpty(result) || hookInputs.some((i) => i.value.length === 0);
 });
 
 const helperMessage = document.getElementById("helperMessage");
+
+const altaForm = document.getElementById("altaForm");
 
 registerButton.addEventListener("click", async () => {
     const allInputs = [...hookInputs, registerButton];
@@ -59,24 +67,19 @@ registerButton.addEventListener("click", async () => {
             input.disabled = false;
         }
 
-        const persona = {
-            person: {
-                name: personHooks.name.input.value,
-                surname: personHooks.surname.input.value,
-                id: personHooks.id.input.value,
-                email: personHooks.email.input.value,
-                rut: personHooks.rut.input.value,
-            },
-            password: personHooks.password.input.value,
-        };
+        const formData = new FormData(altaForm);
+
+        console.log(formData);
 
         const result = await fetch("https://localhost/backend/auth/register", {
-            method: "POST",
-            body: JSON.stringify(persona),
             headers: {
-                "Content-Type": "application/json",
+              ContentType: "multipart/form-data",
             },
+            method: "POST",
+            body: formData,
         });
+
+        console.log(result);
 
         if (result.ok) {
             const token = await result.json();

@@ -14,34 +14,40 @@ export async function jwtGuard() {
     const headers = {
         Authorization: `Bearer ${token}`,
     };
-    const result = await fetch("https://localhost/backend/personas/verify", {
-        headers,
-    });
 
-    if (result.status === 401) {
+    try {
+        const result = await fetch("https://localhost/backend/personas/verify", {
+            headers,
+        });
+
+        if (result.status === 401) {
+            logOut(window.location.href);
+        }
+
+        const parsed = await result.json();
+        return parsed.id;
+    } catch (e) {
+        console.error(e);
+        if (confirm("Error inesperado al autenticar. ¿Reintentar?")) {
+            return await jwtGuard();
+        }
         logOut(window.location.href);
     }
-
-    const parsed = await result.json();
-    return parsed.id;
 }
 
-/** 
- * @param {string} [loginAimPage]
- * @returns {never} */
+/** @type {(loginAimPage: string) => never} */
 export function logOut(loginAimPage) {
     localStorage.clear();
     sessionStorage.clear();
-    console.log(loginAimPage);
     if (loginAimPage !== undefined) {
         sessionStorage.setItem(sessionStorageKeys.aimPage, loginAimPage);
     }
     window.location.href = "/login";
 }
 
-export const localStorageKeys = /** @type {const} */ {
+export const localStorageKeys = /** @type {const} */ ({
     jwtToken: "jwtToken",
-};
+});
 
 export const sessionStorageKeys = /** @type {const} */ ({
     aimPage: "aimPage",

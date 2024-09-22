@@ -1,4 +1,5 @@
-import { Static, Type } from "@sinclair/typebox";
+import { MultipartFile } from "@fastify/multipart";
+import { Static, TSchema, TUnsafe, Type } from "@sinclair/typebox";
 
 // Expresión regular para el correo electrónico
 // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -13,6 +14,18 @@ const idRegex = /^[1-9]{1}\.[0-9]{3}\.[0-9]{3}-[0-9]{1}$/;
 // Expresión regular para el formato del RUT
 // const rutRegex = /^\d{12}$/;
 
+export const BinarySchema = Type.Unsafe<Buffer>();
+export const FileSchema = Type.Object(
+    {
+        filename: Type.String(),
+        mimetype: Type.String(),
+        file: Type.Unsafe<MultipartFile["file"]>(),
+        toBuffer: Type.Unsafe<MultipartFile["toBuffer"]>(),
+    } satisfies { [K in keyof MultipartFile]?: TUnsafe<MultipartFile[K]> },
+    { additionalProperties: false }
+);
+export type ParsedFile = Static<typeof FileSchema>;
+
 export const PersonSchema = Type.Object(
     {
         name: Type.String({ minLength: 3, maxLength: 20 }),
@@ -26,39 +39,49 @@ export const PersonSchema = Type.Object(
     {
         $id: "Person",
         title: "person",
-    },
+    }
 );
 
-export const PersonWithPasswordSchema = Type.Object(
-    {
-        person: Type.Ref(PersonSchema),
-        password: Type.String({
-            minLength: 8,
-            maxLength: 20,
-            pattern: passwordRegex.source,
+export const PersonCreationSchema = Type.Intersect(
+    [
+        PersonSchema,
+        Type.Object({
+            password: Type.String({
+                minLength: 8,
+                maxLength: 20,
+                pattern: passwordRegex.source,
+            }),
         }),
-    },
+        Type.Object({ photo: Type.Optional(FileSchema) }),
+    ],
     {
-        $id: "PersonWithPassword",
-        title: "personWithPassword",
-    },
+        $id: "PersonCreation",
+        title: "personCreation",
+    }
 );
 
-const simplifiedPerson = Type.Object({
-    ...Type.Mapped(Type.KeyOf(PersonSchema), (_) => Type.String()).properties,
-    rut: Type.Number(),
-});
+const simplifiedPerson = Type.Intersect([
+    Type.Omit(
+        Type.Mapped(Type.KeyOf(PersonSchema), (_) => Type.String()),
+        ["rut"] satisfies (keyof PersonType)[]
+    ),
+    Type.Object({
+        rut: Type.Number(),
+    } satisfies { [K in keyof PersonType]?: TSchema }),
+]);
 
-export const PersonToCheckSchema = Type.Object(
-    {
-        person: Type.Optional(Type.Partial(simplifiedPerson)),
-        password: Type.Optional(Type.String()),
-        repeatPassword: Type.Optional(Type.String()),
-    },
+export const PersonToCheckSchema = Type.Partial(
+    Type.Intersect([
+        Type.Optional(Type.Partial(simplifiedPerson)),
+        Type.Object({
+            password: Type.String(),
+            repeatPassword: Type.String(),
+        }),
+    ]),
     {
         $id: "optionalPerson",
         title: "Persona con campos opcionales.",
-    },
+    }
 );
 
 export const ErrorMessageSchema = Type.Object(
@@ -68,27 +91,20 @@ export const ErrorMessageSchema = Type.Object(
     {
         title: "An error message",
         $id: "errorMessage",
-    },
+    }
 );
 
-export const PersonWithPasswordCheckReturnSchema = Type.Object({
-    ...Type.Mapped(Type.KeyOf(PersonToCheckSchema), (_) =>
-        Type.Optional(Type.Ref(ErrorMessageSchema)),
-    ).properties,
-    person: Type.Optional(
-        Type.Partial(
-            Type.Mapped(Type.KeyOf(PersonToCheckSchema.properties.person), (_) =>
-                Type.Ref(ErrorMessageSchema),
-            ),
-        ),
-    ),
-});
+export const PersonWithPasswordCheckReturnSchema = Type.Partial(
+    Type.Mapped(Type.KeyOf(PersonToCheckSchema), (_) =>
+        Type.Ref(ErrorMessageSchema)
+    )
+);
 
 export type ErrorMessage = Static<typeof ErrorMessageSchema>;
 
 export type PersonType = Static<typeof PersonSchema>;
 
-export type PersonWithPasswordType = Static<typeof PersonWithPasswordSchema>;
+export type PersonWithPasswordType = Static<typeof PersonCreationSchema>;
 
 export type PersonWithOptionalFields = Static<typeof PersonToCheckSchema>;
 
@@ -99,7 +115,7 @@ export type PersonWithPasswordCheckReturn = Static<
 // Type tests
 type AssertEqual<T, K> = T extends K ? (K extends T ? string : never) : never;
 
-const test = <T>(_: T) => { };
-test<AssertEqual<PersonType, Static<typeof simplifiedPerson>>>(
-    "A simplified person should be the same as a person to typescript.",
+const test = <T>(_: T) => {};
+test<AssertEqual<Omit<PersonType, "photo">, Static<typeof simplifiedPerson>>>(
+    "A simplified person should be the same as a person, excluding their photo, to typescript."
 );
