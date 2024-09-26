@@ -2,7 +2,7 @@ import {
     FastifyPluginAsyncTypebox,
     Type,
 } from "@fastify/type-provider-typebox";
-import { BinarySchema, PersonSchema, PersonType } from "../../tipos/persona.js";
+import { BinarySchema } from "../../tipos/persona.js";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import path from "path";
@@ -24,7 +24,7 @@ const pub: FastifyPluginAsyncTypebox = async (fastify, opts) => {
         handler: async (request, reply) => {
             try {
                 return (await fs.promises.readFile(
-                    __dirname + "/../../../public/" + request.params.id
+                    __dirname + "/../../../public/" + request.params.id + ".img"
                 ));
             } catch {
                 return (await fs.promises.readFile(

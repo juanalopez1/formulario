@@ -32,7 +32,7 @@ const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
             }
 
             const body = request.body;
-            const filename = join(process.cwd(), "public", body.id);
+            const filename = join(process.cwd(), "public", body.id + ".img");
 
             const result = await query(
                 String.raw`
@@ -54,7 +54,7 @@ const auth: FastifyPluginAsyncTypebox = async (fastify, opts) => {
             }
 
             if (body.photo !== undefined) {
-                await fs.promises.writeFile(filename, body.photo.file);
+                await fs.promises.writeFile(filename, await body.photo.toBuffer());
             }
 
             const token = fastify.jwt.sign({ id: result.rows[0].id });
